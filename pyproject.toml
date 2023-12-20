@@ -35,7 +35,9 @@ ruff = { version = "*", extras = [] }
 mypy = { version = "*", extras = [] }
 
 # unit tests
+pytest = { version = "*", extras = [] }
 pytest-sugar = { version = "*", extras = [] }
+pytest-cov = { version = "*", extras = [] }
 
 # docs
 sphinx = { version = "*", extras = [] }
