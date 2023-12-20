@@ -54,7 +54,7 @@ jobs:
       # Note 3: undid stuff from Note 2, it broke things
       #   --doctest-modules --pyargs src/
       run: |
-        poetry run coverage run -m --source=src --omit="*/test*" pytest ${{ inputs.pytest_params }} tests/
+        poetry run coverage run -m --source=src --omit="*/test*" pytest tests/
         poetry run coverage xml
     - name: Display Coverage
       uses: 5monkeys/cobertura-action@master
