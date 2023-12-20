@@ -10,18 +10,6 @@ on:
       GOOGLE_CREDENTIALS:
         required: True
     inputs:
-      include_mongo:
-        type: boolean
-        description: "if true we want to spin up a mongodb instance in this workflow"
-        default: false
-        required: false
-
-      pytest_params:
-        type: string
-        description: 'Additional parameters to pass to pytest (i.e. "--ignore=tests/bad_tests")'
-        default: ''
-        required: false
-
       # code coverage action parameters. see: 5monkeys/cobertura-action@master
       min_code_coverage:
         type: number
@@ -34,18 +22,6 @@ on:
         description: "if true, the github workflow fails if code coverage falls below the minimum threshold"
         default: false
         required: false
-
-      # Note:
-      #   Added code coverage params to allow us to optionally limit report commented to the PR
-      #   to only include changed files. This option is meant as a temporary solution to the
-      #   problem of seraph_v2's code coverage growing beyond the character
-      #   limit for a GitHub PR comment.
-      only_changed_files:
-        type: boolean
-        description: "if true we only display the changed files in the code coverage."
-        default: false
-        required: false
-
 
 jobs:
   run-tests:
@@ -99,5 +75,3 @@ jobs:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         minimum_coverage: ${{ inputs.min_code_coverage }}
         fail_below_threshold: ${{ inputs.fail_below_code_cov_threshold }}
-        only_changed_files: ${{ inputs.only_changed_files }}
-        skip_covered: true
