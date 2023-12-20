@@ -71,6 +71,9 @@ jobs:
       uses: snok/install-poetry@v1
     - run: poetry install
 
+    - name: Run linting
+      run: ruff check .
+
     - name: Run Tests and Coverage
 
       # Note:
