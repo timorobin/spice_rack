@@ -56,9 +56,9 @@ jobs:
       run: |
         poetry run coverage run -m --source=src --omit="*/test*" pytest tests/
         poetry run coverage xml
-    - name: Display Coverage
-      uses: 5monkeys/cobertura-action@master
-      with:
+#    - name: Display Coverage
+#      uses: 5monkeys/cobertura-action@master
+#      with:
 #        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        minimum_coverage: 0.75
-        fail_below_threshold: false
+#        minimum_coverage: 0.75
+#        fail_below_threshold: false
