@@ -1,4 +1,4 @@
-name: Run Python unit tests with need GitHub and GCP credentials
+name: Run Python unit tests
 
 #env:
 
@@ -96,4 +96,3 @@ jobs:
         fail_below_threshold: ${{ inputs.fail_below_code_cov_threshold }}
         only_changed_files: ${{ inputs.only_changed_files }}
         skip_covered: true
-        
