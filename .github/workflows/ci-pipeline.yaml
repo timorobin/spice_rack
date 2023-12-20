@@ -48,7 +48,7 @@ jobs:
     - run: poetry install
 
     - name: Run linting
-      run: ruff check .
+      run: poetry run ruff check .
 
     - name: Run Tests and Coverage
 
