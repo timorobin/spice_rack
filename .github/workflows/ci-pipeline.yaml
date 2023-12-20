@@ -6,9 +6,6 @@ on:
   pull_request:
     branches:
       - "main"
-    secrets:
-      GOOGLE_CREDENTIALS:
-        required: True
 
 jobs:
   run-tests:
@@ -38,27 +35,14 @@ jobs:
       run: poetry run ruff check .
 
     - name: Run Tests and Coverage
-      run: poetry run pytest tests/
-      # Note:
-      #   Added "--source=src" to the "coverage run" call based on
-      #   this based on this s/o answer: https://stackoverflow.com/a/75211227
-      #   which I stumbled upon trying to figure out why the coverage call was failing in
-      #   the github workflow but not locally, "config-3.py" not found".
-      #   Still not sure why it worked locally and not in the github
-      #   runner, but this answer made the github runner work as well.
-      # Note 2:
-      #  added "--doctest-modules --pyargs src/" to pick up tests in the docstrings. This relies on
-      #  the package being setup in the "src" layout.
-      #  see this S/O answer: https://stackoverflow.com/a/61089780
+      run: poetry run coverage run -m --source=src pytest tests/
 
-      # Note 3: undid stuff from Note 2, it broke things
-      #   --doctest-modules --pyargs src/
-#      run: |
-#        poetry run coverage run -m --source=src --omit="*/test*" pytest tests/
-#        poetry run coverage xml
-#    - name: Display Coverage
-#      uses: 5monkeys/cobertura-action@master
-#      with:
-#        repo_token: ${{ secrets.GITHUB_TOKEN }}
-#        minimum_coverage: 0.75
-#        fail_below_threshold: false
+    - name: Build Coverage XML
+      run: poetry run coverage xml
+
+    - name: Display Coverage
+      uses: 5monkeys/cobertura-action@master
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        minimum_coverage: 75
+        fail_below_threshold: false
