@@ -4,7 +4,7 @@ import datetime as dt
 import dateparser
 
 from spice_rack import _base_classes
-from spice_rack._common._timestamp._tz_key import TimeZoneKey
+from spice_rack._timestamp._tz_key import TimeZoneKey
 
 
 __all__ = (
