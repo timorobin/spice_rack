@@ -3,7 +3,9 @@ name: Run Python unit tests
 #env:
 
 on:
-  workflow_call:
+  pull_request:
+    branches:
+      - "main"
     secrets:
       GOOGLE_CREDENTIALS:
         required: True
