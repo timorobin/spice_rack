@@ -9,19 +9,6 @@ on:
     secrets:
       GOOGLE_CREDENTIALS:
         required: True
-    inputs:
-      # code coverage action parameters. see: 5monkeys/cobertura-action@master
-      min_code_coverage:
-        type: number
-        description: 'set the min code coverage percentage to be considered a "acceptable"'
-        required: false
-        default: 0.75
-
-      fail_below_code_cov_threshold:
-        type: boolean
-        description: "if true, the github workflow fails if code coverage falls below the minimum threshold"
-        default: false
-        required: false
 
 jobs:
   run-tests:
@@ -73,5 +60,5 @@ jobs:
       uses: 5monkeys/cobertura-action@master
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        minimum_coverage: ${{ inputs.min_code_coverage }}
-        fail_below_threshold: ${{ inputs.fail_below_code_cov_threshold }}
+        minimum_coverage: 0.75
+        fail_below_threshold: false
