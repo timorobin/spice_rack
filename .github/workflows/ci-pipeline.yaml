@@ -38,7 +38,7 @@ jobs:
       run: poetry run ruff check .
 
     - name: Run Tests and Coverage
-
+      run: poetry run pytest tests/
       # Note:
       #   Added "--source=src" to the "coverage run" call based on
       #   this based on this s/o answer: https://stackoverflow.com/a/75211227
@@ -53,9 +53,9 @@ jobs:
 
       # Note 3: undid stuff from Note 2, it broke things
       #   --doctest-modules --pyargs src/
-      run: |
-        poetry run coverage run -m --source=src --omit="*/test*" pytest tests/
-        poetry run coverage xml
+#      run: |
+#        poetry run coverage run -m --source=src --omit="*/test*" pytest tests/
+#        poetry run coverage xml
 #    - name: Display Coverage
 #      uses: 5monkeys/cobertura-action@master
 #      with:
