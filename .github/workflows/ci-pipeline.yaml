@@ -1,0 +1,99 @@
+name: Run Python unit tests with need GitHub and GCP credentials
+
+#env:
+
+on:
+  workflow_call:
+    secrets:
+      GOOGLE_CREDENTIALS:
+        required: True
+    inputs:
+      include_mongo:
+        type: boolean
+        description: "if true we want to spin up a mongodb instance in this workflow"
+        default: false
+        required: false
+
+      pytest_params:
+        type: string
+        description: 'Additional parameters to pass to pytest (i.e. "--ignore=tests/bad_tests")'
+        default: ''
+        required: false
+
+      # code coverage action parameters. see: 5monkeys/cobertura-action@master
+      min_code_coverage:
+        type: number
+        description: 'set the min code coverage percentage to be considered a "acceptable"'
+        required: false
+        default: 0.75
+
+      fail_below_code_cov_threshold:
+        type: boolean
+        description: "if true, the github workflow fails if code coverage falls below the minimum threshold"
+        default: false
+        required: false
+
+      # Note:
+      #   Added code coverage params to allow us to optionally limit report commented to the PR
+      #   to only include changed files. This option is meant as a temporary solution to the
+      #   problem of seraph_v2's code coverage growing beyond the character
+      #   limit for a GitHub PR comment.
+      only_changed_files:
+        type: boolean
+        description: "if true we only display the changed files in the code coverage."
+        default: false
+        required: false
+
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9"]
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    # - name: Build Poetry Lock file
+    #   uses: snok/install-poetry@v1
+    # - run: poetry lock
+
+    - name: Install dependencies via Poetry
+      uses: snok/install-poetry@v1
+    - run: poetry install
+
+    - name: Run Tests and Coverage
+
+      # Note:
+      #   Added "--source=src" to the "coverage run" call based on
+      #   this based on this s/o answer: https://stackoverflow.com/a/75211227
+      #   which I stumbled upon trying to figure out why the coverage call was failing in
+      #   the github workflow but not locally, "config-3.py" not found".
+      #   Still not sure why it worked locally and not in the github
+      #   runner, but this answer made the github runner work as well.
+      # Note 2:
+      #  added "--doctest-modules --pyargs src/" to pick up tests in the docstrings. This relies on
+      #  the package being setup in the "src" layout.
+      #  see this S/O answer: https://stackoverflow.com/a/61089780
+
+      # Note 3: undid stuff from Note 2, it broke things
+      #   --doctest-modules --pyargs src/
+      run: |
+        poetry run coverage run -m --source=src --omit="*/test*" pytest ${{ inputs.pytest_params }} tests/
+        poetry run coverage xml
+    - name: Display Coverage
+      uses: 5monkeys/cobertura-action@master
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        minimum_coverage: ${{ inputs.min_code_coverage }}
+        fail_below_threshold: ${{ inputs.fail_below_code_cov_threshold }}
+        only_changed_files: ${{ inputs.only_changed_files }}
+        skip_covered: true
+        
