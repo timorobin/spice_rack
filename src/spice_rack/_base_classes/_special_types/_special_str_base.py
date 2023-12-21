@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any
+from typing import Any, Union  # , TypeVar, Generic
 from abc import abstractmethod
 
 from spice_rack._base_classes._special_types._special_type_mixin import SpecialTypeMixin
@@ -9,7 +9,22 @@ __all__ = (
 )
 
 
-class AbstractSpecialStr(str, SpecialTypeMixin):
+# _SpecialStrCoercibleTV = TypeVar("_SpecialStrCoercibleTV", )
+# """
+# Carried over the generic param from the SpecialTypeMixin class. Specify the type parameter
+# when subclassing to indicate the types we can coerce to the subclass type, i.e. any
+# non-str data types supported because str is always supported
+# """
+
+# this second-level generic param broke stuff not sure why
+_SpecialStrCoercibleTV = Any
+
+
+class AbstractSpecialStr(
+    SpecialTypeMixin[Union[str, _SpecialStrCoercibleTV]],
+    # Generic[_SpecialStrCoercibleTV],
+    str
+):
     """
     Subclass of string indicating a constrained version of a string.
 
@@ -41,7 +56,7 @@ class AbstractSpecialStr(str, SpecialTypeMixin):
         raise TypeError(f"'{cls.__name__}' cannot parse data of type {type(root_data)}")
 
     @classmethod
-    def _validate(cls, raw_data: Any) -> str:
+    def _validate(cls, raw_data: Union[str, _SpecialStrCoercibleTV]) -> str:
         """perform validation on the raw data before creating a new instance."""
         if not isinstance(raw_data, str):
             str_data = cls._parse_non_str(root_data=raw_data)
@@ -49,10 +64,6 @@ class AbstractSpecialStr(str, SpecialTypeMixin):
             str_data = raw_data
 
         return cls._format_str(root_data=str_data)
-
-    def __new__(cls, v: Any):
-        v = cls._validate(v)
-        return super().__new__(cls, v)
 
     # # v2 stuff
     # @classmethod
@@ -66,10 +77,3 @@ class AbstractSpecialStr(str, SpecialTypeMixin):
     #         serialization=core_schema.to_string_ser_schema(when_used="json-unless-none")
     #     )
     #     return schema
-
-    @classmethod
-    def __get_validators__(cls):
-        # one or more validators may be yielded which will be called in the
-        # order to validate the input, each validator will receive as an input
-        # the value returned from the previous validator
-        yield cls

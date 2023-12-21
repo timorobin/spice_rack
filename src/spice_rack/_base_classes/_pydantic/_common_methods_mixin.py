@@ -5,6 +5,8 @@ import json
 
 from pydantic import BaseModel
 
+from spice_rack._base_classes._pydantic import _misc
+
 
 __all__ = ("CommonMethods",)
 
@@ -13,14 +15,10 @@ __all__ = ("CommonMethods",)
 #   https://docs.pydantic.dev/usage/exporting_models/#custom-json-deserialisation.
 #  using orjson bc faster encoding/decoding and bc native datetime handling
 
-class CommonMethods(ABC):
+class CommonMethods(_misc.ClassNameMixin, ABC):
     """
     adds common methods we apply to our bases that inherit from pydantic's BaseModel
     """
-
-    @classmethod
-    def get_cls_name(cls) -> str:
-        return cls.__name__
 
     def json_dict(self: BaseModel, use_str_fallback: bool = False, **pydantic_kwargs) -> dict:
         """

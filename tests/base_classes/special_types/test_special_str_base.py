@@ -1,14 +1,23 @@
 import pytest
 import json
-from typing import ClassVar
+from typing import ClassVar, Any
 
 from pydantic import BaseModel
 
 from spice_rack import base_classes
 
 
-class SomeSpecialStr(base_classes.special_types.special_str_base.AbstractSpecialStr):
+class SomeSpecialStr(
+    base_classes.special_types.special_str_base.AbstractSpecialStr
+):
     _blocked_vals: ClassVar[list[str]] = ["X", "Y"]
+
+    @classmethod
+    def _parse_non_str(cls, root_data: Any) -> str:
+        if isinstance(root_data, int):
+            return str(root_data)
+        else:
+            return super()._parse_non_str(root_data)
 
     @classmethod
     def _format_str(cls, root_data: str) -> str:
@@ -51,6 +60,22 @@ def test_custom_init_checking():
     bad_s = "x"
     with pytest.raises(ValueError):
         SomeSpecialStr(bad_s)
+
+    with pytest.raises(TypeError):
+        SomeSpecialStr(1.0)
+
+
+def test_ide():
+    """
+    Tests visually that the IDE behaves as expected.
+    This can't really fail at test time like normal tests, must be evaluated visually.
+    """
+    # your IDE should not highlight this one bc string is ok
+    assert SomeSpecialStr("a")
+
+    with pytest.raises(TypeError):
+        # your IDE should highlight this one bc the param doesn't have int in it
+        SomeSpecialStr(1.90)
 
 
 class SomeClass(BaseModel):

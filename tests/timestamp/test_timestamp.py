@@ -45,6 +45,20 @@ def test_now():
     assert diff == 0
 
 
+def test_ide():
+    """
+    Tests visually that the IDE behaves as expected.
+    This can't really fail at test time like normal tests, must be evaluated visually.
+    """
+    # your IDE should not highlight this one bc string is ok
+    assert timestamp.Timestamp("a")
+
+    # your IDE should highlight this one bc the param doesn't have int in it, but it will
+    #  validate bc we have to parse the json-encoding value
+    int_ts = int(dt.datetime.now().timestamp())
+    timestamp.Timestamp(int_ts)
+
+
 def test_json_roundtrip():
     class X(BaseModel):
         ts: timestamp.Timestamp
