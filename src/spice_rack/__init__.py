@@ -1,4 +1,9 @@
 from spice_rack import (
     _base_classes as base_classes,
-    _common as common
+    _misc as misc,
+    _timestamp as timestamp,
+    _logging as logging
 )
+
+
+pydantic_bases = base_classes.pydantic

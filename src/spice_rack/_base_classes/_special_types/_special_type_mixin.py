@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any
+from typing import Any, TypeVar, Generic
 
 from abc import abstractmethod, ABC
 
@@ -9,7 +9,15 @@ __all__ = (
 )
 
 
-class SpecialTypeMixin(ABC):
+_CoercibleTV = TypeVar("_CoercibleTV", )
+"""
+use this type var to specify the type annotation for the raw data the given subclass is able to 
+coerce into instances of the subclass. This is the type annotation on the arg in the '__new__' 
+method for the below interface class.
+"""
+
+
+class SpecialTypeMixin(ABC, Generic[_CoercibleTV]):
     """
     This mixin provides common methods to all special type bases we define here.
 
@@ -28,13 +36,17 @@ class SpecialTypeMixin(ABC):
 
     @classmethod
     @abstractmethod
-    def _validate(cls, raw_data: Any) -> Any:
+    def _validate(cls, raw_data: _CoercibleTV) -> Any:
         """
         overwrite this classmethod to control how the raw data is
         validated and potentially mutated, before we create a new instance of this class
         """
         ...
 
+    def __new__(cls, v: _CoercibleTV):
+        """create a new instance of this special type class, validating the data first"""
+        v = cls._validate(v)
+        return super().__new__(cls, v)
 
     # # pydantic hooks
 
@@ -47,6 +59,10 @@ class SpecialTypeMixin(ABC):
         yield cls
 
     # v2
+    # Note: the commented out code doesn't account for the addition of the parameterization,
+    #   but using the generic  setup should unlock the behavior we want,
+    #   if we add some logic in a __class_getitem__ method
+
     # @classmethod
     # def __get_pydantic_core_schema__(
     #         cls,

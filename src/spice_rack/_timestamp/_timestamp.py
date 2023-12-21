@@ -1,15 +1,18 @@
 from __future__ import annotations
-from typing import Optional, Union, ClassVar, Literal, cast
+from typing import Optional, Union, ClassVar, Literal
 import datetime as dt
 import dateparser
 
 from spice_rack import _base_classes
-from spice_rack._common._timestamp._tz_key import TimeZoneKey
+from spice_rack._timestamp._tz_key import TimeZoneKey
 
 
 __all__ = (
     "Timestamp",
 )
+
+_SpecialTypeMixin = _base_classes.special_types.special_type_mixin.SpecialTypeMixin
+
 
 _TzKeyT = Union[str, TimeZoneKey, Literal["local"]]
 
@@ -18,7 +21,10 @@ _TimestampInitValueT = Union[str, dt.datetime, dt.date]
 _PythonTimestampT = float  # seconds from epoch with decimals
 
 
-class Timestamp(int, _base_classes.special_types.special_type_mixin.SpecialTypeMixin):
+class Timestamp(
+    _SpecialTypeMixin[_TimestampInitValueT],
+    int
+):
     """
     special subclass of 'int' that contains the utc millisecond from epoch.
     """
@@ -157,8 +163,8 @@ class Timestamp(int, _base_classes.special_types.special_type_mixin.SpecialTypeM
         elif isinstance(value, dt.date):
             float_data = cls._from_date_obj(value, assumed_tz=cls._default_assumed_tz)
 
-        elif isinstance(value, float):
-            float_data = cls._from_float(value, assumed_tz=cls._default_assumed_tz)
+        # elif isinstance(value, float):
+        #     float_data = cls._from_float(value, assumed_tz=cls._default_assumed_tz)
 
         elif isinstance(value, (int, cls)):
             float_data = value
@@ -170,9 +176,9 @@ class Timestamp(int, _base_classes.special_types.special_type_mixin.SpecialTypeM
 
         return float_data
 
-    def __new__(cls, v: _TimestampInitValueT) -> Timestamp:
-        v = cls._validate(v)
-        return cast(Timestamp, super().__new__(cls, v))
+    # def __new__(cls, v: _TimestampInitValueT) -> Timestamp:
+    #     v = cls._validate(v)
+    #     return cast(Timestamp, super().__new__(cls, v))
 
     @classmethod
     def now(cls) -> Timestamp:
