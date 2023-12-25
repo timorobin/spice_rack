@@ -1,9 +1,9 @@
 from __future__ import annotations
 import uuid
 from typing import Any
-from pydantic import BaseModel, Field
+from pydantic import Field
 
-from spice_rack import base_classes
+from spice_rack import base_classes, pydantic_bases
 
 __all__ = (
     "GuidStr",
@@ -36,7 +36,7 @@ class GuidStr(base_classes.AbstractSpecialStr):
         return GuidStr(uuid.uuid4().hex)
 
 
-class GuidMixin(BaseModel):
+class GuidMixin(pydantic_bases.PydanticMixinBase):
     guid: GuidStr = Field(
         description="globally unique id as a string",
         default_factory=GuidStr.generate
