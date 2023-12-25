@@ -18,6 +18,7 @@ python = "~3.9"
 #
 # serialization and primary class base
 pydantic = { version = "~1", extras = ["dotenv",] }  # noqa - we are not ready to upgrade
+sqlmodel = { version = "*", extras = [] }
 
 # logging
 loguru = { version = "*", extras = [] }
