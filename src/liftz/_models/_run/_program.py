@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 from spice_rack import pydantic_bases, timestamp
-from liftz._models import _template, _common, _record_mixin
+from liftz._models import _template, _misc, _record_mixin
 
 class ExerciseExecution(pydantic_bases.AbstractValueModel):
     exercise_key: _template.ExerciseKey
-    sets: list[_common.SetInfo]
+    sets: list[_misc.SetInfo]
 
 
 class ExerciseSetExecutionRecord(

@@ -3,7 +3,7 @@ from pydantic import Field
 
 from spice_rack import base_classes
 from liftz._models._record_mixin import RecordMixin
-from liftz._models import _common
+from liftz._models import _misc
 
 
 __all__ = (
@@ -53,4 +53,4 @@ class ExerciseRecord(_ExerciseCommon, RecordMixin):
 class DayTemplateExerciseItem(base_classes.pydantic.AbstractValueModel):
     """common fields for a task for the different representations"""
     exercise_key: ExerciseKey
-    sets: list[_common.SetInfo] = Field(description="the weight and reps to do")
+    sets: list[_misc.SetInfo] = Field(description="the weight and reps to do")
