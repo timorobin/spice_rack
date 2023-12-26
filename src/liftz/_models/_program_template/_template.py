@@ -2,7 +2,6 @@ from __future__ import annotations
 from pydantic import Field
 
 import spice_rack
-
 from liftz._models._program_template._components import (
     ProgramTemplateKey, ProgramTemplateTags, ProgramTemplateWeek
 )
