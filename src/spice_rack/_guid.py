@@ -3,7 +3,7 @@ import uuid
 from typing import Any
 from pydantic import Field
 
-from spice_rack import base_classes, pydantic_bases
+from spice_rack import _base_classes
 
 __all__ = (
     "GuidStr",
@@ -11,7 +11,7 @@ __all__ = (
 )
 
 
-class GuidStr(base_classes.AbstractSpecialStr):
+class GuidStr(_base_classes.AbstractSpecialStr):
     """a hex of a UUID4 object"""
 
     @classmethod
@@ -36,7 +36,7 @@ class GuidStr(base_classes.AbstractSpecialStr):
         return GuidStr(uuid.uuid4().hex)
 
 
-class GuidMixin(pydantic_bases.PydanticMixinBase):
+class GuidMixin(_base_classes.pydantic.PydanticMixinBase):
     guid: GuidStr = Field(
         description="globally unique id as a string",
         default_factory=GuidStr.generate

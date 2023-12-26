@@ -5,7 +5,7 @@ from pydantic.generics import GenericModel
 from pydantic.fields import ModelField
 
 from spice_rack._base_classes._pydantic._misc import ClassNameMixin
-from spice_rack._base_classes._pydantic._dispatchable_mixin import _cls_id_card
+from spice_rack._base_classes._pydantic._dispatchable_mixin import _cls_id_card, _type_enum_base
 
 
 __all__ = (
