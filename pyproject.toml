@@ -8,6 +8,8 @@ readme = "README.md"
 
 packages = [
     {include = "spice_rack", from = "src"},
+
+    # delete when we split up
     {include = "liftz", from = "src"},
 ]
 
@@ -18,7 +20,6 @@ python = "~3.9"
 #
 # serialization and primary class base
 pydantic = { version = "~1", extras = ["dotenv",] }  # noqa - we are not ready to upgrade
-sqlmodel = { version = "*", extras = [] }
 
 # logging
 loguru = { version = "*", extras = [] }
@@ -27,10 +28,15 @@ loguru = { version = "*", extras = [] }
 dateparser = { version = "*", extras = [] }
 
 # misc
-aenum = { version = "*", extras = [] }
 case-converter = { version = "*", extras = [] }
 devtools = { version = "*", extras = ["pygments"] }
+
+# why?
 tabulate = { version = "*", extras = [] }
+
+# these are liftz-only dependencies and should be moved over when we split up
+sqlmodel = { version = "*", extras = [] }
+
 
 [tool.poetry.dev-dependencies]
 # linter
