@@ -4,7 +4,12 @@ from pydantic import Field
 
 import spice_rack
 from liftz._models import _program_template
-from liftz._models._program_in_progress import _components
+from liftz._models._program import _components
+
+
+__all__ = (
+    "ActiveProgram",
+)
 
 
 class ActiveProgram(spice_rack.pydantic_bases.AbstractValueModel):
@@ -18,4 +23,3 @@ class ActiveProgram(spice_rack.pydantic_bases.AbstractValueModel):
     days_finished: list[_components.ProgramDayFinished]
     days_left: list[_components.ProgramDayNotStarted]
     in_progress_day: Optional[_components.ProgramDayInProgress] = None
-    
