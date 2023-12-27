@@ -261,6 +261,16 @@ class Logger:
             log_augmentations=log_augmentations,
         )
 
+    def exception(
+            self,
+            msg: str,
+            log_augmentations: Optional[list[Any]] = None
+    ):
+        log_augmentations = self._format_log_augmentations(log_augmentations)
+        self.loguru_logger.exception(
+            msg, log_augmentations=log_augmentations
+        )
+
 
 def get_logger(
         specified_service_name: Optional[str] = None,
