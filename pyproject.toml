@@ -50,6 +50,7 @@ mypy = { version = "*", extras = [] }
 pytest = { version = "*", extras = [] }
 pytest-sugar = { version = "*", extras = [] }
 pytest-cov = { version = "*", extras = [] }
+pytest-parametrization = { version = "*", extras = [] }
 
 # docs
 sphinx = { version = "*", extras = [] }

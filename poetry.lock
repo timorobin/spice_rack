@@ -1798,6 +1798,20 @@ pytest = ">=4.6"
 testing = ["fields", "hunter", "process-tests", "pytest-xdist", "six", "virtualenv"]
 
 [[package]]
+name = "pytest-parametrization"
+version = "2022.2.1"
+description = "Simpler PyTest parametrization"
+optional = false
+python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+files = [
+    {file = "pytest-parametrization-2022.2.1.tar.gz", hash = "sha256:057229ad7e284fe3435a717a8a58dc5f169b3d1e5aa946d94ec591d31bd78445"},
+]
+
+[package.dependencies]
+pytest = "*"
+six = "*"
+
+[[package]]
 name = "pytest-sugar"
 version = "0.9.7"
 description = "pytest-sugar is a plugin for pytest that changes the default look and feel of pytest (e.g. progressbar, show tests that fail instantly)."
@@ -3023,4 +3037,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.9"
-content-hash = "73d96db5180354ea06dd679350b3d18152f739fec61be4e893b221960fc8378a"
+content-hash = "754db263b1afc76f2b2e095bfb4540a8db28d09fe56c1b414a50221c6e895f50"
