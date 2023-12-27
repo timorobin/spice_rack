@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 from devtools import pformat
 
-from spice_rack._logging._log_aug._container import GeneralLogAugmentation, TRACEBACK_AUG_STR_ID
+from spice_rack._logging._log_aug import _container
 
 if TYPE_CHECKING:
     from loguru import Record
@@ -25,8 +25,8 @@ def log_augmentations_patcher(record: Record) -> None:
     extra = record.get("extra", {})
 
     log_augmentations = []
-    for aug_raw in extra.pop(_log_augs_key.LOG_AUG_KEY, []):
-        aug_obj = _general_aug_obj.GeneralLogAugmentation.validate(aug_raw)
+    for aug_raw in extra.pop("log_augmentations", []):
+        aug_obj = _container.GeneralLogAugmentation.validate(aug_raw)
         log_augmentations.append(aug_obj.get_serializable_data())
-    extra[f"{_log_augs_key.LOG_AUG_KEY}_dumped"] = pformat(log_augmentations)
+    extra[f"log_augmentations_dumped"] = pformat(log_augmentations)
     return

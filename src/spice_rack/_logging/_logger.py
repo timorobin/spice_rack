@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Optional, Any
 import logging
-from loguru import logger
+from loguru import logger, _logger  # noqa
 import os
 import warnings
 
@@ -54,7 +54,7 @@ def _get_default_format(service_name: Optional[str] = None, add_aug_to_msg: bool
     service_name_section = "<magenta>{extra[service_name]: <15}</magenta>"
     line_num_section = "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan>"
     message_section = "<green>{message}</>"
-    augmentations_section = "<yellow>{extra[" + "log_augmentations" + "]}</yellow>"
+    augmentations_section = "<yellow>{extra[" + "{log_augmentations_dumped}" + "]}</yellow>"
 
     if service_name:
         sections = [
@@ -76,7 +76,7 @@ class InterceptHandler(logging.Handler):
     def emit(self, record):
         # Get corresponding Loguru level if it exists
         try:
-            level = get_logger()._logger.level(record.levelname).name
+            level = get_logger().loguru_logger.level(record.levelname).name
         except ValueError:
             level = record.levelno
 
@@ -86,7 +86,9 @@ class InterceptHandler(logging.Handler):
             frame = frame.f_back
             depth += 1
 
-        get_logger()._logger.opt(depth=depth, exception=record.exc_info).log(level, record.getMessage())
+        get_logger().loguru_logger.opt(
+            depth=depth, exception=record.exc_info
+        ).log(level, record.getMessage())
 
 
 SERVICE_NAME_ENV_VAR_NAME = "SERVICE_NAME"
@@ -163,22 +165,31 @@ class Logger:
         logger_ = logger_.patch(_log_aug.log_augmentations_patcher)
         self._logger = logger_
 
+    @property
+    def loguru_logger(self) -> _logger.Logger:
+        return self._logger
+
+    @staticmethod
     def _format_log_augmentations(
-            self, log_augmentations: Optional[list[Any]]
+            log_augmentations: Optional[list[Any]]
     ) -> list[_log_aug.GeneralLogAugmentation]:
-        res = []
+        res: list[_log_aug.GeneralLogAugmentation] = []
         if log_augmentations:
             for raw_aug in log_augmentations:
-                aug_kwargs: dict
-                if isinstance(raw_aug, dict):
-                    if "aug_key" in raw_aug:
-                        aug_kwargs = raw_aug
+                formatted_aug: _log_aug.GeneralLogAugmentation
+                if isinstance(raw_aug, _log_aug.GeneralLogAugmentation):
+                    formatted_aug = raw_aug
+
+                else:
+                    aug_kwargs: dict
+                    if isinstance(raw_aug, dict):
+                        if "aug_key" in raw_aug:
+                            aug_kwargs = raw_aug
+                        else:
+                            aug_kwargs = {"data": raw_aug}
                     else:
                         aug_kwargs = {"data": raw_aug}
-                else:
-                    aug_kwargs = {"data": raw_aug}
-
-                formatted_aug = _log_aug.GeneralLogAugmentation.validate(aug_kwargs)
+                    formatted_aug = _log_aug.GeneralLogAugmentation.validate(aug_kwargs)
                 res.append(formatted_aug)
         return res
 

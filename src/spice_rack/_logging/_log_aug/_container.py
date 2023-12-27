@@ -7,10 +7,12 @@ from spice_rack import _base_classes
 
 __all__ = (
     "GeneralLogAugmentation",
-    "TRACEBACK_AUG_STR_ID"
+    "TRACEBACK_AUG_STR_ID",
+    "LOG_AUG_FORMATTER_METHOD"
 )
 
 TRACEBACK_AUG_STR_ID = "traceback"
+LOG_AUG_FORMATTER_METHOD = "__as_log_aug__"
 
 
 class GeneralLogAugmentation(_base_classes.pydantic.AbstractValueModel):
@@ -27,14 +29,6 @@ class GeneralLogAugmentation(_base_classes.pydantic.AbstractValueModel):
         if value == TRACEBACK_AUG_STR_ID:
             tb_data = stackprinter.format(show_vals=None, style="plaintext")
             value = {"traceback_data": tb_data.splitlines()}
-
-        val_attr_maybe = getattr(value, "__as_log_aug__", None)
-        if val_attr_maybe is not None:
-            if callable(val_attr_maybe):
-                value = val_attr_maybe()
-            else:
-                value = val_attr_maybe
-
         return value
 
     def get_aug_key(self) -> str:
@@ -49,13 +43,32 @@ class GeneralLogAugmentation(_base_classes.pydantic.AbstractValueModel):
         else:
             return "no description"
 
+    def get_aug_data(self) -> dict:
+        aug_data: dict
+        log_aug_formatter = getattr(
+            self.data,
+            LOG_AUG_FORMATTER_METHOD,
+            None
+        )
+        if log_aug_formatter:
+            if callable(log_aug_formatter):
+                aug_data = log_aug_formatter()
+            else:
+                raise ValueError(
+                    f"'{LOG_AUG_FORMATTER_METHOD}' should be a callable, "
+                    f"but it is type {type(log_aug_formatter)}"
+                )
+        else:
+            aug_data = self.json_dict(use_str_fallback=True).get("data", {})
+
+        return aug_data
+
     def get_serializable_data(self) -> dict:
-        json_data = self.json_dict(use_str_fallback=True)
         return {
-            "aug_key": self.aug_key,
-            "aug_description": self.aug_desc,
+            "aug_key": self.get_aug_key(),
+            "aug_description": self.get_aug_desc(),
             "aug_data_type": type(self.data).__name__,
-            "aug_data": json_data.get("data"),
+            "aug_data": self.get_aug_data()
         }
 
     @classmethod
