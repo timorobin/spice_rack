@@ -37,7 +37,12 @@ Self = t.TypeVar("Self", bound="DispatchableModelMixin")
 class DispatchableModelMixin(GenericModel, t.Generic[_ClassIdEnumTV]):
     """
     infuses class_id field and the relevant functionality to automatically
-    dispatch to the correct concrete class
+    dispatch to the correct concrete class.
+
+    if you are making a new root, specifying is_new_root=True in the
+    subclass kwargs.
+
+    If concrete, specify is_concrete=True.
     """
     _cls_id_enum_cls: t.Type[_ClassIdEnumTV]
     _root_cls: t.Type[DispatchableModelMixin] = None

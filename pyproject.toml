@@ -23,6 +23,7 @@ pydantic = { version = "~1", extras = ["dotenv",] }  # noqa - we are not ready t
 
 # logging
 loguru = { version = "*", extras = [] }
+stackprinter = { version = "*", extras = [] }
 
 # helps with date parsing
 dateparser = { version = "*", extras = [] }

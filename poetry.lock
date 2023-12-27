@@ -2724,6 +2724,17 @@ pure-eval = "*"
 tests = ["cython", "littleutils", "pygments", "pytest", "typeguard"]
 
 [[package]]
+name = "stackprinter"
+version = "0.2.11"
+description = "Debug-friendly stack traces, with variable values and semantic highlighting"
+optional = false
+python-versions = ">=3.4"
+files = [
+    {file = "stackprinter-0.2.11-py3-none-any.whl", hash = "sha256:101da55db7dfd54af516e3e209db9c84645285e5ea00d0b0709418dde2f157a1"},
+    {file = "stackprinter-0.2.11.tar.gz", hash = "sha256:abbd8f4f892f24a5bd370119af49c3e3408b0bf04cd4d28e99f81c4e781a767b"},
+]
+
+[[package]]
 name = "tabulate"
 version = "0.9.0"
 description = "Pretty-print tabular data"
@@ -3012,4 +3023,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.9"
-content-hash = "79411d7edd19af55da09cd6e3ca1f1e85446b81835d3088b0d19b7504c5f88f4"
+content-hash = "73d96db5180354ea06dd679350b3d18152f739fec61be4e893b221960fc8378a"
