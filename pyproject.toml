@@ -35,8 +35,9 @@ devtools = { version = "*", extras = ["pygments"] }
 # why?
 tabulate = { version = "*", extras = [] }
 
+# ### LIFTZ ONLY ###
 # these are liftz-only dependencies and should be moved over when we split up
-sqlmodel = { version = "*", extras = [] }
+sqlalchemy = { version = "*", extras = [] }
 
 
 [tool.poetry.dev-dependencies]
