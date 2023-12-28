@@ -4,7 +4,7 @@ from sqlmodel import Field
 
 import spice_rack
 from liftz import _models
-from liftz._repos import _record_base
+from liftz._persistance._repos import _record_base
 
 
 __all__ = (

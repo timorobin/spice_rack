@@ -1,10 +1,9 @@
 from __future__ import annotations
 from typing import Optional
 from pydantic import Field
-from sqlmodel import Relationship
 
 import spice_rack
-from liftz._repos._record_base import TableBase
+from liftz._persistance._repos._record_base import TableBase
 from liftz import _models
 
 _ProgramTemplateKey = _models.program_template.components.ProgramTemplateKey
