@@ -17,7 +17,7 @@ _TEMPLATE_SET_TABLE_NAME = "individual_template_sets"
 __all__ = (
     "ProgramTemplateTagsStr",
     "ProgramTemplateRecord",
-    "ProgramTemplateIndividualSets"
+    "ProgramTemplateIndividualSet"
 )
 
 
@@ -70,7 +70,7 @@ class ProgramTemplateRecord(_record_base.TableBase):
     tags: Optional[ProgramTemplateTagsStr] = Field(
         description="str-representation of a list of tags"
     )
-    sets: list[ProgramTemplateIndividualSets] = Relationship(
+    strength_sets: list[ProgramTemplateIndividualSet] = Relationship(
         back_populates=_TEMPLATE_SET_TABLE_NAME, link_model=ProgramTemplateIndividualSetLink
     )
 
@@ -79,7 +79,7 @@ class ProgramTemplateRecord(_record_base.TableBase):
         return _TEMPLATE_TABLE_NAME
 
 
-class ProgramTemplateIndividualSets(_record_base.TableBase):
+class ProgramTemplateIndividualSet(_record_base.TableBase):
     program_key: _ProgramTemplateKey
     exercise_key: _models.strength_exercise.StrengthExerciseKey
     week: int
