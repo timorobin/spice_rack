@@ -4,6 +4,7 @@ from sqlalchemy import orm, select
 
 from liftz._persistance._types import UserIdT
 from liftz._persistance._repos import _record_base
+from liftz import _models
 
 if t.TYPE_CHECKING:
     from liftz._persistance._engine_builder import SessionT
@@ -34,13 +35,24 @@ class UserRecord(_record_base.TableBase):
     password: orm.Mapped[str] = orm.mapped_column(
         doc="hashed password of the user"
     )
+    is_superuser: orm.Mapped[bool] = orm.mapped_column(
+        doc="if the user is a superuser."
+    )
 
     @classmethod
     def get_table_name(cls) -> str:
         return "users"
 
+    def to_user_obj(self) -> _models.user.User:
+        return _models.user.User(
+            user_id=self.user_id,
+            email=self.email,
+            name=self.name,
+            is_superuser=self.is_superuser
+        )
+
     @classmethod
-    def fetch_by_user_id(cls, session: SessionT, user_id: UserIdT) -> UserRecord:
+    def fetch_by_user_id(cls, session: SessionT, user_id: UserIdT) -> _models.user.User:
         stmt = select(UserRecord).where(
             UserRecord.user_id == user_id
         )
@@ -50,4 +62,5 @@ class UserRecord(_record_base.TableBase):
                 f"nothing found with the user id, '{user_id}'"
             )
         else:
-            return res[0]
+            record_obj = res[0]
+            return record_obj.to_user_obj()

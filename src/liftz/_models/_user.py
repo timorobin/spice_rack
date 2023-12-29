@@ -16,3 +16,4 @@ class User(spice_rack.pydantic_bases.AbstractValueModel):
     user_id: UserId = Field(description="the user id", default_factory=UserId.generate)
     name: str
     email: str
+    is_superuser: bool = False
