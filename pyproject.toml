@@ -38,7 +38,7 @@ tabulate = { version = "*", extras = [] }
 # ### LIFTZ ONLY ###
 # these are liftz-only dependencies and should be moved over when we split up
 sqlalchemy = { version = "*", extras = [] }
-
+nicegui = { version = "*", extras = [] }
 
 [tool.poetry.dev-dependencies]
 # linter

@@ -1,10 +1,13 @@
 from __future__ import annotations
+import typing as t
 from sqlalchemy import orm
 
+from liftz import _models
 from liftz._persistance._repos import _record_base
 from liftz._persistance._types import (
     StrengthExerciseKeyT,
-    ExerciseTagsEnumT
+    ExerciseTagsEnumT,
+    UserIdT
 )
 
 __all__ = (
@@ -19,9 +22,16 @@ class StrengthExerciseRecord(_record_base.TableBase):
         default=None,
         primary_key=True
     )
-
+    user_id: orm.Mapped[t.Optional[UserIdT]] = orm.mapped_column(
+        doc="the id of the user connected to this record, if none this is a system-level record",
+        index=True,
+    )
     key: orm.Mapped[StrengthExerciseKeyT] = orm.mapped_column(
         doc="the key", primary_key=True
+    )
+    description: orm.Mapped[str] = orm.mapped_column(
+        doc="description",
+
     )
     tags: orm.Mapped[ExerciseTagsEnumT] = orm.mapped_column(
         doc="list of tags for this exercise"
@@ -30,3 +40,16 @@ class StrengthExerciseRecord(_record_base.TableBase):
     @classmethod
     def get_table_name(cls) -> str:
         return "strength_exercises"
+
+    @classmethod
+    def from_exercise_obj(
+            cls,
+            exercise_obj: _models.strength_exercise.StrengthExerciseDef,
+            user_id: t.Optional[UserIdT] = None
+    ) -> StrengthExerciseRecord:
+        return StrengthExerciseRecord(
+            user_id=user_id,
+            key=exercise_obj.key,
+            description=exercise_obj.description,
+            tags=exercise_obj.tags
+        )
