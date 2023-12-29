@@ -1,48 +1,33 @@
 from __future__ import annotations
-from typing import ClassVar
-from sqlmodel import Field
+from sqlalchemy import orm
 
-import spice_rack
 from liftz import _models
 from liftz._persistance._repos import _record_base
 
 
 __all__ = (
-    "StrengthExerciseTagsStr",
-    "StrengthExerciseRecord"
+    "StrengthExerciseRecord",
 )
 
 
-class StrengthExerciseTagsStr(spice_rack.AbstractSpecialStr):
-    """string of combined enum values, joined by a comma"""
-    _sep: ClassVar[str] = ","
-
-    @classmethod
-    def _format_str(cls, root_data: str) -> str:
-        for part in root_data.split(cls._sep):
-            _models.strength_exercise.StrengthExerciseTags(part)
-        return root_data
-
-    @classmethod
-    def from_tag_list(cls, tags: list[_models.strength_exercise.StrengthExerciseTags]) -> str:
-        member_strs = [m.value for m in tags]
-        return cls(cls._sep.join(member_strs))
-
-    def to_tag_list(self) -> list[_models.strength_exercise.StrengthExerciseTags]:
-        tags = []
-        for part in self.split(self._sep):
-            tags.append(
-                _models.strength_exercise.StrengthExerciseTags(part)
-            )
-        return tags
+_KeyT = str
+_ExerciseTagsEnumT = _models.strength_exercise.StrengthExerciseTags
 
 
 class StrengthExerciseRecord(_record_base.TableBase):
     """record of strength exercises"""
-    key: _models.strength_exercise.StrengthExerciseKey = Field(
-        description="the key", primary_key=True
+    id: orm.Mapped[int] = orm.mapped_column(
+        doc="the row id",
+        default=None,
+        primary_key=True
     )
-    tags: StrengthExerciseTagsStr = Field(description="a string representation of a list of tags")
+
+    key: orm.Mapped[_KeyT] = orm.mapped_column(
+        doc="the key", primary_key=True
+    )
+    tags: orm.Mapped[_ExerciseTagsEnumT] = orm.mapped_column(
+        doc="list of tags for this exercise"
+    )
 
     @classmethod
     def get_table_name(cls) -> str:

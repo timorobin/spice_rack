@@ -1,19 +1,21 @@
 from __future__ import annotations
 from typing import Optional
-from pydantic import Field
+from sqlalchemy import orm
 
-import spice_rack
 from liftz._persistance._repos._record_base import TableBase
 from liftz import _models
 
-_ProgramTemplateKey = _models.program_template.components.ProgramTemplateKey
+_ProgramTemplateKeyT = str  # _models.program_template.components.ProgramTemplateKey
 _ProgramTemplateTags = _models.program_template.components.ProgramTemplateTags
+_StrengthExerciseKeyT = str  # _models.strength_exercise.StrengthExerciseKey
+_TimestampT = int  # spice_rack.timestamp.Timestamp
 
 
 __all__ = (
     "StrengthSetNotStarted",
     "StrengthSetInProgress",
-    "StrengthSetFinished"
+    "StrengthSetFinished",
+    "ActiveProgramRecord"
 )
 
 _SET_NOT_STARTED = "active_program_strength_sets_not_started"
@@ -24,14 +26,29 @@ _PROGRAM = "active_programs"
 
 class StrengthSetNotStarted(TableBase):
     """a set that is part of a day we haven't started"""
-    execution_guid: spice_rack.guid.GuidStr = Field(
-        description="the guid to the execution record"
+    id: orm.Mapped[int] = orm.mapped_column(
+        doc="the row id",
+        default=None,
+        primary_key=True
     )
-    exercise_key: _models.strength_exercise.StrengthExerciseKey
-    week: int
-    day: int
-    weight: float
-    reps: int
+    program_record: orm.Mapped[ActiveProgramRecord] = orm.relationship(
+        back_populates="strength_sets_not_started",
+    )
+    exercise_key: orm.Mapped[_StrengthExerciseKeyT] = orm.mapped_column(
+        doc="the key to the exercise"
+    )
+    week: orm.Mapped[int] = orm.mapped_column(
+        doc="the week this set is from"
+    )
+    day: orm.Mapped[int] = orm.mapped_column(
+        doc="the day within the week"
+    )
+    weight: orm.Mapped[float] = orm.mapped_column(
+        doc="the weight prescribed"
+    )
+    reps: orm.Mapped[int] = orm.mapped_column(
+        doc="the reps prescribed"
+    )
 
     @classmethod
     def get_table_name(cls) -> str:
@@ -40,13 +57,35 @@ class StrengthSetNotStarted(TableBase):
 
 class StrengthSetInProgress(TableBase):
     """a set that is part of an in-progress day"""
-    exercise_key: _models.strength_exercise.StrengthExerciseKey
-    week: int
-    day: int
-    weight_prescribed: float
-    reps_prescribed: int
-    weight_used: Optional[float]
-    reps_completed: Optional[float]
+    id: orm.Mapped[int] = orm.mapped_column(
+        doc="the row id",
+        default=None,
+        primary_key=True
+    )
+    program_record: orm.Mapped[ActiveProgramRecord] = orm.relationship(
+        back_populates="strength_sets_in_progress",
+    )
+    exercise_key: orm.Mapped[_StrengthExerciseKeyT] = orm.mapped_column(
+        doc="key to the exercise info"
+    )
+    week: orm.Mapped[int] = orm.mapped_column(
+        doc="the week this set is from"
+    )
+    day: orm.Mapped[int] = orm.mapped_column(
+        doc="the day within the week"
+    )
+    weight_prescribed: orm.Mapped[float] = orm.mapped_column(
+        doc="the weight prescribed"
+    )
+    reps_prescribed: orm.Mapped[int] = orm.mapped_column(
+        doc="the reps prescribed"
+    )
+    weight_used: orm.Mapped[Optional[float]] = orm.mapped_column(
+        doc="the weight used", default=None
+    )
+    reps_completed: orm.Mapped[Optional[int]] = orm.mapped_column(
+        doc="the reps completed", default=None
+    )
 
     @classmethod
     def get_table_name(cls) -> str:
@@ -54,50 +93,77 @@ class StrengthSetInProgress(TableBase):
 
 
 class StrengthSetFinished(TableBase):
-    """a set already finalized"""
-    exercise_key: _models.strength_exercise.StrengthExerciseKey
-    week: int
-    day: int
-    weight_prescribed: float
-    reps_prescribed: int
-    weight_used: float
-    reps_completed: float
+    """
+    A set already finalized. These are not the sets of the current day already
+    finished. These are sets of days that are already finalized.
+    """
+    id: orm.Mapped[int] = orm.mapped_column(
+        doc="the row id",
+        default=None,
+        primary_key=True
+    )
+    program_record: orm.Mapped[ActiveProgramRecord] = orm.relationship(
+        back_populates="strength_sets_finished",
+    )
+    exercise_key: orm.Mapped[_StrengthExerciseKeyT] = orm.mapped_column(
+        doc="key to the exercise info"
+    )
+    week: orm.Mapped[int] = orm.mapped_column(
+        doc="the week this set is from"
+    )
+    day: orm.Mapped[int] = orm.mapped_column(
+        doc="the day within the week"
+    )
+    weight_prescribed: orm.Mapped[float] = orm.mapped_column(
+        doc="the weight prescribed"
+    )
+    reps_prescribed: orm.Mapped[int] = orm.mapped_column(
+        doc="the reps prescribed"
+    )
+    weight_used: orm.Mapped[float] = orm.mapped_column(
+        doc="the weight used"
+    )
+    reps_completed: orm.Mapped[int] = orm.mapped_column(
+        doc="the reps completed"
+    )
 
     @classmethod
     def get_table_name(cls) -> str:
         return _SET_FINISHED
 
 
-class _SetToProgramLink(TableBase):
-    program_id: Optional[int] = Field(
-        default=None,
-        primary_key=True,
-        foreign_key=f"{_PROGRAM_TABLE_NAME}.id"
-    )
-    set_id: Optional[int] = Field(
-        default=None,
-        primary_key=True,
-        foreign_key=f"{_SETS_TABLE_NAME}.id"
-    )
-
-    @classmethod
-    def get_table_name(cls) -> str:
-        return _LINK_TABLE_NAME
-
-
 class ActiveProgramRecord(TableBase):
-    execution_guid: spice_rack.guid.GuidStr = Field(
-        description="globally unique id for this program execution",
-        default_factory=spice_rack.guid.GuidStr.generate
+    id: orm.Mapped[int] = orm.mapped_column(
+        doc="the row id",
+        default=None,
+        primary_key=True
     )
-    template_key: _ProgramTemplateKey = Field(
-        description="key for the template this is an invocation of"
+
+    template_key: orm.Mapped[_ProgramTemplateKeyT] = orm.mapped_column(
+        doc="key for the template this is an invocation of"
     )
-    started_at: spice_rack.timestamp.Timestamp = Field(description="when the program started")
-    updated_at: spice_rack.timestamp.Timestamp = Field(
-        description="last time we executed a day of this program"
+    started_at: orm.Mapped[_TimestampT] = orm.mapped_column(
+        doc="when the program started"
+    )
+    updated_at: orm.Mapped[_TimestampT] = orm.mapped_column(
+        doc="last time we executed a day of this program"
+    )
+
+    strength_sets_not_started: list[StrengthSetNotStarted] = orm.relationship(
+        cascade="all, delete-orphan",
+        back_populates="program_record"
+    )
+
+    strength_sets_in_progress: list[StrengthSetInProgress] = orm.relationship(
+        cascade="all, delete-orphan",
+        back_populates="program_record"
+    )
+
+    strength_sets_finished: list[StrengthSetFinished] = orm.relationship(
+        cascade="all, delete-orphan",
+        back_populates="program_record"
     )
 
     @classmethod
     def get_table_name(cls) -> str:
-        return "active_programs"
+        return _PROGRAM

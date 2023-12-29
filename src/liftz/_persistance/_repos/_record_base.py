@@ -10,11 +10,6 @@ __all__ = (
 
 class TableBase(orm.DeclarativeBase):
     """a baseclass for our tables"""
-    id: orm.Mapped[Optional[int]] = orm.mapped_column(
-        doc="the row id",
-        default=None,
-        primary_key=True
-    )
 
     @classmethod
     @abstractmethod

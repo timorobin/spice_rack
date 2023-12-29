@@ -1,77 +1,40 @@
 from __future__ import annotations
-from typing import ClassVar, Optional
-from sqlmodel import Field, Relationship
+from sqlalchemy import orm
 
-import spice_rack
 from liftz import _models
 from liftz._persistance._repos import _record_base
 
 
-_ProgramTemplateKey = _models.program_template.components.ProgramTemplateKey
-_ProgramTemplateTags = _models.program_template.components.ProgramTemplateTags
+_ProgramTemplateKeyT = str  # _models.program_template.components.ProgramTemplateKey
+_ProgramTemplateTagsT = _models.program_template.components.ProgramTemplateTags
+_StrengthExerciseKeyT = str  # _models.strength_exercise.StrengthExerciseKey
 
 _TEMPLATE_TABLE_NAME = "program_templates"
 _TEMPLATE_SET_TABLE_NAME = "individual_template_sets"
 
 
 __all__ = (
-    "ProgramTemplateTagsStr",
     "ProgramTemplateRecord",
     "ProgramTemplateIndividualSet"
 )
 
 
-class ProgramTemplateTagsStr(spice_rack.AbstractSpecialStr):
-    """string of combined enum values, joined by a comma"""
-    _sep: ClassVar[str] = ","
-
-    @classmethod
-    def _format_str(cls, root_data: str) -> str:
-        for part in root_data.split(cls._sep):
-            _ProgramTemplateTags(part)
-        return root_data
-
-    @classmethod
-    def from_tag_list(cls, tags: list[_ProgramTemplateTags]) -> str:
-        member_strs = [m.value for m in tags]
-        return cls(cls._sep.join(member_strs))
-
-    def to_tag_list(self) -> list[_ProgramTemplateTags]:
-        tags = []
-        for part in self.split(self._sep):
-            tags.append(
-                _ProgramTemplateTags(part)
-            )
-        return tags
-
-
-class ProgramTemplateIndividualSetLink(
-    _record_base.TableBase
-):
-    @classmethod
-    def get_table_name(cls) -> str:
-        return "program_template_sets_link"
-
-    program_id: Optional[int] = Field(
-        default=None,
-        primary_key=True,
-        foreign_key=f"{_TEMPLATE_TABLE_NAME}.id"
-    )
-    set_id: Optional[int] = Field(
-        default=None,
-        primary_key=True,
-        foreign_key=f"{_TEMPLATE_SET_TABLE_NAME}.id"
-    )
-
-
 class ProgramTemplateRecord(_record_base.TableBase):
-    key: _ProgramTemplateKey
-    description: str = Field(description="free-form description")
-    tags: Optional[ProgramTemplateTagsStr] = Field(
-        description="str-representation of a list of tags"
+    id: orm.Mapped[int] = orm.mapped_column(
+        doc="the row id",
+        default=None,
+        primary_key=True
     )
-    strength_sets: list[ProgramTemplateIndividualSet] = Relationship(
-        back_populates=_TEMPLATE_SET_TABLE_NAME, link_model=ProgramTemplateIndividualSetLink
+    key: orm.Mapped[_ProgramTemplateKeyT] = orm.mapped_column(
+        doc="the key of the program template", unique=True
+    )
+    description: orm.Mapped[str] = orm.mapped_column(doc="free-form description")
+    tags: orm.Mapped[list[_ProgramTemplateTagsT]] = orm.mapped_column(
+        doc="a list of tags tied to this program"
+    )
+    strength_sets: orm.Mapped[list[ProgramTemplateIndividualSet]] = orm.relationship(
+        cascade="all, delete-orphan",
+        back_populates="program_template_record"
     )
 
     @classmethod
@@ -80,12 +43,29 @@ class ProgramTemplateRecord(_record_base.TableBase):
 
 
 class ProgramTemplateIndividualSet(_record_base.TableBase):
-    program_key: _ProgramTemplateKey
-    exercise_key: _models.strength_exercise.StrengthExerciseKey
-    week: int
-    day: int
-    weight: float
-    reps: int
+    id: orm.Mapped[int] = orm.mapped_column(
+        doc="the row id",
+        default=None,
+        primary_key=True
+    )
+    program_template_record: orm.Mapped[ProgramTemplateRecord] = orm.relationship(
+        back_populates="strength_sets"
+    )
+    exercise_key: orm.Mapped[_StrengthExerciseKeyT] = orm.mapped_column(
+        doc="key to the exercise"
+    )
+    week: orm.Mapped[int] = orm.mapped_column(
+        doc="the week this set is from"
+    )
+    day: orm.Mapped[int] = orm.mapped_column(
+        doc="the day within the week"
+    )
+    weight: orm.Mapped[float] = orm.mapped_column(
+        doc="the weight prescribed"
+    )
+    reps: orm.Mapped[int] = orm.mapped_column(
+        doc="the reps prescribed"
+    )
 
     @classmethod
     def get_table_name(cls) -> str:
