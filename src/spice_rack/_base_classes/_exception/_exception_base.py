@@ -14,6 +14,9 @@ __all__ = (
 )
 
 
+Self = TypeVar("Self", bound="CustomExceptionBase")
+"""pycharm type checker supports this, but it is same as new 'Self' type ann"""
+
 ErrorInfoTV = TypeVar("ErrorInfoTV", bound=_error_info.ErrorInfoBase)
 
 
@@ -119,11 +122,11 @@ class CustomExceptionBase(Exception, Generic[ErrorInfoTV]):
         return self._verbose
 
     @property
-    def error_info(self) -> ErrorInfoTV:
+    def error_info(self: Self) -> ErrorInfoTV:
         return self._error_info_inst
 
     @classmethod
-    def get_error_info_cls(cls) -> Type[ErrorInfoTV]:
+    def get_error_info_cls(cls: Type[Self]) -> Type[ErrorInfoTV]:
         return cls._error_info_cls
 
     # this should be the generic type, but it isn't working
@@ -139,7 +142,7 @@ class CustomExceptionBase(Exception, Generic[ErrorInfoTV]):
 
     @classmethod
     @final
-    def get_error_payload_cls(cls) -> Type[_error_info.ErrorPayload[_error_info.ErrorInfoBase]]:
+    def get_error_payload_cls(cls: Type[Self]) -> Type[_error_info.ErrorPayload[ErrorInfoTV]]:
         """
         Returns: an ErrorPayload class parameterized with the correct
         concrete subclass of ErrorInfoBase
@@ -169,36 +172,11 @@ class CustomExceptionBase(Exception, Generic[ErrorInfoTV]):
         )
 
     @final
-    def get_error_payload_inst(self) -> _error_info.ErrorPayload[_error_info.ErrorInfoBase]:
+    def get_error_payload_inst(self: Self) -> _error_info.ErrorPayload[ErrorInfoTV]:
         return _error_info.ErrorPayload(
             detail=self.detail,
             error_type=type(self).__name__,
             info=self.error_info,
-        )
-
-    # todo: remove one of 'as_http_error_resp' and 'as_http_error'
-    # return type ann should be ErrorInfoTV but using type var messes up PyCharm's type checking
-
-    @final
-    def as_http_error_resp(
-            self,
-            status_code: _types.HttpStatusCodeOrIntT,
-    ) -> _http.HttpErrorResponse[_error_info.ErrorInfoBase]:
-        from spice_rack._base_classes._exception import _http
-        return _http.HttpErrorResponse[self.get_error_info_cls()](
-            status_code=status_code,
-            error_payload=self.get_error_payload_inst(),
-        )
-
-    @final
-    def as_http_error(
-            self,
-            status_code: _types.HttpStatusCodeOrIntT
-    ) -> _http.HttpException[_error_info.ErrorInfoBase]:
-        from spice_rack._base_classes._exception import _http
-        return _http.HttpException[self.get_error_info_cls()](
-            status_code=status_code,
-            error_payload=self.get_error_payload_inst(),
         )
 
     def _get_formatted_str_verbose(self) -> str:
