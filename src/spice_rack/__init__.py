@@ -14,3 +14,6 @@ enum_bases = base_classes.enums
 special_type_bases = base_classes.special_types
 AbstractSpecialStr = base_classes.special_types.special_str_base.AbstractSpecialStr
 exception_base = base_classes.exception
+AbstractSettings = base_classes.settings_mgmt.AbstractSettings
+LoggerT = logging.LoggerT
+get_logger = logging.get_logger

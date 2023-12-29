@@ -3,4 +3,5 @@ from liftz._models import (
     _program_template as program_template,
     _program as program,
     _misc as misc,
+    _user as user
 )

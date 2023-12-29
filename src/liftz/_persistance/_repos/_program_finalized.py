@@ -2,12 +2,13 @@ from __future__ import annotations
 from sqlalchemy import orm
 
 from liftz._persistance._repos._record_base import TableBase
-from liftz import _models
+from liftz._persistance._types import (
+    ProgramTemplateKeyT,
+    StrengthExerciseKeyT,
+    TimestampT,
+    UserIdT
+)
 
-_ProgramTemplateKeyT = str  # _models.program_template.components.ProgramTemplateKey
-_ProgramTemplateTags = _models.program_template.components.ProgramTemplateTags
-_StrengthExerciseKeyT = str  # _models.strength_exercise.StrengthExerciseKey
-_TimestampT = int  # spice_rack.timestamp.Timestamp
 
 __all__ = (
     "FinalizedStrengthSet",
@@ -26,10 +27,14 @@ class FinalizedStrengthSet(TableBase):
         default=None,
         primary_key=True
     )
+    user_id: orm.Mapped[UserIdT] = orm.mapped_column(
+        doc="the id of the user connected to this record",
+        index=True
+    )
     program_record: orm.Mapped[FinalizedProgramRunRecord] = orm.relationship(
         back_populates="strength_sets"
     )
-    exercise_key: orm.Mapped[_StrengthExerciseKeyT] = orm.mapped_column(
+    exercise_key: orm.Mapped[StrengthExerciseKeyT] = orm.mapped_column(
         doc="key to the exercise info"
     )
     week: orm.Mapped[int] = orm.mapped_column(
@@ -62,11 +67,15 @@ class FinalizedProgramRunRecord(TableBase):
         default=None,
         primary_key=True
     )
-    template_key: orm.Mapped[_ProgramTemplateKeyT] = orm.mapped_column(
+    user_id: orm.Mapped[UserIdT] = orm.mapped_column(
+        doc="the id of the user connected to this record",
+        index=True
+    )
+    template_key: orm.Mapped[ProgramTemplateKeyT] = orm.mapped_column(
         doc="key for the template this is an invocation of"
     )
-    started_at: orm.Mapped[_TimestampT] = orm.mapped_column(doc="when the program started")
-    finished_at: orm.Mapped[_TimestampT] = orm.mapped_column(
+    started_at: orm.Mapped[TimestampT] = orm.mapped_column(doc="when the program started")
+    finished_at: orm.Mapped[TimestampT] = orm.mapped_column(
         doc="the timestamp when this program execution was finalized"
     )
     strength_sets: orm.Mapped[list[FinalizedStrengthSet]] = orm.relationship(

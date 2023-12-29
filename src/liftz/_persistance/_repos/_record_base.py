@@ -1,6 +1,5 @@
 from __future__ import annotations
 from abc import abstractmethod
-from typing import Optional
 from sqlalchemy import orm
 
 __all__ = (

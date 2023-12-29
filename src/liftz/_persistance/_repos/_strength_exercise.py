@@ -1,17 +1,15 @@
 from __future__ import annotations
 from sqlalchemy import orm
 
-from liftz import _models
 from liftz._persistance._repos import _record_base
-
+from liftz._persistance._types import (
+    StrengthExerciseKeyT,
+    ExerciseTagsEnumT
+)
 
 __all__ = (
     "StrengthExerciseRecord",
 )
-
-
-_KeyT = str
-_ExerciseTagsEnumT = _models.strength_exercise.StrengthExerciseTags
 
 
 class StrengthExerciseRecord(_record_base.TableBase):
@@ -22,10 +20,10 @@ class StrengthExerciseRecord(_record_base.TableBase):
         primary_key=True
     )
 
-    key: orm.Mapped[_KeyT] = orm.mapped_column(
+    key: orm.Mapped[StrengthExerciseKeyT] = orm.mapped_column(
         doc="the key", primary_key=True
     )
-    tags: orm.Mapped[_ExerciseTagsEnumT] = orm.mapped_column(
+    tags: orm.Mapped[ExerciseTagsEnumT] = orm.mapped_column(
         doc="list of tags for this exercise"
     )
 

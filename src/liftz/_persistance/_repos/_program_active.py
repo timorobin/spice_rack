@@ -3,12 +3,12 @@ from typing import Optional
 from sqlalchemy import orm
 
 from liftz._persistance._repos._record_base import TableBase
-from liftz import _models
-
-_ProgramTemplateKeyT = str  # _models.program_template.components.ProgramTemplateKey
-_ProgramTemplateTags = _models.program_template.components.ProgramTemplateTags
-_StrengthExerciseKeyT = str  # _models.strength_exercise.StrengthExerciseKey
-_TimestampT = int  # spice_rack.timestamp.Timestamp
+from liftz._persistance._types import (
+    ProgramTemplateKeyT,
+    StrengthExerciseKeyT,
+    TimestampT,
+    UserIdT
+)
 
 
 __all__ = (
@@ -31,17 +31,23 @@ class StrengthSetNotStarted(TableBase):
         default=None,
         primary_key=True
     )
+    user_id: orm.Mapped[UserIdT] = orm.mapped_column(
+        doc="the id of the user connected to this record",
+        index=True
+    )
     program_record: orm.Mapped[ActiveProgramRecord] = orm.relationship(
         back_populates="strength_sets_not_started",
     )
-    exercise_key: orm.Mapped[_StrengthExerciseKeyT] = orm.mapped_column(
+    exercise_key: orm.Mapped[StrengthExerciseKeyT] = orm.mapped_column(
         doc="the key to the exercise"
     )
     week: orm.Mapped[int] = orm.mapped_column(
-        doc="the week this set is from"
+        doc="the week this set is from",
+        index=True
     )
     day: orm.Mapped[int] = orm.mapped_column(
-        doc="the day within the week"
+        doc="the day within the week",
+        index=True
     )
     weight: orm.Mapped[float] = orm.mapped_column(
         doc="the weight prescribed"
@@ -62,10 +68,14 @@ class StrengthSetInProgress(TableBase):
         default=None,
         primary_key=True
     )
+    user_id: orm.Mapped[UserIdT] = orm.mapped_column(
+        doc="the id of the user connected to this record",
+        index=True
+    )
     program_record: orm.Mapped[ActiveProgramRecord] = orm.relationship(
         back_populates="strength_sets_in_progress",
     )
-    exercise_key: orm.Mapped[_StrengthExerciseKeyT] = orm.mapped_column(
+    exercise_key: orm.Mapped[StrengthExerciseKeyT] = orm.mapped_column(
         doc="key to the exercise info"
     )
     week: orm.Mapped[int] = orm.mapped_column(
@@ -102,10 +112,14 @@ class StrengthSetFinished(TableBase):
         default=None,
         primary_key=True
     )
+    user_id: orm.Mapped[UserIdT] = orm.mapped_column(
+        doc="the id of the user connected to this record",
+        index=True
+    )
     program_record: orm.Mapped[ActiveProgramRecord] = orm.relationship(
         back_populates="strength_sets_finished",
     )
-    exercise_key: orm.Mapped[_StrengthExerciseKeyT] = orm.mapped_column(
+    exercise_key: orm.Mapped[StrengthExerciseKeyT] = orm.mapped_column(
         doc="key to the exercise info"
     )
     week: orm.Mapped[int] = orm.mapped_column(
@@ -138,14 +152,17 @@ class ActiveProgramRecord(TableBase):
         default=None,
         primary_key=True
     )
-
-    template_key: orm.Mapped[_ProgramTemplateKeyT] = orm.mapped_column(
+    user_id: orm.Mapped[UserIdT] = orm.mapped_column(
+        doc="the id of the user connected to this record",
+        index=True
+    )
+    template_key: orm.Mapped[ProgramTemplateKeyT] = orm.mapped_column(
         doc="key for the template this is an invocation of"
     )
-    started_at: orm.Mapped[_TimestampT] = orm.mapped_column(
+    started_at: orm.Mapped[TimestampT] = orm.mapped_column(
         doc="when the program started"
     )
-    updated_at: orm.Mapped[_TimestampT] = orm.mapped_column(
+    updated_at: orm.Mapped[TimestampT] = orm.mapped_column(
         doc="last time we executed a day of this program"
     )
 
