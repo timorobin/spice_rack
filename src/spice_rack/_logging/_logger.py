@@ -13,6 +13,7 @@ __all__ = (
     "configure_logging_for_python_worker",
     "configure_logging_for_uvicorn_server",
     "get_logger",
+    "LoggerT"
 )
 
 
@@ -157,7 +158,7 @@ def configure_logging_for_python_worker(
     return get_logger(specified_service_name=service_name, persist_service_name=True)
 
 
-class Logger:
+class _Logger:
     def __init__(self, service_name: str):
         from loguru import logger
         logger_ = logger.bind(service_name=service_name)
@@ -275,7 +276,7 @@ class Logger:
 def get_logger(
         specified_service_name: Optional[str] = None,
         persist_service_name: bool = False
-) -> Logger:
+) -> _Logger:
     service_name: str
     if specified_service_name is None:
         service_name = get_service_name_from_env()
@@ -285,4 +286,7 @@ def get_logger(
     if specified_service_name and persist_service_name:
         set_service_name_env_var(specified_service_name)
 
-    return Logger(service_name=service_name)
+    return _Logger(service_name=service_name)
+
+
+LoggerT = _Logger

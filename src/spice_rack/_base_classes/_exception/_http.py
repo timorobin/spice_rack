@@ -49,20 +49,13 @@ class HttpErrorResponseInfo(_pydantic.AbstractValueModel):
 ErrorInfoTV = TypeVar("ErrorInfoTV", bound=_error_info.ErrorInfoBase)
 
 
-# todo: will delete one of these
 class HttpErrorResponse(_pydantic.AbstractGenericValueModel, Generic[ErrorInfoTV]):
     """
     generic container holding an exception payload and a specified status code.
 
     This is not an exception, so must be treated as a valid return type, and thus should be
     caught and the proper response raised.
-
-    Notes:
-        - This is not directly json-encodeable, instead use
     """
-    # class Config:
-    #     arbitrary_types_allowed = True
-
     status_code: _types.HttpStatusCodeT = Field(
         description="the status code for the response in question"
     )
