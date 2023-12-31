@@ -46,9 +46,8 @@ class Settings(spice_rack.AbstractSettings):
     db_uri: str = Field(
         description="the uri to the db, default is in-mem sqlite", default="sqlite://"
     )
-    system_strength_exercises: list[_models.strength_exercise.StrengthExerciseDef] = Field(
-        description="list of exercises to add on startup",
-        default_factory=_get_default_exercises
+    system_manifest_fp: t.Optional[str] = Field(
+        description="path to the system manifest"
     )
 
     @classmethod

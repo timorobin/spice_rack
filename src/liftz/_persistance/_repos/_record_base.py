@@ -16,5 +16,5 @@ class TableBase(orm.DeclarativeBase):
         ...
 
     def __init_subclass__(cls, **kwargs):
-        super().__init_subclass__(**kwargs)
         cls.__tablename__ = cls.get_table_name()
+        super().__init_subclass__(**kwargs)

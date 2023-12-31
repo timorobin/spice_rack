@@ -1,8 +1,6 @@
 from __future__ import annotations
-import typing as t
-from sqlalchemy import orm
+from sqlalchemy import orm, ARRAY, Enum
 
-from liftz import _models
 from liftz._persistance._repos import _record_base
 from liftz._persistance._types import (
     ProgramTemplateKeyT,
@@ -36,6 +34,7 @@ class ProgramTemplateRecord(_record_base.TableBase):
     )
     description: orm.Mapped[str] = orm.mapped_column(doc="free-form description")
     tags: orm.Mapped[list[ProgramTemplateTagsT]] = orm.mapped_column(
+        ARRAY(Enum),
         doc="a list of tags tied to this program"
     )
     strength_sets: orm.Mapped[list[ProgramTemplateIndividualSet]] = orm.relationship(

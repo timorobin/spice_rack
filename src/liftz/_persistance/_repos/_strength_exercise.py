@@ -1,6 +1,6 @@
 from __future__ import annotations
 import typing as t
-from sqlalchemy import orm, select
+from sqlalchemy import orm, ARRAY, Enum
 
 from liftz import _models
 from liftz._persistance._repos import _record_base
@@ -37,7 +37,8 @@ class StrengthExerciseRecord(_record_base.TableBase):
         doc="description",
 
     )
-    tags: orm.Mapped[ExerciseTagsEnumT] = orm.mapped_column(
+    tags: orm.Mapped[_models.strength_exercise.StrengthExerciseTags] = orm.mapped_column(
+        ARRAY(Enum),
         doc="list of tags for this exercise"
     )
 

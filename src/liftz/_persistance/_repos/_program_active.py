@@ -166,17 +166,17 @@ class ActiveProgramRecord(TableBase):
         doc="last time we executed a day of this program"
     )
 
-    strength_sets_not_started: list[StrengthSetNotStarted] = orm.relationship(
+    strength_sets_not_started: orm.Mapped[list[StrengthSetNotStarted]] = orm.relationship(
         cascade="all, delete-orphan",
         back_populates="program_record"
     )
 
-    strength_sets_in_progress: list[StrengthSetInProgress] = orm.relationship(
+    strength_sets_in_progress: orm.Mapped[list[StrengthSetInProgress]] = orm.relationship(
         cascade="all, delete-orphan",
         back_populates="program_record"
     )
 
-    strength_sets_finished: list[StrengthSetFinished] = orm.relationship(
+    strength_sets_finished: orm.Mapped[list[StrengthSetFinished]] = orm.relationship(
         cascade="all, delete-orphan",
         back_populates="program_record"
     )
