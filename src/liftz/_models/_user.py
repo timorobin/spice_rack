@@ -4,6 +4,7 @@ from pydantic import Field
 import spice_rack
 
 __all__ = (
+    "UserId",
     "User",
 )
 

@@ -2,6 +2,7 @@ from __future__ import annotations
 import typing as t
 from sqlalchemy import orm
 
+from liftz import _models
 from liftz._persistance._repos import _record_base
 from liftz._persistance._types import (
     ProgramTemplateKeyT,
@@ -26,8 +27,8 @@ class ProgramTemplateRecord(_record_base.TableBase):
         default=None,
         primary_key=True
     )
-    user_id: orm.Mapped[t.Optional[UserIdT]] = orm.mapped_column(
-        doc="the id of the user connected to this record, if none this is a system-level record",
+    user_id: orm.Mapped[UserIdT] = orm.mapped_column(
+        doc="the id of the user connected to this record",
         index=True,
     )
     key: orm.Mapped[ProgramTemplateKeyT] = orm.mapped_column(
@@ -53,9 +54,9 @@ class ProgramTemplateIndividualSet(_record_base.TableBase):
         default=None,
         primary_key=True
     )
-    user_id: orm.Mapped[t.Optional[UserIdT]] = orm.mapped_column(
-        doc="the id of the user connected to this record, if none this is a system-level record",
-        index=True
+    user_id: orm.Mapped[UserIdT] = orm.mapped_column(
+        doc="the id of the user connected to this record",
+        index=True,
     )
     program_template_record: orm.Mapped[ProgramTemplateRecord] = orm.relationship(
         back_populates="strength_sets"

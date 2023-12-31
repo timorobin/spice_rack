@@ -1,6 +1,6 @@
 from __future__ import annotations
 import typing as t
-from sqlalchemy import orm
+from sqlalchemy import orm, select
 
 from liftz import _models
 from liftz._persistance._repos import _record_base
@@ -9,6 +9,10 @@ from liftz._persistance._types import (
     ExerciseTagsEnumT,
     UserIdT
 )
+
+if t.TYPE_CHECKING:
+    from liftz._persistance._engine_builder import SessionT
+
 
 __all__ = (
     "StrengthExerciseRecord",
@@ -40,16 +44,3 @@ class StrengthExerciseRecord(_record_base.TableBase):
     @classmethod
     def get_table_name(cls) -> str:
         return "strength_exercises"
-
-    @classmethod
-    def from_exercise_obj(
-            cls,
-            exercise_obj: _models.strength_exercise.StrengthExerciseDef,
-            user_id: t.Optional[UserIdT] = None
-    ) -> StrengthExerciseRecord:
-        return StrengthExerciseRecord(
-            user_id=user_id,
-            key=exercise_obj.key,
-            description=exercise_obj.description,
-            tags=exercise_obj.tags
-        )
