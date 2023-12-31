@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import Optional
 from sqlmodel import Field, Relationship
 
 from liftz._persistance._repos import _record_base
@@ -19,7 +20,7 @@ __all__ = (
 )
 
 
-class ProgramTemplateRecord(_record_base.TableBase):
+class ProgramTemplateRecord(_record_base.TableBase, table=True):
     user_id: UserIdT = Field(
         description="the id of the user connected to this record",
         index=True,
@@ -33,7 +34,7 @@ class ProgramTemplateRecord(_record_base.TableBase):
     #     description="a list of tags tied to this program"
     # )
     strength_sets: list[ProgramTemplateIndividualSet] = Relationship(
-        sa_relationship_kwargs={"cascade": "all, delete-orphan"}
+        # sa_relationship_kwargs={"cascade": "all, delete-orphan"}
     )
 
     @classmethod
@@ -41,12 +42,14 @@ class ProgramTemplateRecord(_record_base.TableBase):
         return _TEMPLATE_TABLE_NAME
 
 
-class ProgramTemplateIndividualSet(_record_base.TableBase):
+class ProgramTemplateIndividualSet(_record_base.TableBase, table=True):
     user_id: UserIdT = Field(
         description="the id of the user connected to this record",
         index=True,
     )
-    program_record_id: int = Field(foreign_key=f"{_TEMPLATE_TABLE_NAME}.id")
+    program_record_id: Optional[int] = Field(
+        default=None, foreign_key=f"{_TEMPLATE_TABLE_NAME}.id"
+    )
     exercise_key: StrengthExerciseKeyT = Field(
         description="key to the exercise"
     )

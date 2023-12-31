@@ -10,7 +10,7 @@ __all__ = (
 )
 
 
-class UserRecord(_record_base.TableBase):
+class UserRecord(_record_base.TableBase, table=True):
     user_id: UserIdT = Field(
         description="unique id for the user",
         unique=True,

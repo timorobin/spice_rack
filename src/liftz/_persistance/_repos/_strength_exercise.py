@@ -14,7 +14,7 @@ __all__ = (
 )
 
 
-class StrengthExerciseRecord(_record_base.TableBase):
+class StrengthExerciseRecord(_record_base.TableBase, table=True):
     """record of strength exercises"""
     user_id: t.Optional[UserIdT] = Field(
         description="the id of the user connected to this record, "

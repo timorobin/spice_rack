@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import Optional
 from sqlmodel import Field, Relationship
 
 from liftz._persistance._repos._record_base import TableBase
@@ -20,14 +21,14 @@ _PROGRAM_TABLE_NAME = "finalized_program_run"
 _LINK_TABLE_NAME = "finalized_strength_sets_to_program_record"
 
 
-class FinalizedStrengthSet(TableBase):
+class FinalizedStrengthSet(TableBase, table=True):
     """a set already finalized"""
     user_id: UserIdT = Field(
         description="the id of the user connected to this record",
         index=True
     )
-    program_record_id: int = Field(
-        foreign_key=f"{_PROGRAM_TABLE_NAME}.id"
+    program_record_id: Optional[int] = Field(
+        default=None, foreign_key=f"{_PROGRAM_TABLE_NAME}.id"
     )
     exercise_key: StrengthExerciseKeyT = Field(
         description="key to the exercise info"
@@ -56,7 +57,7 @@ class FinalizedStrengthSet(TableBase):
         return _SETS_TABLE_NAME
 
 
-class FinalizedProgramRunRecord(TableBase):
+class FinalizedProgramRunRecord(TableBase, table=True):
     user_id: UserIdT = Field(
         description="the id of the user connected to this record",
         index=True
@@ -69,7 +70,7 @@ class FinalizedProgramRunRecord(TableBase):
         description="the timestamp when this program execution was finalized"
     )
     strength_sets: list[FinalizedStrengthSet] = Relationship(
-        sa_relationship_kwargs={"cascade": "all, delete-orphan"}
+        # sa_relationship_kwargs={"cascade": "all, delete-orphan"}
     )
 
     @classmethod

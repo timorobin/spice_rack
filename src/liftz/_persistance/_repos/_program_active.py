@@ -24,13 +24,13 @@ _SET_FINISHED = "active_program_strength_sets_finished"
 _PROGRAM = "active_programs"
 
 
-class StrengthSetNotStarted(TableBase):
+class StrengthSetNotStarted(TableBase, table=True):
     """a set that is part of a day we haven't started"""
     user_id: UserIdT = Field(
         description="the id of the user connected to this record",
         index=True
     )
-    program_record_id: Optional[int] = Field(foreign_key=f"{_PROGRAM}.id")
+    program_record_id: Optional[int] = Field(default=None, foreign_key=f"{_PROGRAM}.id")
     exercise_key: StrengthExerciseKeyT = Field(
         description="the key to the exercise"
     )
@@ -54,13 +54,13 @@ class StrengthSetNotStarted(TableBase):
         return _SET_NOT_STARTED
 
 
-class StrengthSetInProgress(TableBase):
+class StrengthSetInProgress(TableBase, table=True):
     """a set that is part of an in-progress day"""
     user_id: UserIdT = Field(
         description="the id of the user connected to this record",
         index=True
     )
-    program_record_id: int = Field(foreign_key=f"{_PROGRAM}.id")
+    program_record_id: Optional[int] = Field(default=None, foreign_key=f"{_PROGRAM}.id")
 
     exercise_key: StrengthExerciseKeyT = Field(
         description="key to the exercise info"
@@ -89,7 +89,7 @@ class StrengthSetInProgress(TableBase):
         return _SET_IN_PROG
 
 
-class StrengthSetFinished(TableBase):
+class StrengthSetFinished(TableBase, table=True):
     """
     A set already finalized. These are not the sets of the current day already
     finished. These are sets of days that are already finalized.
@@ -98,7 +98,7 @@ class StrengthSetFinished(TableBase):
         description="the id of the user connected to this record",
         index=True
     )
-    program_record_id: int = Field(foreign_key=f"{_PROGRAM}.id")
+    program_record_id: Optional[int] = Field(default=None, foreign_key=f"{_PROGRAM}.id")
 
     exercise_key: StrengthExerciseKeyT = Field(
         description="key to the exercise info"
@@ -127,7 +127,7 @@ class StrengthSetFinished(TableBase):
         return _SET_FINISHED
 
 
-class ActiveProgramRecord(TableBase):
+class ActiveProgramRecord(TableBase, table=True):
     user_id: UserIdT = Field(
         description="the id of the user connected to this record",
         index=True
@@ -143,15 +143,15 @@ class ActiveProgramRecord(TableBase):
     )
 
     strength_sets_not_started: list[StrengthSetNotStarted] = Relationship(
-        sa_relationship_kwargs={"cascade": "all, delete-orphan"},
+        # sa_relationship_kwargs={"cascade": "all, delete-orphan"},
     )
 
     strength_sets_in_progress: list[StrengthSetInProgress] = Relationship(
-        sa_relationship_kwargs={"cascade": "all, delete-orphan"},
+        # sa_relationship_kwargs={"cascade": "all, delete-orphan"},
     )
 
     strength_sets_finished: list[StrengthSetFinished] = Relationship(
-        sa_relationship_kwargs={"cascade": "all, delete-orphan"},
+        # sa_relationship_kwargs={"cascade": "all, delete-orphan"},
     )
 
     @classmethod
