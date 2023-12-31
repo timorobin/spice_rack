@@ -50,6 +50,18 @@ class AbstractValueModel(BaseModel, CommonMethods):
         kwargs = {**imported_refs, **kwargs}
         return super().update_forward_refs(**kwargs)
 
+    def _init_private_attributes(self) -> None:
+        """
+        Pydantic-provided hook that is called immediately after initialization.
+        Unless a special situation, you should be overwriting our specified hooks rather than the
+        pydantic one, so we're not tied to a pydantic api.
+
+        Our hooks: "_post_init_setup" and "_post_init_validation"
+        """
+        super()._init_private_attributes()
+        self._post_init_setup()
+        self._post_init_validation()
+
 
 class AbstractGenericValueModel(AbstractValueModel, GenericModel):
     """

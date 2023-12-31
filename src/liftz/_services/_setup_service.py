@@ -97,4 +97,10 @@ class SetupService(spice_rack.pydantic_bases.AbstractValueModel):
                         session=db_session
                     )
 
-            db_session.close()
+        print(self.system_manifest_fp)
+        from devtools import debug
+        debug(
+            self._loaded_manifest
+        )
+        raise ValueError()
+        db_session.flush()

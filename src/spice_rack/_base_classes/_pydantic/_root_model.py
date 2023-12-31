@@ -73,6 +73,18 @@ class RootModel(GenericModel, Generic[RootTypeTV], CommonMethods):
             f"the '{cls.__name__}' class doesn't have a specified default value."
         )
 
+    def _init_private_attributes(self) -> None:
+        """
+        Pydantic-provided hook that is called immediately after initialization.
+        Unless a special situation, you should be overwriting our specified hooks rather than the
+        pydantic one, so we're not tied to a pydantic api.
+
+        Our hooks: "_post_init_setup" and "_post_init_validation"
+        """
+        super()._init_private_attributes()
+        self._post_init_setup()
+        self._post_init_validation()
+
     @classmethod
     def update_forward_refs(cls, **kwargs) -> None:
         imported_refs = cls._import_forward_refs()
