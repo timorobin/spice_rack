@@ -1,6 +1,5 @@
 from __future__ import annotations
 from typing import Optional
-from sqlmodel import Field, Relationship
 
 from liftz._persistance._repos._record_base import TableBase
 from liftz._persistance._types import (
