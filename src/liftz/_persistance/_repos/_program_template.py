@@ -1,11 +1,11 @@
 from __future__ import annotations
-from sqlalchemy import orm, ARRAY, Enum, ForeignKey
+from sqlmodel import Field, Relationship
 
 from liftz._persistance._repos import _record_base
 from liftz._persistance._types import (
     ProgramTemplateKeyT,
     StrengthExerciseKeyT,
-    ProgramTemplateTagsT,
+    # ProgramTemplateTagsT,
     UserIdT
 )
 
@@ -20,25 +20,20 @@ __all__ = (
 
 
 class ProgramTemplateRecord(_record_base.TableBase):
-    id: orm.Mapped[int] = orm.mapped_column(
-        doc="the row id",
-        default=None,
-        primary_key=True
-    )
-    user_id: orm.Mapped[UserIdT] = orm.mapped_column(
-        doc="the id of the user connected to this record",
+    user_id: UserIdT = Field(
+        description="the id of the user connected to this record",
         index=True,
     )
-    key: orm.Mapped[ProgramTemplateKeyT] = orm.mapped_column(
-        doc="the key of the program template", unique=True
+    key: ProgramTemplateKeyT = Field(
+        description="the key of the program template", unique=True
     )
-    description: orm.Mapped[str] = orm.mapped_column(doc="free-form description")
-    # tags: orm.Mapped[list[ProgramTemplateTagsT]] = orm.mapped_column(
+    description: str = Field(description="free-form description")
+    # tags: orm.Mapped[list[ProgramTemplateTagsT]] = Field(
     #     ARRAY(Enum),
-    #     doc="a list of tags tied to this program"
+    #     description="a list of tags tied to this program"
     # )
-    strength_sets: orm.Mapped[list[ProgramTemplateIndividualSet]] = orm.relationship(
-        cascade="all, delete-orphan",
+    strength_sets: list[ProgramTemplateIndividualSet] = Relationship(
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"}
     )
 
     @classmethod
@@ -47,32 +42,25 @@ class ProgramTemplateRecord(_record_base.TableBase):
 
 
 class ProgramTemplateIndividualSet(_record_base.TableBase):
-    id: orm.Mapped[int] = orm.mapped_column(
-        doc="the row id",
-        default=None,
-        primary_key=True
-    )
-    user_id: orm.Mapped[UserIdT] = orm.mapped_column(
-        doc="the id of the user connected to this record",
+    user_id: UserIdT = Field(
+        description="the id of the user connected to this record",
         index=True,
     )
-    program_record_id: orm.Mapped[int] = orm.mapped_column(
-        ForeignKey(f"{_TEMPLATE_TABLE_NAME}.id")
+    program_record_id: int = Field(foreign_key=f"{_TEMPLATE_TABLE_NAME}.id")
+    exercise_key: StrengthExerciseKeyT = Field(
+        description="key to the exercise"
     )
-    exercise_key: orm.Mapped[StrengthExerciseKeyT] = orm.mapped_column(
-        doc="key to the exercise"
+    week: int = Field(
+        description="the week this set is from"
     )
-    week: orm.Mapped[int] = orm.mapped_column(
-        doc="the week this set is from"
+    day: int = Field(
+        description="the day within the week"
     )
-    day: orm.Mapped[int] = orm.mapped_column(
-        doc="the day within the week"
+    weight: float = Field(
+        description="the weight prescribed"
     )
-    weight: orm.Mapped[float] = orm.mapped_column(
-        doc="the weight prescribed"
-    )
-    reps: orm.Mapped[int] = orm.mapped_column(
-        doc="the reps prescribed"
+    reps: int = Field(
+        description="the reps prescribed"
     )
 
     @classmethod

@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Optional
-from sqlalchemy import orm, ForeignKey
+from sqlmodel import Field, Relationship
 
 from liftz._persistance._repos._record_base import TableBase
 from liftz._persistance._types import (
@@ -26,34 +26,27 @@ _PROGRAM = "active_programs"
 
 class StrengthSetNotStarted(TableBase):
     """a set that is part of a day we haven't started"""
-    id: orm.Mapped[int] = orm.mapped_column(
-        doc="the row id",
-        default=None,
-        primary_key=True
-    )
-    user_id: orm.Mapped[UserIdT] = orm.mapped_column(
-        doc="the id of the user connected to this record",
+    user_id: UserIdT = Field(
+        description="the id of the user connected to this record",
         index=True
     )
-    program_record_id: orm.Mapped[int] = orm.mapped_column(
-        ForeignKey(f"{_PROGRAM}.id")
+    program_record_id: Optional[int] = Field(foreign_key=f"{_PROGRAM}.id")
+    exercise_key: StrengthExerciseKeyT = Field(
+        description="the key to the exercise"
     )
-    exercise_key: orm.Mapped[StrengthExerciseKeyT] = orm.mapped_column(
-        doc="the key to the exercise"
-    )
-    week: orm.Mapped[int] = orm.mapped_column(
-        doc="the week this set is from",
+    week: int = Field(
+        description="the week this set is from",
         index=True
     )
-    day: orm.Mapped[int] = orm.mapped_column(
-        doc="the day within the week",
+    day: int = Field(
+        description="the day within the week",
         index=True
     )
-    weight: orm.Mapped[float] = orm.mapped_column(
-        doc="the weight prescribed"
+    weight: float = Field(
+        description="the weight prescribed"
     )
-    reps: orm.Mapped[int] = orm.mapped_column(
-        doc="the reps prescribed"
+    reps: int = Field(
+        description="the reps prescribed"
     )
 
     @classmethod
@@ -63,38 +56,32 @@ class StrengthSetNotStarted(TableBase):
 
 class StrengthSetInProgress(TableBase):
     """a set that is part of an in-progress day"""
-    id: orm.Mapped[int] = orm.mapped_column(
-        doc="the row id",
-        default=None,
-        primary_key=True
-    )
-    user_id: orm.Mapped[UserIdT] = orm.mapped_column(
-        doc="the id of the user connected to this record",
+    user_id: UserIdT = Field(
+        description="the id of the user connected to this record",
         index=True
     )
-    program_record_id: orm.Mapped[int] = orm.mapped_column(
-        ForeignKey(f"{_PROGRAM}.id")
+    program_record_id: int = Field(foreign_key=f"{_PROGRAM}.id")
+
+    exercise_key: StrengthExerciseKeyT = Field(
+        description="key to the exercise info"
     )
-    exercise_key: orm.Mapped[StrengthExerciseKeyT] = orm.mapped_column(
-        doc="key to the exercise info"
+    week: int = Field(
+        description="the week this set is from"
     )
-    week: orm.Mapped[int] = orm.mapped_column(
-        doc="the week this set is from"
+    day: int = Field(
+        description="the day within the week"
     )
-    day: orm.Mapped[int] = orm.mapped_column(
-        doc="the day within the week"
+    weight_prescribed: float = Field(
+        description="the weight prescribed"
     )
-    weight_prescribed: orm.Mapped[float] = orm.mapped_column(
-        doc="the weight prescribed"
+    reps_prescribed: int = Field(
+        description="the reps prescribed"
     )
-    reps_prescribed: orm.Mapped[int] = orm.mapped_column(
-        doc="the reps prescribed"
+    weight_used: Optional[float] = Field(
+        description="the weight used", default=None
     )
-    weight_used: orm.Mapped[Optional[float]] = orm.mapped_column(
-        doc="the weight used", default=None
-    )
-    reps_completed: orm.Mapped[Optional[int]] = orm.mapped_column(
-        doc="the reps completed", default=None
+    reps_completed: Optional[int] = Field(
+        description="the reps completed", default=None
     )
 
     @classmethod
@@ -107,38 +94,32 @@ class StrengthSetFinished(TableBase):
     A set already finalized. These are not the sets of the current day already
     finished. These are sets of days that are already finalized.
     """
-    id: orm.Mapped[int] = orm.mapped_column(
-        doc="the row id",
-        default=None,
-        primary_key=True
-    )
-    user_id: orm.Mapped[UserIdT] = orm.mapped_column(
-        doc="the id of the user connected to this record",
+    user_id: UserIdT = Field(
+        description="the id of the user connected to this record",
         index=True
     )
-    program_record_id: orm.Mapped[int] = orm.mapped_column(
-        ForeignKey(f"{_PROGRAM}.id")
+    program_record_id: int = Field(foreign_key=f"{_PROGRAM}.id")
+
+    exercise_key: StrengthExerciseKeyT = Field(
+        description="key to the exercise info"
     )
-    exercise_key: orm.Mapped[StrengthExerciseKeyT] = orm.mapped_column(
-        doc="key to the exercise info"
+    week: int = Field(
+        description="the week this set is from"
     )
-    week: orm.Mapped[int] = orm.mapped_column(
-        doc="the week this set is from"
+    day: int = Field(
+        description="the day within the week"
     )
-    day: orm.Mapped[int] = orm.mapped_column(
-        doc="the day within the week"
+    weight_prescribed: float = Field(
+        description="the weight prescribed"
     )
-    weight_prescribed: orm.Mapped[float] = orm.mapped_column(
-        doc="the weight prescribed"
+    reps_prescribed: int = Field(
+        description="the reps prescribed"
     )
-    reps_prescribed: orm.Mapped[int] = orm.mapped_column(
-        doc="the reps prescribed"
+    weight_used: float = Field(
+        description="the weight used"
     )
-    weight_used: orm.Mapped[float] = orm.mapped_column(
-        doc="the weight used"
-    )
-    reps_completed: orm.Mapped[int] = orm.mapped_column(
-        doc="the reps completed"
+    reps_completed: int = Field(
+        description="the reps completed"
     )
 
     @classmethod
@@ -147,35 +128,30 @@ class StrengthSetFinished(TableBase):
 
 
 class ActiveProgramRecord(TableBase):
-    id: orm.Mapped[int] = orm.mapped_column(
-        doc="the row id",
-        default=None,
-        primary_key=True
-    )
-    user_id: orm.Mapped[UserIdT] = orm.mapped_column(
-        doc="the id of the user connected to this record",
+    user_id: UserIdT = Field(
+        description="the id of the user connected to this record",
         index=True
     )
-    template_key: orm.Mapped[ProgramTemplateKeyT] = orm.mapped_column(
-        doc="key for the template this is an invocation of"
+    template_key: ProgramTemplateKeyT = Field(
+        description="key for the template this is an invocation of"
     )
-    started_at: orm.Mapped[TimestampT] = orm.mapped_column(
-        doc="when the program started"
+    started_at: TimestampT = Field(
+        description="when the program started"
     )
-    updated_at: orm.Mapped[TimestampT] = orm.mapped_column(
-        doc="last time we executed a day of this program"
-    )
-
-    strength_sets_not_started: orm.Mapped[list[StrengthSetNotStarted]] = orm.relationship(
-        cascade="all, delete-orphan",
+    updated_at: TimestampT = Field(
+        description="last time we executed a day of this program"
     )
 
-    strength_sets_in_progress: orm.Mapped[list[StrengthSetInProgress]] = orm.relationship(
-        cascade="all, delete-orphan",
+    strength_sets_not_started: list[StrengthSetNotStarted] = Relationship(
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"},
     )
 
-    strength_sets_finished: orm.Mapped[list[StrengthSetFinished]] = orm.relationship(
-        cascade="all, delete-orphan",
+    strength_sets_in_progress: list[StrengthSetInProgress] = Relationship(
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"},
+    )
+
+    strength_sets_finished: list[StrengthSetFinished] = Relationship(
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"},
     )
 
     @classmethod

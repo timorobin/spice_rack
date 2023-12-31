@@ -17,7 +17,6 @@ packages = [
 [tool.poetry.dependencies]
 python = "~3.9"
 
-#
 # serialization and primary class base
 pydantic = { version = "~1", extras = ["dotenv",] }  # noqa - we are not ready to upgrade
 
@@ -37,7 +36,7 @@ tabulate = { version = "*", extras = [] }
 
 # ### LIFTZ ONLY ###
 # these are liftz-only dependencies and should be moved over when we split up
-sqlalchemy = { version = "*", extras = [] }
+sqlmodel = { version = "*", extras = [] }
 nicegui = { version = "*", extras = [] }
 
 [tool.poetry.dev-dependencies]

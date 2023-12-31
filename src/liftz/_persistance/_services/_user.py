@@ -1,6 +1,6 @@
 from __future__ import annotations
 import typing as t
-from sqlalchemy import select
+from sqlmodel import select
 
 from liftz._persistance import _repos
 from liftz._persistance._engine_builder import SessionT
@@ -19,7 +19,7 @@ __all__ = (
 def user_record_to_obj(user_rec: _repos.UserRecord) -> _models.user.User:
     """maps db record to internal object"""
     return _models.user.User(
-        user_id=user_rec.user_id,
+        user_id=user_rec.user_id,  # noqa
         email=user_rec.email,
         name=user_rec.name,
         is_superuser=user_rec.is_superuser

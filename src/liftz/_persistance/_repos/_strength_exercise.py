@@ -1,11 +1,10 @@
 from __future__ import annotations
 import typing as t
-from sqlalchemy import orm, ARRAY, Enum
+from sqlmodel import Field
 
 from liftz._persistance._repos import _record_base
 from liftz._persistance._types import (
     StrengthExerciseKeyT,
-    ExerciseTagsEnumT,
     UserIdT
 )
 
@@ -17,25 +16,21 @@ __all__ = (
 
 class StrengthExerciseRecord(_record_base.TableBase):
     """record of strength exercises"""
-    id: orm.Mapped[int] = orm.mapped_column(
-        doc="the row id",
-        default=None,
-        primary_key=True
-    )
-    user_id: orm.Mapped[t.Optional[UserIdT]] = orm.mapped_column(
-        doc="the id of the user connected to this record, if none this is a system-level record",
+    user_id: t.Optional[UserIdT] = Field(
+        description="the id of the user connected to this record, "
+                    "if none this is a system-level record",
         index=True,
     )
-    key: orm.Mapped[StrengthExerciseKeyT] = orm.mapped_column(
-        doc="the key", primary_key=True
+    key: StrengthExerciseKeyT = Field(
+        description="the key", primary_key=True
     )
-    description: orm.Mapped[str] = orm.mapped_column(
-        doc="description",
+    description: str = Field(
+        description="description",
 
     )
-    # tags: orm.Mapped[ExerciseTagsEnumT] = orm.mapped_column(
+    # tags: orm.Mapped[ExerciseTagsEnumT] = Field(
     #     ARRAY(Enum),
-    #     doc="list of tags for this exercise"
+    #     description="list of tags for this exercise"
     # )
 
     @classmethod

@@ -97,10 +97,9 @@ class SetupService(spice_rack.pydantic_bases.AbstractValueModel):
                         session=db_session
                     )
 
-        print(self.system_manifest_fp)
-        from devtools import debug
-        debug(
-            self._loaded_manifest
-        )
-        raise ValueError()
-        db_session.flush()
+            print(self.system_manifest_fp)
+            from devtools import debug
+            debug(
+                self._loaded_manifest
+            )
+            db_session.commit()

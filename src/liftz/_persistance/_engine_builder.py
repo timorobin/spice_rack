@@ -1,7 +1,7 @@
 from __future__ import annotations
-
-import sqlalchemy
 from sqlalchemy import orm, engine
+
+from sqlmodel import create_engine, SQLModel
 
 __all__ = (
     "build_engine",
@@ -18,10 +18,11 @@ SessionT = orm.Session
 def build_engine(db_uri: str = "") -> EngineT:
     from liftz._persistance import _repos
     assert _repos
-    eng = sqlalchemy.create_engine(
+    eng = create_engine(
         db_uri, echo=True,
     )
-    _repos.TableBase.metadata.create_all(eng)
+    # _repos.TableBase.metadata.create_all(eng)
+    SQLModel.metadata.create_all(eng)
     return eng
 
 
@@ -40,4 +41,4 @@ def build_engine(db_uri: str = "") -> EngineT:
 
 def start_session(engine_obj: EngineT) -> SessionT:
     conn = engine_obj.connect()
-    return sqlalchemy.orm.Session(conn)
+    return orm.Session(conn)

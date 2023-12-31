@@ -1,6 +1,6 @@
 from __future__ import annotations
 import typing as t
-from sqlalchemy import select
+from sqlmodel import select
 
 from liftz import _constants
 from liftz._persistance import _repos, _types
