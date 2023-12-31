@@ -72,3 +72,9 @@ class RootModel(GenericModel, Generic[RootTypeTV], CommonMethods):
         raise ValueError(
             f"the '{cls.__name__}' class doesn't have a specified default value."
         )
+
+    @classmethod
+    def update_forward_refs(cls, **kwargs) -> None:
+        imported_refs = cls._import_forward_refs()
+        kwargs = {**imported_refs, **kwargs}
+        return super().update_forward_refs(**kwargs)

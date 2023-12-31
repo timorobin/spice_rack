@@ -5,6 +5,12 @@ from pydantic import Field, PrivateAttr
 import spice_rack
 from liftz import _models, _persistance, _constants
 
+
+__all__ = (
+    "SetupService",
+)
+
+
 _FilePathT = str
 
 _db_services = _persistance.services
@@ -77,7 +83,18 @@ class SetupService(spice_rack.pydantic_bases.AbstractValueModel):
 
             # load templates
             for template_obj in self._loaded_manifest.program_templates:
-                existing_template_maybe = _repos.ProgramTemplateRecord
+                existing_template_maybe = _db_services.program_template.fetch_by_key_maybe(
+                    user_id=_constants.SYSTEM_USER_ID,
+                    session=db_session,
+                    key=template_obj.key
+                )
+                if existing_template_maybe:
+                    continue
+                else:
+                    _db_services.program_template.save_obj(
+                        obj=template_obj,
+                        user_id=_constants.SYSTEM_USER_ID,
+                        session=db_session
+                    )
 
             db_session.close()
-

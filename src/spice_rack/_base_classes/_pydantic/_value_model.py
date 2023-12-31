@@ -44,6 +44,12 @@ class AbstractValueModel(BaseModel, CommonMethods):
         other_data = other.dict()
         return self_data == other_data
 
+    @classmethod
+    def update_forward_refs(cls, **kwargs: Any) -> None:
+        imported_refs = cls._import_forward_refs()
+        kwargs = {**imported_refs, **kwargs}
+        return super().update_forward_refs(**kwargs)
+
 
 class AbstractGenericValueModel(AbstractValueModel, GenericModel):
     """

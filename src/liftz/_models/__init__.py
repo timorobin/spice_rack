@@ -5,3 +5,5 @@ from liftz._models import (
     _misc as misc,
     _user as user
 )
+
+misc.SystemManifest.update_forward_refs()
