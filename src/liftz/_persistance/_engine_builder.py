@@ -15,12 +15,14 @@ EngineT = engine.Engine
 SessionT = orm.Session
 
 
-
-
 def build_engine(db_uri: str = "") -> EngineT:
-    return sqlalchemy.create_engine(
-        db_uri, echo=True
+    from liftz._persistance import _repos
+    assert _repos
+    eng = sqlalchemy.create_engine(
+        db_uri, echo=True,
     )
+    _repos.TableBase.metadata.create_all(eng)
+    return eng
 
 
 # class Session:

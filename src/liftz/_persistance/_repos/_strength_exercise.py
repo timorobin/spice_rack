@@ -2,16 +2,12 @@ from __future__ import annotations
 import typing as t
 from sqlalchemy import orm, ARRAY, Enum
 
-from liftz import _models
 from liftz._persistance._repos import _record_base
 from liftz._persistance._types import (
     StrengthExerciseKeyT,
     ExerciseTagsEnumT,
     UserIdT
 )
-
-if t.TYPE_CHECKING:
-    from liftz._persistance._engine_builder import SessionT
 
 
 __all__ = (
@@ -37,10 +33,10 @@ class StrengthExerciseRecord(_record_base.TableBase):
         doc="description",
 
     )
-    tags: orm.Mapped[_models.strength_exercise.StrengthExerciseTags] = orm.mapped_column(
-        ARRAY(Enum),
-        doc="list of tags for this exercise"
-    )
+    # tags: orm.Mapped[ExerciseTagsEnumT] = orm.mapped_column(
+    #     ARRAY(Enum),
+    #     doc="list of tags for this exercise"
+    # )
 
     @classmethod
     def get_table_name(cls) -> str:

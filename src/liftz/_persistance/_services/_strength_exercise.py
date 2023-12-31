@@ -28,7 +28,6 @@ def _obj_to_record(
         user_id=user_id,
         key=obj.key,
         description=obj.description,
-        tags=";".join([t.value for t in obj.tags])
     )
 
 

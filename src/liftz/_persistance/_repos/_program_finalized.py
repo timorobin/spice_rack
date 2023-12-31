@@ -1,5 +1,5 @@
 from __future__ import annotations
-from sqlalchemy import orm
+from sqlalchemy import orm, ForeignKey
 
 from liftz._persistance._repos._record_base import TableBase
 from liftz._persistance._types import (
@@ -31,8 +31,8 @@ class FinalizedStrengthSet(TableBase):
         doc="the id of the user connected to this record",
         index=True
     )
-    program_record: orm.Mapped[FinalizedProgramRunRecord] = orm.relationship(
-        back_populates="strength_sets"
+    program_record_id: orm.Mapped[int] = orm.mapped_column(
+        ForeignKey(f"{_PROGRAM_TABLE_NAME}.id")
     )
     exercise_key: orm.Mapped[StrengthExerciseKeyT] = orm.mapped_column(
         doc="key to the exercise info"
@@ -80,7 +80,6 @@ class FinalizedProgramRunRecord(TableBase):
     )
     strength_sets: orm.Mapped[list[FinalizedStrengthSet]] = orm.relationship(
         cascade="all, delete-orphan",
-        back_populates="program_record"
     )
 
     @classmethod

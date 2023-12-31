@@ -1,5 +1,5 @@
 from __future__ import annotations
-from sqlalchemy import orm, ARRAY, Enum
+from sqlalchemy import orm, ARRAY, Enum, ForeignKey
 
 from liftz._persistance._repos import _record_base
 from liftz._persistance._types import (
@@ -33,13 +33,12 @@ class ProgramTemplateRecord(_record_base.TableBase):
         doc="the key of the program template", unique=True
     )
     description: orm.Mapped[str] = orm.mapped_column(doc="free-form description")
-    tags: orm.Mapped[list[ProgramTemplateTagsT]] = orm.mapped_column(
-        ARRAY(Enum),
-        doc="a list of tags tied to this program"
-    )
+    # tags: orm.Mapped[list[ProgramTemplateTagsT]] = orm.mapped_column(
+    #     ARRAY(Enum),
+    #     doc="a list of tags tied to this program"
+    # )
     strength_sets: orm.Mapped[list[ProgramTemplateIndividualSet]] = orm.relationship(
         cascade="all, delete-orphan",
-        back_populates="program_template_record"
     )
 
     @classmethod
@@ -57,8 +56,8 @@ class ProgramTemplateIndividualSet(_record_base.TableBase):
         doc="the id of the user connected to this record",
         index=True,
     )
-    program_template_record: orm.Mapped[ProgramTemplateRecord] = orm.relationship(
-        back_populates="strength_sets"
+    program_record_id: orm.Mapped[int] = orm.mapped_column(
+        ForeignKey(f"{_TEMPLATE_TABLE_NAME}.id")
     )
     exercise_key: orm.Mapped[StrengthExerciseKeyT] = orm.mapped_column(
         doc="key to the exercise"

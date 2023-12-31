@@ -10,14 +10,16 @@ if t.TYPE_CHECKING:
 
 __all__ = (
     "user_creds_check",
-    "get_user_id",
-    "set_user_id"
+    "get_current_user",
+    "set_current_user",
+    "get_authorization_status",
+    "set_authorization_status"
 )
 
 
 # todo: remove this once we have proper auth
 
-def user_creds_check(email: str, password: str) -> t.Optional[_models.user.UserId]:
+def user_creds_check(email: str, password: str) -> t.Optional[_models.user.User]:
     session = _helpers.build_db_session()
     user_maybe = _persistance.services.user.fetch_record_by_email_maybe(
         session=session,
@@ -27,14 +29,26 @@ def user_creds_check(email: str, password: str) -> t.Optional[_models.user.UserI
         return None
     else:
         if user_maybe.password == password:
-            return user_maybe.user_id
+            # todo: double db call
+            return _persistance.services.user.fetch_by_user_id(
+                user_id=user_maybe.user_id,
+                session=session
+            )
         else:
             return None
 
 
-def set_user_id(user_id: _models.user.UserId, app: App) -> None:
-    app.storage.user["user_id"] = user_id
+def set_current_user(user_obj: _models.user.User, app: App) -> None:
+    app.storage.user["user"] = user_obj
 
 
-def get_user_id(app: App) -> _models.user.UserId:
-    return app.storage.user.get("user_id")
+def get_current_user(app: App) -> _models.user.User:
+    return app.storage.user.get("user")
+
+
+def get_authorization_status(app: App) -> bool:
+    return app.storage.user.get("authenticated", False)
+
+
+def set_authorization_status(app: App, status: bool) -> None:
+    app.storage.user["authenticated"] = status

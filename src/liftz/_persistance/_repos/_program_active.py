@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Optional
-from sqlalchemy import orm
+from sqlalchemy import orm, ForeignKey
 
 from liftz._persistance._repos._record_base import TableBase
 from liftz._persistance._types import (
@@ -35,8 +35,8 @@ class StrengthSetNotStarted(TableBase):
         doc="the id of the user connected to this record",
         index=True
     )
-    program_record: orm.Mapped[ActiveProgramRecord] = orm.relationship(
-        back_populates="strength_sets_not_started",
+    program_record_id: orm.Mapped[int] = orm.mapped_column(
+        ForeignKey(f"{_PROGRAM}.id")
     )
     exercise_key: orm.Mapped[StrengthExerciseKeyT] = orm.mapped_column(
         doc="the key to the exercise"
@@ -72,8 +72,8 @@ class StrengthSetInProgress(TableBase):
         doc="the id of the user connected to this record",
         index=True
     )
-    program_record: orm.Mapped[ActiveProgramRecord] = orm.relationship(
-        back_populates="strength_sets_in_progress",
+    program_record_id: orm.Mapped[int] = orm.mapped_column(
+        ForeignKey(f"{_PROGRAM}.id")
     )
     exercise_key: orm.Mapped[StrengthExerciseKeyT] = orm.mapped_column(
         doc="key to the exercise info"
@@ -116,8 +116,8 @@ class StrengthSetFinished(TableBase):
         doc="the id of the user connected to this record",
         index=True
     )
-    program_record: orm.Mapped[ActiveProgramRecord] = orm.relationship(
-        back_populates="strength_sets_finished",
+    program_record_id: orm.Mapped[int] = orm.mapped_column(
+        ForeignKey(f"{_PROGRAM}.id")
     )
     exercise_key: orm.Mapped[StrengthExerciseKeyT] = orm.mapped_column(
         doc="key to the exercise info"
@@ -168,17 +168,14 @@ class ActiveProgramRecord(TableBase):
 
     strength_sets_not_started: orm.Mapped[list[StrengthSetNotStarted]] = orm.relationship(
         cascade="all, delete-orphan",
-        back_populates="program_record"
     )
 
     strength_sets_in_progress: orm.Mapped[list[StrengthSetInProgress]] = orm.relationship(
         cascade="all, delete-orphan",
-        back_populates="program_record"
     )
 
     strength_sets_finished: orm.Mapped[list[StrengthSetFinished]] = orm.relationship(
         cascade="all, delete-orphan",
-        back_populates="program_record"
     )
 
     @classmethod
