@@ -43,6 +43,10 @@ def _get_default_exercises() -> list[_models.strength_exercise.StrengthExerciseD
 
 class Settings(spice_rack.AbstractSettings):
     """settings for the app"""
+    ui_storage_secret: str = Field(
+        description="used in nicegui",
+        default="THIS_NEEDS_TO_BE_CHANGED"
+    )
     db_uri: str = Field(
         description="the uri to the db, default is in-mem sqlite", default="sqlite://"
     )

@@ -4,7 +4,7 @@ from liftz import _settings, _services, _persistance
 
 
 def start_app():
-    from liftz._app._app import app
+    from liftz._app import _UI
 
     settings = _settings.Settings.load()
     if settings.system_manifest_fp is None:
@@ -15,4 +15,9 @@ def start_app():
         db_engine=db_engine,
         system_manifest_fp=settings.system_manifest_fp
     ).call()
-    app.start()
+    _UI.ui.run(
+        storage_secret=settings.ui_storage_secret
+    )
+
+
+start_app()
