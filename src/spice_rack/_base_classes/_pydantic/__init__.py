@@ -5,4 +5,5 @@ Another main goal here is to ensure pydantic migrations are easy, especially goi
 """
 from spice_rack._base_classes._pydantic._value_model import *
 from spice_rack._base_classes._pydantic._root_model import *
-from spice_rack._base_classes._pydantic import _dispatchable_mixin as dispatchable
+from spice_rack._base_classes._pydantic import _dispatchable as dispatchable
+from spice_rack._base_classes._pydantic._mixin_base import PydanticMixinBase

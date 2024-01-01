@@ -14,20 +14,21 @@ packages = [
 [tool.poetry.dependencies]
 python = "~3.9"
 
-#
 # serialization and primary class base
 pydantic = { version = "~1", extras = ["dotenv",] }  # noqa - we are not ready to upgrade
 
 # logging
 loguru = { version = "*", extras = [] }
+stackprinter = { version = "*", extras = [] }
 
 # helps with date parsing
 dateparser = { version = "*", extras = [] }
 
 # misc
-aenum = { version = "*", extras = [] }
 case-converter = { version = "*", extras = [] }
 devtools = { version = "*", extras = ["pygments"] }
+
+# why?
 tabulate = { version = "*", extras = [] }
 
 [tool.poetry.dev-dependencies]
@@ -41,6 +42,8 @@ mypy = { version = "*", extras = [] }
 pytest = { version = "*", extras = [] }
 pytest-sugar = { version = "*", extras = [] }
 pytest-cov = { version = "*", extras = [] }
+pytest-parametrization = { version = "*", extras = [] }
+pytest-asyncio = { version = "*", extras = [] }
 
 # docs
 sphinx = { version = "*", extras = [] }

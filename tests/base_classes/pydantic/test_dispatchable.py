@@ -1,21 +1,44 @@
+import typing as t
+
 import pytest
 from typing import Union
 from pydantic import ValidationError, Field, BaseModel
 from devtools import debug
 
-from spice_rack import pydantic_bases
+# from spice_rack import pydantic_bases
+
+# todo: fix import
+from spice_rack import base_classes
+from spice_rack._base_classes._pydantic._dispatchable import _ClassIdEnumTV, DispatchableModelMixin
+
+dispatchable = base_classes.pydantic.dispatchable
 
 
-class AbstractClass(pydantic_bases.dispatchable.DispatchableModelMixin):
+class ClassTypes(dispatchable.ConcreteClassIdEnumBase):
+    CHILD1 = "child1"
+    CHILD2 = "child2"
+    GRANDCHILD1 = "grandchild1"
+    GRANDCHILD2 = "grandchild2"
+
+
+class AbstractClass(dispatchable.DispatchableModelMixin[ClassTypes], is_new_root=True):
     root_field: str
+        
+    @classmethod
+    def get_cls_id(cls) -> t.Optional[ClassTypes]:
+        return None
+    
+    
+class ChildClass1(AbstractClass, is_concrete=True):
+    @classmethod
+    def get_cls_id(cls) -> t.Optional[ClassTypes]:
+        return ClassTypes.CHILD1
 
 
-class ChildClass1(AbstractClass):
-    ...
-
-
-class ChildClass2(AbstractClass):
-    ...
+class ChildClass2(AbstractClass, is_concrete=True):
+    @classmethod
+    def get_cls_id(cls) -> t.Optional[ClassTypes]:
+        return ClassTypes.CHILD2
 
 
 @pytest.fixture(scope="function")  # keep function score bc we mutate it
@@ -28,18 +51,22 @@ def test_class_builds_correctly(child_kwargs):
     class_id_field = ChildClass1.__fields__.get("class_id")
     assert class_id_field
 
-    expected_class_id = "AbstractClass.ChildClass1"
+    expected_class_id = ClassTypes.CHILD1.value
     assert class_id_field.default == expected_class_id
     inst = ChildClass1.validate(child_kwargs)
+    assert inst
     assert inst.class_id == expected_class_id
 
 
 def test_discrim_field_strict(child_kwargs):
-    child_kwargs["class_id"] = ChildClass1.get_class_id()
+    debug(ChildClass1.__fields__)
+    debug(ChildClass2.__fields__)
+    child_kwargs["class_id"] = ChildClass1.get_cls_id_str()
     assert ChildClass1.parse_obj(child_kwargs)
-
+    debug(child_kwargs)
     with pytest.raises(ValidationError):
-        ChildClass2(**child_kwargs)
+        bad_inst = ChildClass2(**child_kwargs)
+        debug(bad_inst)
 
 
 def test_child_dispatch(child_kwargs):
@@ -48,16 +75,16 @@ def test_child_dispatch(child_kwargs):
         AbstractClass.validate(child_kwargs)
 
     # dispatches based on class id
-    child_kwargs["class_id"] = ChildClass1.get_class_id()
+    child_kwargs["class_id"] = ChildClass1.get_cls_id_str()
     dispatch_res = AbstractClass.validate(child_kwargs)
     assert isinstance(dispatch_res, ChildClass1)
-    assert dispatch_res.class_id == ChildClass1.get_class_id()
+    assert dispatch_res.class_id == ChildClass1.get_cls_id_str()
     child_kwargs = dispatch_res.dict()
 
-    child_kwargs["class_id"] = ChildClass2.get_class_id()
+    child_kwargs["class_id"] = ChildClass2.get_cls_id_str()
     dispatch_res = AbstractClass.validate(child_kwargs)
     assert isinstance(dispatch_res, ChildClass2)
-    assert dispatch_res.class_id == ChildClass2.get_class_id()
+    assert dispatch_res.class_id == ChildClass2.get_cls_id_str()
 
 
 def test_child_dispatch_json(child_kwargs):
@@ -67,13 +94,13 @@ def test_child_dispatch_json(child_kwargs):
         AbstractClass.validate(child_kwargs)
 
     # dispatches based on class id
-    child_kwargs["class_id"] = ChildClass1.get_class_id()
+    child_kwargs["class_id"] = ChildClass1.get_cls_id_str()
     dispatch_res = AbstractClass.validate(child_kwargs)
     assert isinstance(dispatch_res, ChildClass1)
 
     child_kwargs_json = dispatch_res.json()
     json_dispatch_res = AbstractClass.parse_raw(child_kwargs_json)
-    assert json_dispatch_res.class_id == ChildClass1.get_class_id()
+    assert json_dispatch_res.class_id == ChildClass1.get_cls_id_str()
     assert isinstance(json_dispatch_res, ChildClass1)
 
 
@@ -81,56 +108,78 @@ class AbstractPassthroughChild(AbstractClass):
     ...
 
 
-class GrandchildClass1(AbstractPassthroughChild):
-    ...
+class GrandchildClass1(AbstractPassthroughChild, is_concrete=True):
+
+    @classmethod
+    def get_cls_id(cls) -> t.Optional[ClassTypes]:
+        return ClassTypes.GRANDCHILD1
 
 
-class GrandchildClass2(AbstractPassthroughChild):
-    ...
-
-
-def test_grandchild_dispatch(child_kwargs):
-    child_kwargs["class_id"] = GrandchildClass1.get_class_id()
-    dispatch_res = AbstractClass.validate(child_kwargs)
-    assert isinstance(dispatch_res, GrandchildClass1)
-
-
-def test_grandchild_dispatch_from_child(child_kwargs):
-    child_kwargs["class_id"] = GrandchildClass1.get_class_id()
-    dispatch_res = AbstractPassthroughChild.validate(child_kwargs)
-    assert isinstance(dispatch_res, GrandchildClass1)
+class GrandchildClass2(AbstractPassthroughChild, is_concrete=True):
+    @classmethod
+    def get_cls_id(cls) -> t.Optional[ClassTypes]:
+        return ClassTypes.GRANDCHILD2
 
 
 def test_family_built_correctly():
-    assert ChildClass1.get_family_tree().root_cls == AbstractClass
+    assert ChildClass1._root_cls_registry._root_cls == AbstractClass
 
-    family_tree_ = AbstractClass.get_family_tree()
-
-    keys_found = [str(cls.get_class_id()) for cls in family_tree_.iter_members()]
+    keys_found = [str(cls.get_cls_id_str()) for cls in AbstractClass.iter_concrete_subclasses()]
     keys_expected = [
-        ChildClass1.get_class_id(), ChildClass2.get_class_id(),
-        AbstractPassthroughChild.get_class_id(),
-        GrandchildClass1.get_class_id(), GrandchildClass2.get_class_id()
+        ChildClass1.get_cls_id_str(), ChildClass2.get_cls_id_str(),
+        GrandchildClass1.get_cls_id_str(), GrandchildClass2.get_cls_id_str()
     ]
 
     assert keys_found == keys_expected
 
 
+def test_grandchild_dispatch(child_kwargs):
+    child_kwargs["class_id"] = GrandchildClass1.get_cls_id_str()
+    dispatch_res = AbstractClass.validate(child_kwargs)
+    assert isinstance(dispatch_res, GrandchildClass1)
+
+
+def test_grandchild_dispatch_from_child(child_kwargs):
+    child_kwargs["class_id"] = GrandchildClass1.get_cls_id_str()
+    dispatch_res = AbstractPassthroughChild.validate(child_kwargs)
+    assert isinstance(dispatch_res, GrandchildClass1)
+
+
 def test_schema_gen():
-    class AbstractPayload(pydantic_bases.dispatchable.DispatchableModelMixin):
+
+    class PayloadTypes(dispatchable.ConcreteClassIdEnumBase):
+        A = "a"
+        B = "b"
+
+    class AbstractPayload(
+        dispatchable.DispatchableModelMixin[PayloadTypes],
+        is_new_root=True
+    ):
         common_f: str
 
-    class ConcretePayloadA(AbstractPayload):
+        @classmethod
+        def get_cls_id(cls) -> t.Optional[PayloadTypes]:
+            return None
+
+    class ConcretePayloadA(AbstractPayload, is_concrete=True):
         a_f: str
 
-    class ConcretePayloadB(AbstractPayload):
+        @classmethod
+        def get_cls_id(cls) -> t.Optional[PayloadTypes]:
+            return PayloadTypes.A
+
+    class ConcretePayloadB(AbstractPayload, is_concrete=True):
         b_f: str
+
+        @classmethod
+        def get_cls_id(cls) -> t.Optional[PayloadTypes]:
+            return PayloadTypes.B
 
     class PayloadContainer(BaseModel):
         f1: AbstractPayload
         f2: Union[ConcretePayloadA, ConcretePayloadB]
-        f3: AbstractPayload.build_concrete_union_type_ann()
-        f4: AbstractPayload.build_concrete_union_type_ann() = Field(discriminator="class_id")
+        f3: AbstractPayload.build_union_type()
+        f4: AbstractPayload.build_union_type() = Field(discriminator="class_id")
 
     schema = PayloadContainer.schema()
     f1_schema = schema["properties"]["f1"]
@@ -161,8 +210,8 @@ def test_schema_gen():
         'discriminator': {
             'propertyName': 'class_id',
             'mapping': {
-                'AbstractPayload.ConcretePayloadA': '#/definitions/ConcretePayloadA',
-                'AbstractPayload.ConcretePayloadB': '#/definitions/ConcretePayloadB',
+                'a': '#/definitions/ConcretePayloadA',
+                'b': '#/definitions/ConcretePayloadB',
             },
         },
         'oneOf': [
@@ -179,7 +228,7 @@ def test_schema_gen():
     debug(schema)
 
     # this should still work for all fields
-    payload_raw = {"class_id": "AbstractPayload.ConcretePayloadB", "common_f": "x", "b_f": "y"}
+    payload_raw = {"class_id": "b", "common_f": "x", "b_f": "y"}
     payload_obj = AbstractPayload.validate(payload_raw)
 
     # Important notes below:
