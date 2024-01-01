@@ -21,7 +21,7 @@ class GuidStr(_base_classes.AbstractSpecialStr):
         except Exception as e:
             raise ValueError(
                 f"failed to parse the raw str as a UUID4, '{root_data}'"
-            )
+            ) from e
         return uuid_obj.hex
 
     @classmethod
