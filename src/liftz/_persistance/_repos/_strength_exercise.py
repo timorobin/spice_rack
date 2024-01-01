@@ -1,6 +1,5 @@
 from __future__ import annotations
-import typing as t
-from sqlmodel import Field
+import tortoise as orm  # noqa
 
 from liftz._persistance._repos import _record_base
 from liftz._persistance._types import (
@@ -14,25 +13,22 @@ __all__ = (
 )
 
 
-class StrengthExerciseRecord(_record_base.TableBase, table=True):
+class StrengthExerciseRecord(_record_base.TableBase):
     """record of strength exercises"""
-    user_id: t.Optional[UserIdT] = Field(
-        description="the id of the user connected to this record, "
-                    "if none this is a system-level record",
-        index=True,
-    )
-    key: StrengthExerciseKeyT = Field(
-        description="the key", primary_key=True
-    )
-    description: str = Field(
-        description="description",
+    class Meta:
+        table = "strength_exercises"
 
-    )
+    user_id: UserIdT = orm.fields.UUIDField(index=True)
+    """the id of the user connected to this record"""
+
+    key: StrengthExerciseKeyT = orm.fields.CharField(index=True, max_length=255)
+    """the key for this exercise"""
+
+    description: str = orm.fields.TextField()
+    """free-form description for this exercise"""
+
+    # todo:  add back
     # tags: orm.Mapped[ExerciseTagsEnumT] = Field(
     #     ARRAY(Enum),
     #     description="list of tags for this exercise"
     # )
-
-    @classmethod
-    def get_table_name(cls) -> str:
-        return "strength_exercises"

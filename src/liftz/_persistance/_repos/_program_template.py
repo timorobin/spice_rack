@@ -1,7 +1,5 @@
 from __future__ import annotations
-from typing import Optional
-from sqlmodel import Field, Relationship
-
+import tortoise as orm  # noqa
 from liftz._persistance._repos import _record_base
 from liftz._persistance._types import (
     ProgramTemplateKeyT,
@@ -20,52 +18,57 @@ __all__ = (
 )
 
 
-class ProgramTemplateRecord(_record_base.TableBase, table=True):
-    user_id: UserIdT = Field(
-        description="the id of the user connected to this record",
-        index=True,
-    )
-    key: ProgramTemplateKeyT = Field(
-        description="the key of the program template", unique=True
-    )
-    description: str = Field(description="free-form description")
+class ProgramTemplateRecord(_record_base.TableBase):
+    class Meta:
+        table = _TEMPLATE_TABLE_NAME
+
+    user_id: UserIdT = orm.fields.UUIDField(index=True)
+    """the id of the user connected to this record"""
+
+    key: ProgramTemplateKeyT = orm.fields.CharField(index=True, max_length=255)
+    """the key for this program template"""
+
+    description: str = orm.fields.TextField()
+    """free-form description for this exercise"""
+
+    # todo: make a special string - see todo
     # tags: orm.Mapped[list[ProgramTemplateTagsT]] = Field(
     #     ARRAY(Enum),
     #     description="a list of tags tied to this program"
     # )
-    strength_sets: list[ProgramTemplateIndividualSet] = Relationship(
-        # sa_relationship_kwargs={"cascade": "all, delete-orphan"}
-    )
+
+    strength_sets: orm.fields.ReverseRelation[ProgramTemplateIndividualSet]
 
     @classmethod
     def get_table_name(cls) -> str:
         return _TEMPLATE_TABLE_NAME
 
 
-class ProgramTemplateIndividualSet(_record_base.TableBase, table=True):
-    user_id: UserIdT = Field(
-        description="the id of the user connected to this record",
-        index=True,
-    )
-    program_record_id: Optional[int] = Field(
-        default=None, foreign_key=f"{_TEMPLATE_TABLE_NAME}.id"
-    )
-    exercise_key: StrengthExerciseKeyT = Field(
-        description="key to the exercise"
-    )
-    week: int = Field(
-        description="the week this set is from"
-    )
-    day: int = Field(
-        description="the day within the week"
-    )
-    weight: float = Field(
-        description="the weight prescribed"
-    )
-    reps: int = Field(
-        description="the reps prescribed"
+class ProgramTemplateIndividualSet(_record_base.TableBase):
+    class Meta:
+        table = _TEMPLATE_SET_TABLE_NAME
+
+    user_id: UserIdT = orm.fields.UUIDField(index=True)
+    """the id of the user connected to this record"""
+
+    program_record_id: orm.fields.ForeignKeyRelation[ProgramTemplateRecord] = (
+        orm.fields.ForeignKeyField(
+            f"{_record_base.REPO_MODULE_NAME}.ProgramTemplateRecord",
+            related_name="strength_sets", to_field="id"
+        )
     )
 
-    @classmethod
-    def get_table_name(cls) -> str:
-        return _TEMPLATE_SET_TABLE_NAME
+    exercise_key: StrengthExerciseKeyT = orm.fields.CharField(index=True, max_length=255)
+    """the key for the exercise info"""
+
+    week: int = orm.fields.IntField()
+    """the week this set is from"""
+
+    day: int = orm.fields.IntField()
+    """the day this set is from"""
+
+    weight: float = orm.fields.IntField()
+    """the weight prescribed"""
+
+    reps: int = orm.fields.IntField()
+    """the reps prescribed"""

@@ -1,5 +1,5 @@
 from __future__ import annotations
-from sqlmodel import Field
+import tortoise as orm  # noqa
 
 from liftz._persistance._types import UserIdT
 from liftz._persistance._repos import _record_base
@@ -10,25 +10,24 @@ __all__ = (
 )
 
 
-class UserRecord(_record_base.TableBase, table=True):
-    user_id: UserIdT = Field(
-        description="unique id for the user",
+class UserRecord(_record_base.TableBase):
+    class Meta:
+        table = "users"
+
+    user_id: UserIdT = orm.fields.UUIDField(
         unique=True,
         index=True
     )
-    name: str = Field(
-        description="name of the user"
-    )
-    email: str = Field(
-        description="email of the user"
-    )
-    password: str = Field(
-        description="hashed password of the user"
-    )
-    is_superuser: bool = Field(
-        description="if the user is a superuser."
-    )
+    """unique id for the user"""
 
-    @classmethod
-    def get_table_name(cls) -> str:
-        return "users"
+    name: str = orm.fields.TextField()
+    """name of the user"""
+
+    email: str = orm.fields.TextField(index=True)
+    """email of the user"""
+
+    password: str = orm.fields.TextField()
+    """hashed password of the user"""
+
+    is_superuser: bool = orm.fields.BooleanField()
+    """if the user is a superuser."""

@@ -1,4 +1,5 @@
 from __future__ import annotations
+import tortoise as orm  # noqa
 
 from liftz import _models
 
