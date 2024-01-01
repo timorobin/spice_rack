@@ -51,6 +51,7 @@ pytest = { version = "*", extras = [] }
 pytest-sugar = { version = "*", extras = [] }
 pytest-cov = { version = "*", extras = [] }
 pytest-parametrization = { version = "*", extras = [] }
+pytest-asyncio = { version = "*", extras = [] }
 
 # docs
 sphinx = { version = "*", extras = [] }
