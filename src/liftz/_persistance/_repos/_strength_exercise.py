@@ -1,6 +1,7 @@
 from __future__ import annotations
 import tortoise as orm  # noqa
 
+from liftz import _models
 from liftz._persistance._repos import _record_base
 from liftz._persistance._types import (
     StrengthExerciseKeyT,
@@ -32,3 +33,15 @@ class StrengthExerciseRecord(_record_base.TableBase):
     #     ARRAY(Enum),
     #     description="list of tags for this exercise"
     # )
+
+    @classmethod
+    def from_obj(
+            cls,
+            user_id: _models.user.UserId,
+            obj: _models.strength_exercise.StrengthExerciseDef
+    ) -> StrengthExerciseRecord:
+        return StrengthExerciseRecord(
+            user_id=user_id,
+            key=obj.key,
+            description=obj.description,
+        )
