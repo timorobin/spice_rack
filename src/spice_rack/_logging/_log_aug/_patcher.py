@@ -30,6 +30,5 @@ def log_augmentations_patcher(record: Record) -> None:
         serializable_data = aug_obj.get_serializable_data()
         if serializable_data:
             log_augmentations.append(aug_obj.get_serializable_data())
-    if log_augmentations:
-        extra["log_augmentations_dumped"] = pformat(log_augmentations)
+    extra["log_augmentations_dumped"] = pformat(log_augmentations)
     return
