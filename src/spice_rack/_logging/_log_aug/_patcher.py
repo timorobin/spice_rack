@@ -27,6 +27,9 @@ def log_augmentations_patcher(record: Record) -> None:
     log_augmentations = []
     for aug_raw in extra.pop("log_augmentations", []):
         aug_obj = _container.GeneralLogAugmentation.validate(aug_raw)
-        log_augmentations.append(aug_obj.get_serializable_data())
-    extra["log_augmentations_dumped"] = pformat(log_augmentations)
+        serializable_data = aug_obj.get_serializable_data()
+        if serializable_data:
+            log_augmentations.append(aug_obj.get_serializable_data())
+    if log_augmentations:
+        extra["log_augmentations_dumped"] = pformat(log_augmentations)
     return
