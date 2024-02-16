@@ -5,6 +5,7 @@ import pydantic
 import inflection
 
 from spice_rack._bases import _special_str
+from spice_rack._bases import _base_base
 
 
 __all__ = (
@@ -29,8 +30,10 @@ _LiteralT: t_ext.TypeAlias = type(t.Literal["xxx"])
 ClassMetaTypeT = t.Literal["root", "base", "concrete"]
 
 
-class DispatchedModelMixin(pydantic.BaseModel, t.Generic[TypeTV]):
+class DispatchedModelMixin(pydantic.BaseModel, _base_base.CommonModelMethods, t.Generic[TypeTV]):
     """this creates a root of this dispatched class."""
+    config = _base_base.BASE_MODEL_CONFIG
+
     _cls_id: t.ClassVar[ClassId]
     _cls_meta_type: t.ClassVar[ClassMetaTypeT]
     _parent_cls_id_path: t.ClassVar[tuple[ClassId, ...]] = ()
