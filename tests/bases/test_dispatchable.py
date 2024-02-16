@@ -1,11 +1,7 @@
-import typing as t
-
 import pytest
-from typing import Union
-from pydantic import ValidationError, Field, BaseModel
+from pydantic import ValidationError, BaseModel
 from devtools import debug
 
-# from spice_rack import pydantic_bases
 
 # todo: fix import
 from spice_rack import _bases
@@ -47,19 +43,19 @@ def child_kwargs() -> dict:
 
 def test_class_builds_correctly(child_kwargs):
     debug(ChildClass1.model_fields)
-    class_type_field = ChildClass1.model_fields.get("class_type")
+    class_type_field = ChildClass1.model_fields.get("class_id")
     assert class_type_field
 
     expected_class_type = "child1"
     inst = ChildClass1.model_validate(child_kwargs)
     assert inst
-    assert inst.class_type == expected_class_type
+    assert inst.class_id == expected_class_type
 
 
 def test_discrim_field_strict(child_kwargs):
     debug(ChildClass1.model_fields)
     debug(ChildClass2.model_fields)
-    child_kwargs["class_type"] = ChildClass1.get_class_type()
+    child_kwargs["class_id"] = ChildClass1.get_class_type()
     assert ChildClass1.model_validate(child_kwargs)
     debug(child_kwargs)
     with pytest.raises(ValidationError):
@@ -72,17 +68,17 @@ def test_child_dispatch_root_based(child_kwargs):
         AbstractClass.validate(child_kwargs)
 
     # dispatches based on class id
-    child_kwargs["class_type"] = ChildClass1.get_class_type()
+    child_kwargs["class_id"] = ChildClass1.get_class_type()
 
     dispatch_res = ClassDispatcher.model_validate(child_kwargs)
     assert isinstance(dispatch_res.root, ChildClass1)
-    assert dispatch_res.root.class_type == ChildClass1.get_class_type()
+    assert dispatch_res.root.class_id == ChildClass1.get_class_type()
     child_kwargs = dispatch_res.model_dump()
 
-    child_kwargs["class_type"] = ChildClass2.get_class_type()
+    child_kwargs["class_id"] = ChildClass2.get_class_type()
     dispatch_res = ClassDispatcher.validate(child_kwargs)
     assert isinstance(dispatch_res.root, ChildClass2)
-    assert dispatch_res.root.class_type == ChildClass2.get_class_type()
+    assert dispatch_res.root.class_id == ChildClass2.get_class_type()
 
 
 def test_child_dispatch_type_adapter(child_kwargs):
@@ -92,27 +88,27 @@ def test_child_dispatch_type_adapter(child_kwargs):
     dispatcher = AbstractClass.build_dispatcher_type_adapter()
 
     # dispatches based on class id
-    child_kwargs["class_type"] = ChildClass1.get_class_type()
+    child_kwargs["class_id"] = ChildClass1.get_class_type()
 
     dispatch_res = dispatcher.validate_python(child_kwargs)
     assert isinstance(dispatch_res, ChildClass1)
-    assert dispatch_res.class_type == ChildClass1.get_class_type()
+    assert dispatch_res.class_id == ChildClass1.get_class_type()
     child_kwargs = dispatch_res.model_dump()
 
-    child_kwargs["class_type"] = ChildClass2.get_class_type()
+    child_kwargs["class_id"] = ChildClass2.get_class_type()
     dispatch_res = dispatcher.validate_python(child_kwargs)
     assert isinstance(dispatch_res, ChildClass2)
-    assert dispatch_res.class_type == ChildClass2.get_class_type()
+    assert dispatch_res.class_id == ChildClass2.get_class_type()
 
 
 def test_grandchild_dispatch(child_kwargs):
-    child_kwargs["class_type"] = GrandchildClass1.get_class_type()
+    child_kwargs["class_id"] = GrandchildClass1.get_class_type()
     dispatch_res = AbstractClass.build_dispatcher_type_adapter().validate_python(child_kwargs)
     assert isinstance(dispatch_res, GrandchildClass1)
 
 
 def test_grandchild_dispatch_from_child(child_kwargs):
-    child_kwargs["class_type"] = GrandchildClass1.get_class_type()
+    child_kwargs["class_id"] = GrandchildClass1.get_class_type()
     dispatch_res = AbstractPassthroughChild.build_dispatcher_type_adapter().validate_python(
         child_kwargs
     )
@@ -137,7 +133,7 @@ def test_schema_gen():
                 GrandchildClass1.get_class_type(): '#/$defs/GrandchildClass1',
                 GrandchildClass2.get_class_type(): '#/$defs/GrandchildClass2'
             },
-            'propertyName': 'class_type',
+            'propertyName': 'class_id',
         },
         'oneOf': [
             {
@@ -170,7 +166,7 @@ def test_schema_gen_intermediate():
                 GrandchildClass1.get_class_type(): '#/$defs/GrandchildClass1',
                 GrandchildClass2.get_class_type(): '#/$defs/GrandchildClass2'
             },
-            'propertyName': 'class_type',
+            'propertyName': 'class_id',
         },
         'oneOf': [
             {
@@ -197,7 +193,7 @@ def test_as_field():
         f: base_t
 
     x = X.model_validate(
-        {"f": {"root_field": "", "class_type": GrandchildClass1.get_class_type()}}
+        {"f": {"root_field": "", "class_id": GrandchildClass1.get_class_type()}}
     )
 
     assert isinstance(x.f, GrandchildClass1)

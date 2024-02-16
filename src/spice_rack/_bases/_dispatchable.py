@@ -1,8 +1,10 @@
 from __future__ import annotations
 import typing as t
-
 import typing_extensions as t_ext
 import pydantic
+import inflection
+
+from spice_rack._bases import _special_str
 
 
 __all__ = (
@@ -12,13 +14,15 @@ __all__ = (
 )
 
 
-class ClassId(pydantic.RootModel[str]):
+class ClassId(_special_str.SpecialStrBase):
     """a class id for a member of the dispatched family"""
-    def __str__(self) -> str:
-        return str(self.root)
+
+    @classmethod
+    def _format_str_val(cls, root_data: str) -> str:
+        return inflection.underscore(root_data)
 
 
-TypeTV = t.TypeVar("TypeTV", bound=str)
+TypeTV = t.TypeVar("TypeTV", bound=ClassId)
 SelfTV = t.TypeVar("SelfTV", bound="DispatchedModelMixin")
 
 _LiteralT: t_ext.TypeAlias = type(t.Literal["xxx"])
@@ -31,7 +35,7 @@ class DispatchedModelMixin(pydantic.BaseModel, t.Generic[TypeTV]):
     _cls_meta_type: t.ClassVar[ClassMetaTypeT]
     _parent_cls_id_path: t.ClassVar[tuple[ClassId, ...]] = ()
 
-    class_type: TypeTV = pydantic.Field(
+    class_id: TypeTV = pydantic.Field(
         description="this will be overwritten in concrete classes to t.Literal['<cls_id_str>]', "
                     "and be str in base classes",
     )
@@ -69,7 +73,7 @@ class DispatchedModelMixin(pydantic.BaseModel, t.Generic[TypeTV]):
 
         else:
 
-            cls_id = ClassId.model_validate(params[0])
+            cls_id = ClassId(params[0])
             cls_meta_type = params[1]
 
             cls_id_or_auto: t.Union[str, t.Literal["auto"]]
@@ -78,7 +82,7 @@ class DispatchedModelMixin(pydantic.BaseModel, t.Generic[TypeTV]):
             if cls_meta_type == "concrete":
                 literal_t = t.Literal[(str(cls_id),)]  # noqa - this is ok
                 res = super().__class_getitem__(literal_t)
-                res.model_fields.get("class_type").default = str(cls_id)
+                res.model_fields.get("class_id").default = str(cls_id)
 
             else:
                 res = super().__class_getitem__(TypeTV)
@@ -145,7 +149,7 @@ class DispatchedModelMixin(pydantic.BaseModel, t.Generic[TypeTV]):
             union_t = t.Union[tuple(options)]
             annotated_t = t.Annotated[
                 union_t,
-                pydantic.Discriminator("class_type")
+                pydantic.Discriminator("class_id")
             ]
             return annotated_t
         else:

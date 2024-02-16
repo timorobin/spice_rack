@@ -1,6 +1,8 @@
 from __future__ import annotations
 import typing as t
+
 import pydantic
+import pydantic_core
 
 __all__ = (
     "SpecialStrBase",
@@ -12,21 +14,8 @@ _CoercibleTV = t.TypeVar("_CoercibleTV", )
 SelfTV = t.TypeVar("SelfTV", bound="SpecialStrBase")
 
 
-class SpecialStrBase(pydantic.RootModel[str]):
+class SpecialStrBase(str):
     """container for a special string to avoid having """
-    _default_equality_mode: t.Literal["strict", "lax"] = "lax"
-
-    def __str__(self) -> str:
-        return self.root
-
-    def special_repr(self) -> str:
-        """
-        Gives us a special representation indicating the instance is a special string, not just
-        a normal one.
-
-        This keeps the regular '__repr__' method is the same as a normal str instance
-        """
-        return f"{self.__class__.__name__}['{str(self)}']"
 
     @classmethod
     def _parse_non_str(cls, root_data: t.Any) -> str:
@@ -43,35 +32,39 @@ class SpecialStrBase(pydantic.RootModel[str]):
         """validate that the formatted string data is valid"""
         return root_data
 
-    @pydantic.field_validator("root", mode="before")
-    def _coerce_and_validate(cls: t.Type[SelfTV], v: t.Any) -> str:
+    @classmethod
+    def _validate(cls, val: t.Any) -> str:
         str_val: str
-        if not isinstance(v, str):
-            str_val = cls._parse_non_str(v)
+        if not isinstance(val, str):
+            str_val = cls._parse_non_str(val)
         else:
-            str_val = v
-
+            str_val = val
         str_val = cls._format_str_val(str_val)
-        str_val = cls._validate_str_val(str_val)
-        return str_val
+        return cls._validate_str_val(str_val)
 
-    def __hash__(self: SelfTV) -> int:
-        return hash(str(self))
+    def __new__(cls, v: t.Union[str, _CoercibleTV]):
+        """create a new instance of this special type class, validating the data first"""
+        v = cls._validate(v)
+        return super().__new__(cls, v)
 
-    def strict_equals(self: SelfTV, other: SelfTV) -> bool:
-        if not isinstance(other, type(self)):
-            return False
-        else:
-            return str(self) == str(other)
+    @classmethod
+    def __get_pydantic_core_schema__(
+            cls, _: t.Any, handler: pydantic.GetCoreSchemaHandler
+    ) -> pydantic_core.CoreSchema:
+        final_schema = pydantic_core.core_schema.no_info_after_validator_function(
+            function=cls, schema=handler(str)
+        )
+        return final_schema
 
-    def lax_equals(self: SelfTV, other: t.Union[SelfTV, str]) -> bool:
-        other_formatted = self.model_validate(other)
-        return str(self) == str(other_formatted)
+    def special_repr(self) -> str:
+        """
+        Gives us a special representation indicating the instance is a special string, not just
+        a normal one.
+
+        This keeps the regular '__repr__' method is the same as a normal str instance
+        """
+        return f"{self.__class__.__name__}['{str(self)}']"
 
     def __eq__(self: SelfTV, other: t.Union[SelfTV, str]) -> bool:
-        if self._default_equality_mode == "lax":
-            return self.lax_equals(other=other)
-        elif self._default_equality_mode == "strict":
-            return self.strict_equals(other=other)
-        else:
-            raise ValueError(f"'{self._default_equality_mode}' is  not supported")
+        other_formatted = self._validate(other)
+        return str(self) == str(other_formatted)

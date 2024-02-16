@@ -25,8 +25,8 @@ stackprinter = { version = "*", extras = [] }
 dateparser = { version = "*", extras = [] }
 
 # misc
-case-converter = { version = "*", extras = [] }
 devtools = { version = "*", extras = ["pygments"] }
+inflection = { version = "*", extras = [] }
 
 # why?
 tabulate = { version = "*", extras = [] }
