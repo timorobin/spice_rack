@@ -188,3 +188,16 @@ def test_schema_gen_concrete():
     import devtools
     devtools.debug(schema)
     assert schema == GrandchildClass1.model_json_schema()
+
+
+def test_as_field():
+    base_t = AbstractClass.build_dispatched_ann()
+
+    class X(BaseModel):
+        f: base_t
+
+    x = X.model_validate(
+        {"f": {"root_field": "", "class_type": GrandchildClass1.get_class_type()}}
+    )
+
+    assert isinstance(x.f, GrandchildClass1)

@@ -134,8 +134,9 @@ class DispatchedModelMixin(pydantic.BaseModel, t.Generic[TypeTV]):
             return t.cast(SelfTV, super().model_validate(obj=obj, *args, **kwargs))
 
     @classmethod
-    def build_dispatcher_type_adapter(cls: t.Type[SelfTV]) -> pydantic.TypeAdapter[SelfTV]:
+    def build_dispatched_ann(cls: t.Type[SelfTV]) -> t.Type[SelfTV]:
         options = list(cls.iter_concrete_subclasses())
+
         if len(options) == 0:
             raise ValueError(
                 f"'{cls.__name__}' has no concrete options"
@@ -146,9 +147,13 @@ class DispatchedModelMixin(pydantic.BaseModel, t.Generic[TypeTV]):
                 union_t,
                 pydantic.Discriminator("class_type")
             ]
-            return pydantic.TypeAdapter(annotated_t)
+            return annotated_t
         else:
-            return pydantic.TypeAdapter(options[0])
+            return options[0]
+
+    @classmethod
+    def build_dispatcher_type_adapter(cls: t.Type[SelfTV]) -> pydantic.TypeAdapter[SelfTV]:
+        return pydantic.TypeAdapter(cls.build_dispatched_ann())
 
 
 DispatchedClsTV = t.TypeVar("DispatchedClsTV", bound=DispatchedModelMixin)
@@ -162,18 +167,6 @@ class DispatchedClassContainer(pydantic.RootModel[DispatchedClsTV], t.Generic[Di
     def __class_getitem__(cls, item: t.Type[DispatchedModelMixin]):
         if not issubclass(item, DispatchedModelMixin):
             raise ValueError(f"item must be subclass of DispatchedModelMixin, but {item} is not")
-
-        options = list(item.iter_concrete_subclasses())
-        if len(options) == 0:
-            raise ValueError(
-                f"'{cls.__name__}' has no concrete options"
-            )
-        if len(options) > 1:
-            union_t = t.Union[tuple(options)]
-            annotated_t = t.Annotated[
-                union_t,
-                pydantic.Discriminator("class_type")
-            ]
-            return super().__class_getitem__(annotated_t)
-        else:
-            return super().__class_getitem__(options[0])
+        return super().__class_getitem__(
+            item.build_dispatched_ann()
+        )
