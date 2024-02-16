@@ -15,7 +15,8 @@ packages = [
 python = ">=3.9"
 
 # serialization and primary class base
-pydantic = { version = "~2", extras = ["dotenv",] }  # noqa - we are not ready to upgrade
+pydantic = { version = "~2", extras = [] }
+pydantic_settings = { version = "*", extras = [] }
 
 # logging
 loguru = { version = "*", extras = [] }
