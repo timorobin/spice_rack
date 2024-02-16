@@ -2,7 +2,6 @@ from __future__ import annotations
 from typing import Any, Optional
 from typing_extensions import Self
 from pydantic import BaseModel
-from pydantic.fields import ModelField
 from pydantic.generics import GenericModel
 
 from spice_rack._base_classes._pydantic._common_methods_mixin import CommonMethods
@@ -63,16 +62,9 @@ class AbstractValueModel(BaseModel, CommonMethods):
         self._post_init_validation()
 
 
-class AbstractGenericValueModel(AbstractValueModel, GenericModel):
+class AbstractGenericValueModel(AbstractValueModel):
     """
     Combines pydantic's v1 GenericModel and our AbstractValueModel.
     Use this to create generic value model classes
     """
-
-    @classmethod
-    def validate(cls, value: Any, field: Optional[ModelField] = None) -> Self:
-        # todo: explain why we do this
-        if isinstance(value, AbstractGenericValueModel):
-            if type(value).__parameters__:
-                value = value.dict()
-        return super().validate(value)
+    ...

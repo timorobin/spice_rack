@@ -5,6 +5,3 @@ from spice_rack._base_classes import (
     _exception as exception,
     _settings_mgmt as settings_mgmt
 )
-
-# just shortening imports
-AbstractSpecialStr = special_types.special_str_base.AbstractSpecialStr

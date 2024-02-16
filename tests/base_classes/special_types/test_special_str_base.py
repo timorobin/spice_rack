@@ -1,26 +1,24 @@
 import pytest
 import json
-from typing import ClassVar, Any
+import typing as t
 
 from pydantic import BaseModel
 
 from spice_rack import base_classes
 
 
-class SomeSpecialStr(
-    base_classes.special_types.special_str_base.AbstractSpecialStr
-):
-    _blocked_vals: ClassVar[list[str]] = ["X", "Y"]
+class SomeSpecialStr(base_classes.special_types.SpecialStrBase):
+    _blocked_vals: t.ClassVar[list[str]] = ["X", "Y"]
 
     @classmethod
-    def _parse_non_str(cls, root_data: Any) -> str:
+    def _parse_non_str(cls, root_data: t.Any) -> str:
         if isinstance(root_data, int):
             return str(root_data)
         else:
             return super()._parse_non_str(root_data)
 
     @classmethod
-    def _format_str(cls, root_data: str) -> str:
+    def _format_str_val(cls, root_data: str) -> str:
         data = root_data.upper()
         if data in cls._blocked_vals:
             raise ValueError(
@@ -36,6 +34,7 @@ def test_special_str_instance():
     assert not isinstance(raw_s, SomeSpecialStr)
 
     special_s = SomeSpecialStr(raw_s)
+
     assert isinstance(special_s, str)
     assert isinstance(special_s, SomeSpecialStr)
 

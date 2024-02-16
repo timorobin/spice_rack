@@ -7,7 +7,4 @@ but when we define a db lookup method that expects SpecialKey, our IDE will tell
 accidentally passing in a random string, not something we guarantee
 to be an instance of SpecialKey
 """
-from spice_rack._base_classes._special_types import (
-    _special_type_mixin as special_type_mixin,
-    _special_str_base as special_str_base,
-)
+from spice_rack._base_classes._special_types._special_str_base import *
