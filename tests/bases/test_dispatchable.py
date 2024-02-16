@@ -154,3 +154,37 @@ def test_schema_gen():
             },
         ],
     }
+
+
+def test_schema_gen_intermediate():
+    schema = AbstractPassthroughChild.build_dispatcher_type_adapter().json_schema()
+    import devtools
+    devtools.debug(schema)
+    assert schema == {
+        "$defs": {
+            "GrandchildClass1": GrandchildClass1.model_json_schema(),
+            "GrandchildClass2": GrandchildClass2.model_json_schema(),
+        },
+        "discriminator": {
+            "mapping": {
+                GrandchildClass1.get_class_type(): '#/$defs/GrandchildClass1',
+                GrandchildClass2.get_class_type(): '#/$defs/GrandchildClass2'
+            },
+            'propertyName': 'class_type',
+        },
+        'oneOf': [
+            {
+                '$ref': '#/$defs/GrandchildClass1',
+            },
+            {
+                '$ref': '#/$defs/GrandchildClass2',
+            },
+        ],
+    }
+
+
+def test_schema_gen_concrete():
+    schema = GrandchildClass1.build_dispatcher_type_adapter().json_schema()
+    import devtools
+    devtools.debug(schema)
+    assert schema == GrandchildClass1.model_json_schema()
