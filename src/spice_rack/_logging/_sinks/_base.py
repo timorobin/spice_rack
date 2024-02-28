@@ -14,16 +14,9 @@ __all__ = (
 )
 
 
-LogSinkTypeTV = t.TypeVar(
-    "LogSinkTypeTV",
-    bound=str
-)
-
-
 class AbstractLogSink(
-    _bases.dispatchable.DispatchedModelMixin[LogSinkTypeTV],
+    _bases.dispatchable.DispatchedModelMixin["base", "root"],
     _bases.value_model.ValueModelBase,
-    t.Generic[LogSinkTypeTV],
 ):
     level: LogLevel = Field(
         description="the level for this logger", default=LogLevel("info")

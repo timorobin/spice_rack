@@ -1,5 +1,6 @@
 from __future__ import annotations
 import typing as t
+
 import typing_extensions as t_ext
 import pydantic
 import inflection
@@ -30,9 +31,22 @@ _LiteralT: t_ext.TypeAlias = type(t.Literal["xxx"])
 ClassMetaTypeT = t.Literal["root", "base", "concrete"]
 
 
+def _json_schema_extra(schema: dict) -> None:
+    """remove default from class id field and add it to the required fields"""
+    schema["properties"]["class_id"].pop("default", None)
+    required_fields = schema.get("required", [])
+    if "class_id" not in required_fields:
+        required_fields = ["class_id", *required_fields]
+    schema["required"] = required_fields
+
+
+_model_config = _base_base.BASE_MODEL_CONFIG
+# _model_config["json_schema_extra"] = _json_schema_extra
+
+
 class DispatchedModelMixin(pydantic.BaseModel, _base_base.CommonModelMethods, t.Generic[TypeTV]):
     """this creates a root of this dispatched class."""
-    model_config = _base_base.BASE_MODEL_CONFIG
+    model_config = _model_config
 
     _cls_id: t.ClassVar[ClassId]
     _cls_meta_type: t.ClassVar[ClassMetaTypeT]
@@ -41,6 +55,7 @@ class DispatchedModelMixin(pydantic.BaseModel, _base_base.CommonModelMethods, t.
     class_id: TypeTV = pydantic.Field(
         description="this will be overwritten in concrete classes to t.Literal['<cls_id_str>]', "
                     "and be str in base classes",
+        default=None
     )
 
     @classmethod
