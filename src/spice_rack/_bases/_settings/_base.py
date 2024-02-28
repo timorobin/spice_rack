@@ -79,7 +79,7 @@ class SettingsBase(pydantic_settings.BaseSettings):
             **kwargs
     ) -> Self:
         env_files: list[str] = []
-        for fp in cls.get_dot_env_files():
+        for fp in cls.get_dot_env_files():  # type: ignore
             env_files.append(str(fp))
 
         if use_cls_env_files:

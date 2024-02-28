@@ -12,7 +12,10 @@ _value_config = pydantic.ConfigDict(
     frozen=True,
     extra="forbid",
 )
-VALUE_MODEL_CONFIG = _base_base.BASE_MODEL_CONFIG.update(_value_config)
+VALUE_MODEL_CONFIG: pydantic.ConfigDict = {
+    **_base_base.BASE_MODEL_CONFIG,
+    **_value_config
+}
 
 
 class ValueModelBase(pydantic.BaseModel, _base_base.CommonModelMethods):

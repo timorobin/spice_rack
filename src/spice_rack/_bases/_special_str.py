@@ -65,6 +65,10 @@ class SpecialStrBase(str):
         """
         return f"{self.__class__.__name__}['{str(self)}']"
 
-    def __eq__(self: SelfTV, other: t.Union[SelfTV, str]) -> bool:
-        other_formatted = self._validate(other)
-        return str(self) == str(other_formatted)
+    def __eq__(self: SelfTV, __value: object) -> bool:
+        try:
+            other_formatted = self._validate(__value)
+            return str(self) == str(other_formatted)
+
+        except Exception:
+            return False

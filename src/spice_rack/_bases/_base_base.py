@@ -26,7 +26,11 @@ class CommonModelMethods(abc.ABC):
             f"'{self.__class__.__name__}' doesn't have iteration implemented"
         )
 
-    def json_dict(self: SelfTV, use_str_fallback: bool = False, **pydantic_kwargs) -> dict:
+    def json_dict(
+            self,
+            use_str_fallback: bool = False,
+            **pydantic_kwargs
+    ) -> dict:
         """
         Converts a pydantic instance to a dict, going through json first.
         This is a convenience function for when you want a dict, but want to use the json
@@ -70,8 +74,13 @@ class CommonModelMethods(abc.ABC):
             fallback = str
         else:
             fallback = None
-        self.model_dump_json()
-        dumped_json = self.__pydantic_serializer__.to_json(
+
+        pydantic_model_inst: pydantic.BaseModel = t.cast(
+            pydantic.BaseModel, self
+        )
+
+        pydantic_model_inst.model_dump_json()
+        dumped_json = pydantic_model_inst.__pydantic_serializer__.to_json(
             self,
             fallback=fallback,
             **pydantic_kwargs,
@@ -97,7 +106,7 @@ class CommonModelMethods(abc.ABC):
         return {}
 
     @classmethod
-    def update_forward_refs(cls: t.Type[SelfTV], **kwargs) -> None:
+    def update_forward_refs(cls, **kwargs) -> None:
         """
         This extends pydantic's builtin hook for updating forward refs.
         We call our special '_import_forward_refs' hook to automatically bring in the things
@@ -113,4 +122,4 @@ class CommonModelMethods(abc.ABC):
         """
         imported_refs = cls._import_forward_refs()
         kwargs.update(imported_refs)
-        return super().update_forward_refs(**kwargs)  # noqa - this will be for a pydantic model class
+        return super().update_forward_refs(**kwargs)  # type: ignore

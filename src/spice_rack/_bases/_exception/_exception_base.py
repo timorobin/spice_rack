@@ -24,8 +24,7 @@ class CustomExceptionBase(Exception, t.Generic[ErrorInfoTV]):
     Note:
         the typing for the
     """
-    # will be set in the '__class_getitem__' method
-    _error_info_cls: t.ClassVar[t.Type[_error_info.ErrorInfoBase]] = None
+    _error_info_cls: t.ClassVar[t.Type[_error_info.ErrorInfoBase]]
 
     _detail: str
     _verbose: bool
@@ -124,7 +123,7 @@ class CustomExceptionBase(Exception, t.Generic[ErrorInfoTV]):
 
     @classmethod
     def get_error_info_cls(cls: t.Type[Self]) -> t.Type[ErrorInfoTV]:
-        return cls._error_info_cls
+        return cls._error_info_cls  # type: ignore
 
     # this should be the generic type, but it isn't working
     # _error_info.ErrorPayload[ErrorInfoTV]:
@@ -144,7 +143,7 @@ class CustomExceptionBase(Exception, t.Generic[ErrorInfoTV]):
         Returns: an ErrorPayload class parameterized with the correct
         concrete subclass of ErrorInfoBase
         """
-        payload_cls = _error_info.ErrorPayload[cls.get_error_info_cls()]
+        payload_cls = _error_info.ErrorPayload[cls.get_error_info_cls()]  # type: ignore
         custom_schema_title = cls.get_error_payload_schema_title()
         if custom_schema_title:
             payload_cls.set_schema_title(custom_schema_title)

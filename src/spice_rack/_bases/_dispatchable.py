@@ -27,7 +27,8 @@ class ClassId(_special_str.SpecialStrBase):
 TypeTV = t.TypeVar("TypeTV", bound=ClassId)
 SelfTV = t.TypeVar("SelfTV", bound="DispatchedModelMixin")
 
-_LiteralT: t_ext.TypeAlias = type(t.Literal["xxx"])
+_LiteralT: t_ext.TypeAlias = type(t.Literal["xxx"])  # type: ignore
+
 ClassMetaTypeT = t.Literal["root", "base", "concrete"]
 
 
@@ -87,28 +88,28 @@ class DispatchedModelMixin(pydantic.BaseModel, _base_base.CommonModelMethods, t.
 
         # this is the base situation so keep passing back
         if t.get_origin(params) == t.Literal:
-            res = super().__class_getitem__(params)  # noqa
+            res = super().__class_getitem__(params)  # type: ignore
 
         # this is a root class, i.e. it a new parent
         elif isinstance(params, t.TypeVar):
-            res = super().__class_getitem__(params)  # noqa
+            res = super().__class_getitem__(params)  # type: ignore
             res._cls_id = ClassId(res.__name__)
 
         else:
             cls_id = ClassId(params[0])
             cls_meta_type = params[1]
             if cls_meta_type == "concrete":
-                literal_t = t.Literal[(str(cls_id),)]  # noqa - this is ok
-                res = super().__class_getitem__(literal_t)
-                model_field = res.model_fields.get("class_id")
+                literal_t = t.Literal[(str(cls_id),)]  # type: ignore
+                res = super().__class_getitem__(literal_t)  # type: ignore
+                model_field = res.model_fields["class_id"]
                 model_field.default = str(cls_id)
 
             else:
-                res = super().__class_getitem__(TypeTV)
+                res = super().__class_getitem__(TypeTV)  # type: ignore
 
             res._cls_id = cls_id
             res._cls_meta_type = cls_meta_type
-            res._parent_cls_id_path += (cls.get_class_type(), )
+            res._parent_cls_id_path += (ClassId(cls.get_class_type()), )
         return res
 
     @classmethod
@@ -159,7 +160,7 @@ class DispatchedModelMixin(pydantic.BaseModel, _base_base.CommonModelMethods, t.
                 f" to initialize instances of this class"
             )
         else:
-            return t.cast(SelfTV, super().model_validate(obj=obj, *args, **kwargs))
+            return t.cast(SelfTV, super().model_validate(obj, *args, **kwargs))
 
     @classmethod
     def build_dispatched_ann(cls: t.Type[SelfTV]) -> t.Type[SelfTV]:
@@ -170,12 +171,12 @@ class DispatchedModelMixin(pydantic.BaseModel, _base_base.CommonModelMethods, t.
                 f"'{cls.__name__}' has no concrete options"
             )
         if len(options) > 1:
-            union_t = t.Union[tuple(options)]
+            union_t = t.Union[tuple(options)]  # type: ignore
             annotated_t = t.Annotated[
-                union_t,
+                union_t,  # type: ignore
                 pydantic.Discriminator("class_id")
             ]
-            return annotated_t
+            return annotated_t  # type: ignore
         else:
             return options[0]
 
@@ -192,9 +193,12 @@ class DispatchedClassContainer(pydantic.RootModel[DispatchedClsTV], t.Generic[Di
         description="the root class ",
     )
 
-    def __class_getitem__(cls, item: t.Type[DispatchedModelMixin]):
+    def __class_getitem__(
+            cls,
+            item: t.Type[DispatchedModelMixin]  # type: ignore
+    ) -> t.Type[DispatchedClsTV]:
         if not issubclass(item, DispatchedModelMixin):
             raise ValueError(f"item must be subclass of DispatchedModelMixin, but {item} is not")
         return super().__class_getitem__(
             item.build_dispatched_ann()
-        )
+        )  # type: ignore
