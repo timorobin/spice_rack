@@ -9,13 +9,13 @@ if TYPE_CHECKING:
 
 
 __all__ = (
-    "log_augmentations_patcher",
+    "log_extra_data_patcher",
 )
 
 
-def log_augmentations_patcher(record: Record) -> None:
+def log_extra_data_patcher(record: Record) -> None:
     """
-    look for the log augmentations in the 'extra' attribute of the loguru record object
+    look for the extra data in the 'extra' attribute of the loguru record object
     and ensure each item is are valid implementation of 'LogAugmentationProtocol'
     then reformat the extra record to contain correct info.
 
@@ -24,11 +24,11 @@ def log_augmentations_patcher(record: Record) -> None:
     """
     extra = record.get("extra", {})
 
-    log_augmentations = []
-    for aug_raw in extra.pop("log_augmentations", []):
+    log_extra_data = []
+    for aug_raw in extra.pop("extra_data", []):
         aug_obj = _container.GeneralLogAugmentation.validate(aug_raw)
         serializable_data = aug_obj.get_serializable_data()
         if serializable_data:
-            log_augmentations.append(aug_obj.get_serializable_data())
-    extra["log_augmentations_dumped"] = pformat(log_augmentations)
+            log_extra_data.append(aug_obj.get_serializable_data())
+    extra["extra_data"] = pformat(log_extra_data)
     return

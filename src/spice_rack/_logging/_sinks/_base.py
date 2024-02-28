@@ -1,12 +1,11 @@
 from __future__ import annotations
 import typing as t
 from abc import abstractmethod
-from typing import TYPE_CHECKING
 from pydantic import Field
-from spice_rack import _base_classes
+from spice_rack import _bases
 from spice_rack._logging._log_level import LogLevel
 
-if TYPE_CHECKING:
+if t.TYPE_CHECKING:
     from loguru import Logger
 
 
@@ -15,18 +14,19 @@ __all__ = (
 )
 
 
-class LogSinkTypeEnum(_base_classes.pydantic.dispatchable.ConcreteClassIdEnumBase):
-    SYS = "sys"
-    FILE_SINK = "file_sink"
+LogSinkTypeTV = t.TypeVar(
+    "LogSinkTypeTV",
+    bound=str
+)
 
 
 class AbstractLogSink(
-    _base_classes.pydantic.dispatchable.DispatchableModelMixin[LogSinkTypeEnum],
-    _base_classes.pydantic.AbstractValueModel,
-    is_new_root=True
+    _bases.dispatchable.DispatchedModelMixin[LogSinkTypeTV],
+    _bases.value_model.ValueModelBase,
+    t.Generic[LogSinkTypeTV],
 ):
     level: LogLevel = Field(
-        description="the level for this logger", default=LogLevel.INFO
+        description="the level for this logger", default=LogLevel("info")
     )
     backtrace: bool = Field(
         description="if true, we automatically include tracebacks"
@@ -51,18 +51,62 @@ class AbstractLogSink(
                     "passed in when setting up the sink",
         default=False
     )
-    ignore_log_augmentations: bool = Field(
-        description="if true we ignore all log augmentation", default=False
+    include_extra_data: bool = Field(
+        description="if false, we do not include extra data for this sink", default=True
+    )
+    custom_loguru_fmat: t.Optional[str] = Field(
+        description="an optional field you can use to manually specify the loguru format for this "
+                    "sink",
+        default=None
     )
 
+    def special_repr(self) -> str:
+        """get a pretty str showing simple info about this logger"""
+        return f"LoggerSink[type={self.class_id}]"
+
+    def _get_default_loguru_format(self) -> str:
+        """
+        the loguru fmat to use for the logger. see: loguru docs on this.
+        you can also overwrite this method to customize how a specific sink builds
+        their default format str
+
+        Returns:
+            str: a loguru format
+        """
+        time_section = "<green>{time:YYYY-MM-DD at HH:mm:ss}</green>"
+        level_section = "<blue>{level: <8}</>"
+        service_name_section = "<magenta>{extra[service_name]: <15}</magenta>"
+        line_num_section = "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan>"
+        message_section = "<green>{message}</>"
+        extra_data_section = "<yellow>{extra[" + "{extra_data}" + "]}</yellow>"
+
+        sections = [
+            time_section, level_section, service_name_section, line_num_section,
+            message_section
+        ]
+
+        if not self.include_extra_data:
+            sections.append(extra_data_section)
+
+        format_str = " | ".join(sections)
+        return format_str
+
+    def get_loguru_format(self) -> str:
+        if self.custom_loguru_fmat is not None:
+            return self.custom_loguru_fmat
+        else:
+            return self._get_default_loguru_format()
+
+    def _get_loguru_kwargs(self) -> dict:
+        """build a dict of loguru setup kwargs from this sink"""
+        return {
+            "level": str(self.level).upper(),
+            "format": self.get_loguru_format(),
+            "serialize": self.struct_log,
+            "backtrace": self.backtrace,
+            "diagnose": self.diagnose
+        }
+
     @abstractmethod
-    def setup(self, logger: Logger, **loguru_kwargs) -> None:
+    def setup(self, logger: Logger, **custom_loguru_kwargs) -> None:
         raise NotImplementedError()
-
-    def __repr__(self) -> str:
-        return f"{self.class_id}[level='{self.level.value}']"
-
-    @classmethod
-    @abstractmethod
-    def get_cls_id(cls) -> t.Optional[LogSinkTypeEnum]:
-        return None

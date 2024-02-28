@@ -32,7 +32,7 @@ ClassMetaTypeT = t.Literal["root", "base", "concrete"]
 
 class DispatchedModelMixin(pydantic.BaseModel, _base_base.CommonModelMethods, t.Generic[TypeTV]):
     """this creates a root of this dispatched class."""
-    config = _base_base.BASE_MODEL_CONFIG
+    model_config = _base_base.BASE_MODEL_CONFIG
 
     _cls_id: t.ClassVar[ClassId]
     _cls_meta_type: t.ClassVar[ClassMetaTypeT]
@@ -71,11 +71,15 @@ class DispatchedModelMixin(pydantic.BaseModel, _base_base.CommonModelMethods, t.
         res: t.Type[SelfTV]
 
         # this is the base situation so keep passing back
-        if isinstance(params, t.TypeVar) or t.get_origin(params) == t.Literal:
+        if t.get_origin(params) == t.Literal:
             res = super().__class_getitem__(params)  # noqa
 
-        else:
+        # this is a root class, i.e. it a new parent
+        elif isinstance(params, t.TypeVar):
+            res = super().__class_getitem__(params)  # noqa
+            res._cls_id = ClassId(res.__name__)
 
+        else:
             cls_id = ClassId(params[0])
             cls_meta_type = params[1]
 
@@ -92,7 +96,7 @@ class DispatchedModelMixin(pydantic.BaseModel, _base_base.CommonModelMethods, t.
 
             res._cls_id = cls_id
             res._cls_meta_type = cls_meta_type
-            res._parent_cls_id_path += (cls._cls_id, )
+            res._parent_cls_id_path += (cls.get_class_type(), )
         return res
 
     @classmethod
@@ -101,7 +105,12 @@ class DispatchedModelMixin(pydantic.BaseModel, _base_base.CommonModelMethods, t.
     
     @classmethod
     def get_class_type(cls) -> str:
-        return str(cls._cls_id)
+        if not hasattr(cls, "_cls_id"):
+            raise ValueError(
+                f"'{cls.__name__}' didn't set their '_cls_id' class attribute"
+            )
+        else:
+            return cls._cls_id
 
     @classmethod
     def _is_parameterized_passthrough(cls) -> bool:

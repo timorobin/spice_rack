@@ -1,9 +1,9 @@
 from __future__ import annotations
-from typing import Optional, Union, ClassVar, Literal
+import typing as t
 import datetime as dt
 import dateparser
+import pydantic
 
-from spice_rack import _base_classes
 from spice_rack._timestamp._tz_key import TimeZoneKey
 
 
@@ -11,34 +11,27 @@ __all__ = (
     "Timestamp",
 )
 
-_SpecialTypeMixin = _base_classes.special_types.special_type_mixin.SpecialTypeMixin
 
-
-_TzKeyT = Union[str, TimeZoneKey, Literal["local"]]
-
-_TimestampInitValueT = Union[str, dt.datetime, dt.date]
-
+_TzKeyT = t.Union[str, TimeZoneKey, t.Literal["local"]]
+_TimestampInitValueT = t.Union[str, dt.datetime, dt.date]
 _PythonTimestampT = float  # seconds from epoch with decimals
 
 
-class Timestamp(
-    _SpecialTypeMixin[_TimestampInitValueT],
-    int
-):
+class Timestamp(pydantic.RootModel[float]):
     """
     special subclass of 'int' that contains the utc millisecond from epoch.
     """
-    _default_assumed_tz: ClassVar[TimeZoneKey] = TimeZoneKey("UTC")
+    _default_assumed_tz: t.ClassVar[TimeZoneKey] = TimeZoneKey("UTC")
     """timezone we assume when parsing raw data into this object"""
     # _default_tz: ClassVar[TimeZoneKey] = TimeZoneKey.local()
 
     def to_python_timestamp(self) -> _PythonTimestampT:
         # convert to seconds from epoch
-        return float(self) / 1000
+        return float(self.root) / 1000
 
     def to_dt_obj(
             self,
-            with_tz: Optional[_TzKeyT] = None
+            with_tz: t.Optional[_TzKeyT] = None
     ) -> dt.datetime:
         res: dt.datetime
 
@@ -61,7 +54,7 @@ class Timestamp(
 
     def to_iso_str(
             self,
-            with_tz: Optional[_TzKeyT] = None
+            with_tz: t.Optional[_TzKeyT] = None
     ) -> str:
         """
         returns the datetime object as a formatted str
@@ -78,7 +71,7 @@ class Timestamp(
     def to_pretty_str(
             self,
             fmat: str = "%x %X %Z",
-            with_tz: Optional[_TzKeyT] = "local"
+            with_tz: t.Optional[_TzKeyT] = "local"
     ) -> str:
         """
         returns the datetime object as a formatted str, in a pretty, super readable format.
@@ -100,7 +93,7 @@ class Timestamp(
         dt_obj = self.to_dt_obj(with_tz=with_tz)
         return dt_obj.strftime(fmat)
 
-    def special_repr(self, with_tz: Optional[_TzKeyT] = None) -> str:
+    def special_repr(self, with_tz: t.Optional[_TzKeyT] = None) -> str:
         return f"{self.__class__.__name__}['{self.to_iso_str(with_tz=with_tz)}']"
 
     @classmethod

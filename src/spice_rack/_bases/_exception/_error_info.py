@@ -26,7 +26,7 @@ class ErrorInfoBase(ValueModelBase):
 ErrorInfoTV = t.TypeVar("ErrorInfoTV", bound=ErrorInfoBase)
 
 
-class ErrorPayload(ValueModelBase[ErrorInfoTV], t.Generic[ErrorInfoTV]):
+class ErrorPayload(ValueModelBase, t.Generic[ErrorInfoTV]):
     """
     Generic payload class holding the error detail string, and the info object.
     The ErrorInfoTV type var dictates the unique

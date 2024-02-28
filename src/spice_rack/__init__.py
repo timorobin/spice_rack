@@ -17,3 +17,9 @@
 # AbstractSettings = base_classes.settings_mgmt.AbstractSettings
 # LoggerT = logging.LoggerT
 # get_logger = logging.get_logger
+
+
+from spice_rack import (
+    _bases as bases,
+    _logging as logging,
+)
