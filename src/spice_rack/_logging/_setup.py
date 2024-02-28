@@ -1,4 +1,5 @@
 from __future__ import annotations
+import typing as t
 import logging
 from loguru import logger, _logger  # noqa
 import warnings
@@ -15,8 +16,9 @@ __all__ = (
 
 def configure_sink_for_service(
         sink: _sinks.AbstractLogSink,
-        **custom_loguru_kwargs,
+        custom_loguru_kwargs: t.Optional[t.Dict[str, t.Any]] = None,
 ) -> None:
+    custom_loguru_kwargs = {} if not custom_loguru_kwargs else custom_loguru_kwargs
     try:
         sink.setup(logger=logger, **custom_loguru_kwargs)
 
@@ -80,7 +82,7 @@ def configure_logging_for_uvicorn_server(
     # this line was his, we configure from our setting object
     # get_logger().configure(handlers=[{"sink": sys.stdout, "serialize": JSON_LOGS}])
     for sink in sinks:
-        configure_sink_for_service(sink=sink, service_name=service_name)
+        configure_sink_for_service(sink=sink)
 
     from spice_rack._logging._logger_getter import get_logger
     return get_logger(specified_service_name=service_name, persist_service_name=True)
@@ -100,7 +102,7 @@ def configure_logging_for_python_worker(
         raise e
 
     for sink in sinks:
-        configure_sink_for_service(sink=sink, service_name=service_name)
+        configure_sink_for_service(sink=sink)
 
     from spice_rack._logging._logger_getter import get_logger
     return get_logger(specified_service_name=service_name, persist_service_name=True)

@@ -71,14 +71,14 @@ class AbstractLogSink(
         service_name_section = "<magenta>{extra[service_name]: <15}</magenta>"
         line_num_section = "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan>"
         message_section = "<green>{message}</>"
-        extra_data_section = "<yellow>{extra[" + "{extra_data}" + "]}</yellow>"
+        extra_data_section = "<yellow>extra data: {extra[" + "extra_data" + "]}</yellow>"
 
         sections = [
             time_section, level_section, service_name_section, line_num_section,
             message_section
         ]
 
-        if not self.include_extra_data:
+        if self.include_extra_data:
             sections.append(extra_data_section)
 
         format_str = " | ".join(sections)

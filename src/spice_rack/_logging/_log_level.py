@@ -44,8 +44,8 @@ class LogLevel(pydantic.RootModel[_LogLevelLiteralT]):
     @pydantic.model_validator(mode="before")
     def _ensure_lowercase(cls, data: t.Any) -> t.Any:
         if isinstance(data, str):
-            data = data.lower()
-
+            if not data.islower():
+                data = data.lower()
         return data
 
     def __str__(self) -> _LogLevelStrLiteralT:
