@@ -29,5 +29,4 @@ class SysLogSink(_base.AbstractLogSink["sys"]):
         loguru_kwargs = self._get_loguru_kwargs()
         loguru_kwargs.update(custom_loguru_kwargs)
         assert std_dest
-        logger.add()
         logger.add(std_dest, **loguru_kwargs)
