@@ -15,7 +15,7 @@ __all__ = (
 )
 
 
-SettingsInstTV = t.TypeVar("SettingsInstTV", bound="AbstractSettings")
+SettingsInstTV = t.TypeVar("SettingsInstTV", bound="SettingsBase")
 
 
 class SingletonSource(_base.CustomSettingSourceBase):

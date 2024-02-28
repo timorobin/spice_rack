@@ -14,4 +14,4 @@ def test_sys_out(sys_out_sink):
     logger.info("aaaa")
 
     logger.info("aaa", extra_data=[{"a": 1}])
-    raise ValueError("ZZZ")
+    # raise ValueError("ZZZ")

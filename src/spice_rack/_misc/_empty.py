@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Literal
 from typing_extensions import TypeAlias
 
-from pydantic import BaseModel, Field, RootModel
+from pydantic import RootModel
 
 
 __all__ = (

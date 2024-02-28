@@ -5,7 +5,7 @@ from abc import abstractmethod
 import pydantic_settings
 
 __all__ = (
-    "CustomSettingSourceBase"
+    "CustomSettingSourceBase",
 )
 
 

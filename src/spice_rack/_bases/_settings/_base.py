@@ -10,7 +10,7 @@ __all__ = ("SettingsBase", )
 
 
 # PyCharm IDE works if we do this rather than Self from std lib
-Self = t.TypeVar("Self", bound="AbstractSettings")
+Self = t.TypeVar("Self", bound="SettingsBase")
 
 
 class SettingsBase(pydantic_settings.BaseSettings):

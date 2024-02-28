@@ -43,7 +43,6 @@ class Logger(_bases.value_model.ValueModelBase):
 
     @property
     def loguru_logger(self) -> _logger.Logger:
-        from loguru import logger
         return logger
 
     @staticmethod

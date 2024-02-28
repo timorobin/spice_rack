@@ -41,7 +41,7 @@ def _json_schema_extra(schema: dict) -> None:
 
 
 _model_config = _base_base.BASE_MODEL_CONFIG
-# _model_config["json_schema_extra"] = _json_schema_extra
+_model_config["json_schema_extra"] = _json_schema_extra
 
 
 class DispatchedModelMixin(pydantic.BaseModel, _base_base.CommonModelMethods, t.Generic[TypeTV]):
@@ -55,7 +55,7 @@ class DispatchedModelMixin(pydantic.BaseModel, _base_base.CommonModelMethods, t.
     class_id: TypeTV = pydantic.Field(
         description="this will be overwritten in concrete classes to t.Literal['<cls_id_str>]', "
                     "and be str in base classes",
-        default=None
+        default=None,
     )
 
     @classmethod
@@ -97,14 +97,11 @@ class DispatchedModelMixin(pydantic.BaseModel, _base_base.CommonModelMethods, t.
         else:
             cls_id = ClassId(params[0])
             cls_meta_type = params[1]
-
-            cls_id_or_auto: t.Union[str, t.Literal["auto"]]
-            cls_type_or_auto: t.Union[ClassMetaTypeT, t.Literal["auto"]]
-
             if cls_meta_type == "concrete":
                 literal_t = t.Literal[(str(cls_id),)]  # noqa - this is ok
                 res = super().__class_getitem__(literal_t)
-                res.model_fields.get("class_id").default = str(cls_id)
+                model_field = res.model_fields.get("class_id")
+                model_field.default = str(cls_id)
 
             else:
                 res = super().__class_getitem__(TypeTV)
@@ -125,7 +122,7 @@ class DispatchedModelMixin(pydantic.BaseModel, _base_base.CommonModelMethods, t.
                 f"'{cls.__name__}' didn't set their '_cls_id' class attribute"
             )
         else:
-            return cls._cls_id
+            return str(cls._cls_id)
 
     @classmethod
     def _is_parameterized_passthrough(cls) -> bool:
@@ -139,8 +136,8 @@ class DispatchedModelMixin(pydantic.BaseModel, _base_base.CommonModelMethods, t.
     def iter_concrete_subclasses(cls: t.Type[SelfTV]) -> t.Iterator[t.Type[SelfTV]]:
         if cls.__name__ == DispatchedModelMixin.__name__:
             raise ValueError(
-                f"don't call iter_concrete_subclasses on the DispatchedModelMixin class "
-                f"itself, only on root classes built from it."
+                "don't call iter_concrete_subclasses on the DispatchedModelMixin class "
+                "itself, only on root classes built from it."
             )
         if cls.is_concrete():
             yield cls
