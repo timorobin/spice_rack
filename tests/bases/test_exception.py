@@ -2,15 +2,15 @@ import pytest
 from parametrization import Parametrization as PytestParamExt
 from typing import Optional, Any, Union
 
-from spice_rack import exception_base, pydantic_bases
+from spice_rack import bases
 
 
-class _SimpleErrorInfo(exception_base.ErrorInfoBase):
+class _SimpleErrorInfo(bases.exceptions.ErrorInfoBase):
     num: int
     arr: list[str]
 
 
-class _SimpleException(exception_base.CustomExceptionBase[_SimpleErrorInfo]):
+class _SimpleException(bases.exceptions.CustomExceptionBase[_SimpleErrorInfo]):
     def __init__(
             self,
             error_info: Union[_SimpleErrorInfo, dict],
@@ -35,7 +35,7 @@ def test_payload_cls_getter():
     assert _SimpleException.get_error_payload_cls()
 
 
-class _ExceptionTestScenario(pydantic_bases.AbstractValueModel):
+class _ExceptionTestScenario(bases.value_model.ValueModelBase):
     name: str
     detail: str = "some simple error"
     num: int = 2
@@ -101,7 +101,7 @@ def test_formatting(scenario: _ExceptionTestScenario) -> None:
     assert exc_inst_info_obj.error_info == exc_inst_terse.error_info
 
 
-class _BadInitScenario(pydantic_bases.AbstractValueModel):
+class _BadInitScenario(bases.value_model.ValueModelBase):
     name: str
     detail: str = "some simple error"
     num: Any = 2
@@ -120,7 +120,7 @@ class _BadInitScenario(pydantic_bases.AbstractValueModel):
     ),
 )
 def test_exception_bad_init(scenario: _BadInitScenario):
-    with pytest.raises(exception_base.CustomExceptionInitializationError):
+    with pytest.raises(bases.exceptions.CustomExceptionInitializationError):
         _SimpleException(
             error_info=dict(
                 num=scenario.num,
@@ -129,7 +129,7 @@ def test_exception_bad_init(scenario: _BadInitScenario):
             extra_info=scenario.extra_info,
             verbose=True
         )
-    with pytest.raises(exception_base.CustomExceptionInitializationError):
+    with pytest.raises(bases.exceptions.CustomExceptionInitializationError):
         _SimpleException(
             error_info=dict(
                 num=scenario.num,
@@ -142,7 +142,7 @@ def test_exception_bad_init(scenario: _BadInitScenario):
 
 def test_no_error_info_class_specified():
     with pytest.raises(ValueError):
-        class _BadException(exception_base.CustomExceptionBase):
+        class _BadException(bases.exceptions.CustomExceptionBase):
             ...
         from devtools import debug
         debug(_BadException.get_error_info_cls())

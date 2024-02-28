@@ -5,6 +5,7 @@ import dateparser
 import pydantic
 
 from spice_rack._timestamp._tz_key import TimeZoneKey
+from spice_rack import _logging
 
 
 __all__ = (
@@ -13,11 +14,11 @@ __all__ = (
 
 
 _TzKeyT = t.Union[str, TimeZoneKey, t.Literal["local"]]
-_TimestampInitValueT = t.Union[str, dt.datetime, dt.date]
-_PythonTimestampT = float  # seconds from epoch with decimals
+_TimestampInitValueT = t.Union[float, str, dt.datetime, dt.date]
+_PythonTimestampT = float  # seconds from epoch with decimals as sub-second measurements
 
 
-class Timestamp(pydantic.RootModel[float]):
+class Timestamp(pydantic.RootModel[int], _logging.log_extra.LoggableObjMixin):
     """
     special subclass of 'int' that contains the utc millisecond from epoch.
     """
@@ -26,7 +27,7 @@ class Timestamp(pydantic.RootModel[float]):
     # _default_tz: ClassVar[TimeZoneKey] = TimeZoneKey.local()
 
     def to_python_timestamp(self) -> _PythonTimestampT:
-        # convert to seconds from epoch
+        # convert to seconds from epoch, posix timestamp
         return float(self.root) / 1000
 
     def to_dt_obj(
@@ -145,33 +146,31 @@ class Timestamp(pydantic.RootModel[float]):
     ) -> int:
         raise ValueError("initializing from a float is not currently supported")
 
-    @classmethod
-    def _validate(cls, value: _TimestampInitValueT) -> float:
+    @pydantic.model_validator(mode="before")
+    def _validate(cls, value: _TimestampInitValueT) -> int:
+        int_data: int
+
         if isinstance(value, str):
-            float_data = cls._from_str(value, assumed_tz=cls._default_assumed_tz)
+            int_data = cls._from_str(value, assumed_tz=cls._default_assumed_tz)
 
         elif isinstance(value, dt.datetime):
-            float_data = cls._from_datetime_obj(value, assumed_tz=cls._default_assumed_tz)
+            int_data = cls._from_datetime_obj(value, assumed_tz=cls._default_assumed_tz)
 
         elif isinstance(value, dt.date):
-            float_data = cls._from_date_obj(value, assumed_tz=cls._default_assumed_tz)
+            int_data = cls._from_date_obj(value, assumed_tz=cls._default_assumed_tz)
 
         # elif isinstance(value, float):
         #     float_data = cls._from_float(value, assumed_tz=cls._default_assumed_tz)
 
         elif isinstance(value, (int, cls)):
-            float_data = value
+            int_data = value
 
         else:
             raise ValueError(
                 f"'{cls.__name__}' doesn't support data of type {type(value)}"
             )
 
-        return float_data
-
-    # def __new__(cls, v: _TimestampInitValueT) -> Timestamp:
-    #     v = cls._validate(v)
-    #     return cast(Timestamp, super().__new__(cls, v))
+        return int_data
 
     @classmethod
     def now(cls) -> Timestamp:
@@ -183,3 +182,10 @@ class Timestamp(pydantic.RootModel[float]):
         """get the current date, as a Timestamp object."""
         dt_obj = dt.datetime.today()
         return Timestamp(dt_obj)
+
+    def format_for_logger(self) -> _logging.log_extra.ExtraLogData:
+        return _logging.log_extra.ExtraLogData(
+            key="timestamp",
+            desc="a timestamp object",
+            data=self.to_iso_str()
+        )

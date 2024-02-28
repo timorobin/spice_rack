@@ -3,9 +3,8 @@ from pydantic import ValidationError, BaseModel
 from devtools import debug
 
 
-# todo: fix import
-from spice_rack import _bases
-dispatchable = _bases.dispatchable
+from spice_rack import bases
+dispatchable = bases.dispatchable
 
 
 class AbstractClass(dispatchable.DispatchedModelMixin["base", "root"]):

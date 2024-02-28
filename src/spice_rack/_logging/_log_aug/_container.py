@@ -50,6 +50,15 @@ class ExtraLogData(_bases.value_model.ValueModelBase):
             else:
                 data = {"key": "some_str_data", "data": data}
 
+        # wrap exceptions in our internal wrapper to get better formatting
+        elif isinstance(data, Exception):
+            from spice_rack import _bases
+            wrapped_exc = _bases.exceptions.WrappedExternalException.model_validate(data)
+            data = {
+                "key": "logged_exception",
+                "data": wrapped_exc.json_dict(use_str_fallback=True)
+            }
+
         # we just specify its type and treat it as data
         else:
             data = {"key": "some_data", "data": data}
