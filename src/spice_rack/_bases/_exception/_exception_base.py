@@ -24,7 +24,7 @@ class CustomExceptionBase(Exception, t.Generic[ErrorInfoTV]):
     Note:
         the typing for the
     """
-    _error_info_cls: t.ClassVar[t.Type[_error_info.ErrorInfoBase]]
+    _error_info_cls: t.ClassVar[t.Type[_error_info.ErrorInfoBase]] = None  # type: ignore
 
     _detail: str
     _verbose: bool
