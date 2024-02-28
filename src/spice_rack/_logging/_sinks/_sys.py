@@ -1,13 +1,11 @@
 from __future__ import annotations
-
 import typing as t
-from typing import Literal, TYPE_CHECKING
 import sys
 from pydantic import Field
 
 from spice_rack._logging._sinks import _base
 
-if TYPE_CHECKING:
+if t.TYPE_CHECKING:
     from loguru import Logger
 
 __all__ = (
@@ -15,8 +13,8 @@ __all__ = (
 )
 
 
-class SysLogSink(_base.AbstractLogSink):
-    channel: Literal["stdout", "stderr"] = "stdout"
+class SysLogSink(_base.AbstractLogSink["sys", "concrete"]):
+    channel: t.Literal["stdout", "stderr"] = "stdout"
     struct_log: bool = Field(
         description="if true, we serialize the logs for usage in a structured way. "
                     "this field is used when building the loguru_kwargs "
@@ -25,11 +23,10 @@ class SysLogSink(_base.AbstractLogSink):
         default=False,
     )
 
-    @classmethod
-    def get_cls_id(cls) -> t.Optional[_base.LogSinkTypeEnum]:
-        return _base.LogSinkTypeEnum.SYS
-
-    def setup(self, logger: Logger, **loguru_kwargs) -> None:
+    def setup(self, logger: Logger, **custom_loguru_kwargs) -> None:
         std_dest = getattr(sys, self.channel)
+
+        loguru_kwargs = self._get_loguru_kwargs()
+        loguru_kwargs.update(custom_loguru_kwargs)
         assert std_dest
         logger.add(std_dest, **loguru_kwargs)

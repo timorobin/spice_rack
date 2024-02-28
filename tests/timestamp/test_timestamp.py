@@ -10,7 +10,7 @@ from spice_rack import timestamp
 def test_from_str():
 
     raw_str = "jan 5, 2022 1:15 PM EST"
-    obj = timestamp.Timestamp(raw_str)
+    obj = timestamp.Timestamp.model_validate(raw_str)
 
     expected_dt_obj = dt.datetime(
         year=2022, day=5, month=1, hour=13, minute=15, tzinfo=zoneinfo.ZoneInfo("EST")

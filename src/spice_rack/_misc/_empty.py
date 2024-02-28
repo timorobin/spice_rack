@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Literal
 from typing_extensions import TypeAlias
 
-from pydantic import BaseModel, Field
+from pydantic import RootModel
 
 
 __all__ = (
@@ -11,18 +11,14 @@ __all__ = (
 )
 
 
-class _Empty(BaseModel):
+class _Empty(RootModel):
     """
     class to represent a null, always used as a default.
     This is validated as a pydantic field annotation, or within one.
     """
-    __root__: Literal[
+    root: Literal[
         "EMPTY_0c616003538843f2a01f9d6029a3ea65"
-    ] = Field(
-        description="ignore this value",
-        default="EMPTY_0c616003538843f2a01f9d6029a3ea65",
-        const=True
-    )
+    ] = "EMPTY_0c616003538843f2a01f9d6029a3ea65"
 
     def __hash__(self) -> int:
         return hash("EMPTY_0c616003538843f2a01f9d6029a3ea65")

@@ -3,7 +3,7 @@ from typing import Optional
 import zoneinfo
 import tzlocal
 
-from spice_rack import _base_classes
+from spice_rack import _bases
 
 
 __all__ = (
@@ -13,7 +13,7 @@ __all__ = (
 
 
 # todo: specify these or find another way
-class TimeZoneKey(_base_classes.AbstractSpecialStr):
+class TimeZoneKey(_bases.special_str.SpecialStrBase):
     """
     a special string representing a timezone.
 

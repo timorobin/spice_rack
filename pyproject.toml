@@ -12,10 +12,14 @@ packages = [
 
 
 [tool.poetry.dependencies]
-python = "~3.9"
+python = ">=3.9"
 
 # serialization and primary class base
-pydantic = { version = "~1", extras = ["dotenv",] }  # noqa - we are not ready to upgrade
+pydantic = { version = "~2", extras = [] }
+pydantic_settings = { version = "*", extras = [] }
+
+# for file path works
+fsspec = { version = "*", extras = [] }
 
 # logging
 loguru = { version = "*", extras = [] }
@@ -25,8 +29,8 @@ stackprinter = { version = "*", extras = [] }
 dateparser = { version = "*", extras = [] }
 
 # misc
-case-converter = { version = "*", extras = [] }
 devtools = { version = "*", extras = ["pygments"] }
+inflection = { version = "*", extras = [] }
 
 # why?
 tabulate = { version = "*", extras = [] }
