@@ -34,8 +34,11 @@ jobs:
     - name: Run linting
       run: poetry run ruff check .
 
+#    - name: Run mypy
+#      run: poetry run mypy src/
+
     - name: Run Tests and Coverage
-      run: poetry run coverage run -m --source=src pytest tests/
+      run: poetry run coverage run -m --source=src pytest tests/ --doctest-modules  --pyargs src/
 
     - name: Build Coverage XML
       run: poetry run coverage xml
