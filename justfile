@@ -9,7 +9,7 @@ build-lockfile:
     poetry lock -vv
 
 
-build-dev-env:
+dev-env-setup:
     just build-lockfile
     poetry install
 
@@ -26,4 +26,3 @@ all-tests:
     poetry run ruff check .
     # poetry run mypy src/
     poetry run pytest tests/ --doctest-modules  --pyargs src/
-    

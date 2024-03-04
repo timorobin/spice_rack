@@ -12,7 +12,7 @@ packages = [
 
 
 [tool.poetry.dependencies]
-python = ">=3.9"
+python = "~3.9"
 
 # serialization and primary class base
 pydantic = { version = "~2", extras = [] }
@@ -52,7 +52,7 @@ pytest-asyncio = { version = "*", extras = [] }
 # docs
 sphinx = { version = "*", extras = [] }
 sphinxcontrib-napoleon = { version = "*", extras = [] }
-autodoc_pydantic = { version = "*", extras = [] }
+autodoc_pydantic = { version = "~2", extras = [] }
 sphinx_rtd_theme = { version = "*", extras = [] }
 
 # jupyter lab
