@@ -1,0 +1,43 @@
+name: build docs and deploy on a branch
+
+on:
+  push:
+    branches:
+      - main
+      -
+jobs:
+
+  build_docs:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9"]
+
+    steps:
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install poetry
+        uses: snok/install-poetry@v1
+
+      - name: build backend docs
+        run: |
+              poetry install
+              cd docs
+              poetry run make html
+
+      - name: Deploy, only if on main
+        if: github.ref == 'refs/heads/main'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
