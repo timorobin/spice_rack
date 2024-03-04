@@ -4,13 +4,8 @@ set dotenv-load := true
 default:
     just --list
 
-
-build-lockfile:
-    poetry lock -vv
-
-
 dev-env-setup:
-    just build-lockfile
+    poetry lock -vv
     poetry install
 
 
