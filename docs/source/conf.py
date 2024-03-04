@@ -12,14 +12,14 @@
 
 import os
 import sys
-from pathlib import Path
+# from pathlib import Path
 
 sys.path.insert(0, os.path.abspath('../src/spice_rack'))
 
 # add path to our own extensions
-_ext_path = Path(__file__).parent.parent.joinpath("_exts/")
-assert _ext_path.exists()
-sys.path.append(str(_ext_path))
+# _ext_path = Path(__file__).parent.parent.joinpath("_exts/")
+# assert _ext_path.exists()
+# sys.path.append(str(_ext_path))
 
 
 # -- Project information -----------------------------------------------------
