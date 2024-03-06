@@ -43,6 +43,10 @@ class ExtraLogData(_bases.value_model.ValueModelBase):
         if isinstance(data, LoggableObjMixin):
             data = data.format_for_logger()
 
+        # check types
+        if isinstance(data, ExtraLogData):
+            data = data
+
         elif isinstance(data, str):
             if data == TRACEBACK_AUG_STR_ID:
                 tb_data = stackprinter.format(show_vals=None, style="plaintext")
