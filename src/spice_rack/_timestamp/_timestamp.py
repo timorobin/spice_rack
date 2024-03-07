@@ -183,7 +183,7 @@ class Timestamp(pydantic.RootModel[int], _logging.log_extra.LoggableObjMixin):
         dt_obj = dt.datetime.today()
         return Timestamp(dt_obj)
 
-    def format_for_logger(self) -> _logging.log_extra.ExtraLogData:
+    def __get_logger_data__(self) -> _logging.log_extra.ExtraLogData:
         return _logging.log_extra.ExtraLogData(
             key="timestamp",
             desc="a timestamp object",
