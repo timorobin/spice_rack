@@ -11,7 +11,7 @@ if t.TYPE_CHECKING:
 __all__ = ("FilePathLogSink",)
 
 
-class FilePathLogSink(AbstractLogSink["file", "concrete"]):
+class FilePathLogSink(AbstractLogSink, dispatch_param="file"):
     """
     see https://loguru.readthedocs.io/en/stable/overview.html
     #easier-file-logging-with-rotation-retention-compression

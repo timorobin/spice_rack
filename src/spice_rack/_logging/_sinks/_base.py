@@ -15,7 +15,7 @@ __all__ = (
 
 
 class AbstractLogSink(
-    _bases.dispatchable.DispatchedModelMixin["base", "root"],
+    _bases.dispatchable.DispatchedModelMixin,
     _bases.value_model.ValueModelBase,
 ):
     level: LogLevel = Field(

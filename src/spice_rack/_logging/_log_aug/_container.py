@@ -41,7 +41,7 @@ class ExtraLogData(_bases.value_model.ValueModelBase):
         # if we find formatting logic, use that
         from spice_rack._logging._log_aug._loggable_mixin import LoggableObjMixin
         if isinstance(data, LoggableObjMixin):
-            data = data.format_for_logger()
+            data = data.__format_for_logger__()
 
         # check types
         if isinstance(data, ExtraLogData):
