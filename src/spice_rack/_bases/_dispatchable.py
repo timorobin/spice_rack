@@ -1,6 +1,7 @@
 from __future__ import annotations
 import typing as t
 import enum
+import types
 import typing_extensions as t_ext
 import pydantic
 import pydantic_core
@@ -19,24 +20,25 @@ __all__ = (
 
 class ClassId(_special_str.SpecialStrBase):
     """a class id for a member of the dispatched family"""
-
-    @classmethod
-    def _format_str_val(cls, root_data: str) -> str:
-        return inflection.underscore(root_data)
+    ...
 
 
-TypeTV = t.TypeVar("TypeTV", bound=ClassId)
+ClassIdPathT = t.Tuple[ClassId, ...]
+
+
 SelfTV = t.TypeVar("SelfTV", bound="DispatchedModelMixin")
 
 _LiteralT: t_ext.TypeAlias = type(t.Literal["xxx"])  # type: ignore
 
 
-class ClassMetaTypeEnum(enum.Enum):
+class ClassType(enum.Enum):
     """
     the 'type' of class possible when within a family tree of DispatchedModelMixin
     """
     SUPER_ROOT = "super_root"
-    """only the actual 'DispatchedModelMixin' is this"""
+    """
+    sits above the family tree we are creating. The entire 
+    """
 
     ROOT = "root"
     """the first child of DispatchedModelMixin and potentially further roots."""
@@ -54,9 +56,12 @@ class _ClassIdStr(str):
 class _PydanticSchemaGenerator(pydantic.GenerateSchema):
     _specified_class_id: t.ClassVar[t.Optional[str]] = None
 
-    def __init_subclass__(cls, class_id: t.Optional[str] = None, **kwargs):
-        super().__init_subclass__(**kwargs)
-        cls._specified_class_id = class_id
+    def __class_getitem__(cls, item: ClassId) -> t.Type[_PydanticSchemaGenerator]:
+        new_cls = types.new_class(f"{item}_schema_gen", bases=(cls, ))
+        assert issubclass(new_cls, _PydanticSchemaGenerator), \
+            f"{new_cls} not subclass of {_PydanticSchemaGenerator}?"
+        new_cls._specified_class_id = str(item)
+        return new_cls
 
     def match_type(self, obj: t.Type[t.Any]) -> pydantic_core.core_schema.CoreSchema:
         if obj is _ClassIdStr:
@@ -74,6 +79,7 @@ class _PydanticSchemaGenerator(pydantic.GenerateSchema):
                 ),
                 default=self._specified_class_id
             )
+        
 
 _model_config = _base_base.BASE_MODEL_CONFIG
 _model_config["schema_generator"] = _PydanticSchemaGenerator
@@ -81,15 +87,43 @@ _model_config["schema_generator"] = _PydanticSchemaGenerator
 
 class DispatchedModelMixin(pydantic.BaseModel, _base_base.CommonModelMethods):
     """
-    this creates a root of this dispatched class.
+    the entrypoint for creating dispatchable family trees using pydantic's internal
+    engine for schema generation. Be careful not to inherit from two different
+    dispatchable family trees at once. It will cause weird behavior and there
+    are no checks to protect against this.
 
-    see '__init_subclass__' for how to specify subclasses and control class setup
+    class_id(str or None)::
+        specifies the class_id for the class. If specified, we'll use it
+        otherwise it'll be constructed from the cls.__name__. The class
 
+    class_type(ClassType or None)::
+        A member of the ClassType. If specified, we'll ensure it is valid
+        based on the parent class' ClassType. Type specific behavior:
+
+            SUPER_ROOT: sits above the family tree. Subclass DispatchedModelMixin
+                specifying the class to be this type, to customize the behavior
+                of the dispatching for entire trees. Can be thought of as
+                indicating the class is a "metaclass" but not exactly the
+                same as true python metaclass.
+    
+                Can Inherit from: SUPER_ROOT only
+                Direct Children can be: SUPER_ROOT or ROOT
+                
+            ROOT: means a class is not concrete, thus it cannot be instantiated directly.
+                Can Inherit from: SUPER_ROOT or ROOT
+                Direct Children can be: ROOT or CONCRETE
+            
+            CONCRETE: means this is a "leaf" in the family tree. This class can be instantiated, 
+                and it should not be subclassed further.
+                
+                Can Inherit from: ROOT only
+                Direct Children can be: None
     """
     model_config = _model_config
 
-    _cls_id: t.ClassVar[ClassId]
-    _cls_meta_type: t.ClassVar[ClassMetaTypeEnum] = ClassMetaTypeEnum.SUPER_ROOT
+    _class_type: t.ClassVar[ClassType] = ClassType.SUPER_ROOT
+    _class_id: t.ClassVar[ClassId]
+    _class_id_path: t.ClassVar[ClassIdPathT] = ()
 
     class_id: _ClassIdStr = pydantic.Field(
         description="this is the field we dispatch the different sub-classes on. "
@@ -104,81 +138,95 @@ class DispatchedModelMixin(pydantic.BaseModel, _base_base.CommonModelMethods):
             if issubclass(_ancestor_cls, DispatchedModelMixin):
                 return _ancestor_cls
         raise ValueError(
-            f"no subclass of 'DispatchedModelMixin' found?"
+            "no subclass of 'DispatchedModelMixin' found?"
         )
+
+    @classmethod
+    def _infer_class_id(cls) -> ClassId:
+        return ClassId(inflection.underscore(cls.__name__))
+
+    @classmethod
+    def _infer_class_type(cls) -> ClassType:
+        parent_class = cls._get_direct_parent()
+        parent_class_type = parent_class.get_class_type()
+
+        # if super root parent, we assume root
+        if parent_class_type == ClassType.SUPER_ROOT:
+            class_type_actual = ClassType.ROOT
+
+        # if root parent, we assume concrete
+        elif parent_class_type == ClassType.ROOT:
+            class_type_actual = ClassType.CONCRETE
+
+        # if concrete parent, we raise ValueError
+        elif parent_class_type == ClassType.CONCRETE:
+            raise ValueError(
+                f"'{cls.__name__}' direct parent is '{parent_class.__name__}' which is a"
+                f" concrete class, so we shouldn't be inheriting from it."
+            )
+        else:
+            raise ValueError(f"'{parent_class_type}' unexpected class type value")
+        return class_type_actual
 
     def __init_subclass__(
             cls,
-            dispatch_param: t.Union[
-                str,
-                ClassMetaTypeEnum,
-                None,
-            ] = None
+            class_type: t.Optional[t.Union[str, ClassType]] = None,
+            class_id: t.Optional[str] = None,
     ) -> None:
         """
-        control how this subclass is set up
-
-        Args:
-            dispatch_param:
-                str: we treat as class_id
-                ClassMetaTypeEnum: we treat as class_meta_type being manually specified
-                None: we infer this class to be a root.
-
-        Returns:
-            Nothing: just setups up the class
+        control how this subclass is set up. see class docstring for more info
         """
 
-        # determine class_meta_type
-        concrete_class_id: t.Optional[str] = None
-        class_meta_type: ClassMetaTypeEnum
-        if dispatch_param is None:
-            class_meta_type = ClassMetaTypeEnum.ROOT
-
-        elif isinstance(dispatch_param, ClassMetaTypeEnum):
-            class_meta_type = dispatch_param
-
-        elif isinstance(dispatch_param, str):
-            concrete_class_id = dispatch_param
-            class_meta_type = ClassMetaTypeEnum.CONCRETE
-
+        class_id_actual: ClassId
+        if class_id:
+            class_id_actual = ClassId(class_id)
         else:
-            raise ValueError(f"unexpected dispatch_param val: {dispatch_param}'")
+            class_id_actual = cls._infer_class_id()
 
-        parent_cls = cls._get_direct_parent()
-        # make sure the most recent parent is root, this is no matter what type of class this is
-        if parent_cls.get_class_meta_type() == ClassMetaTypeEnum.CONCRETE:
-            raise ValueError(
-                f"'{cls.__name__}' is trying to subclass a concrete class, "
-                f"'{parent_cls.__name__}'"
-            )
+        class_type_actual: ClassType
+        if class_type:
+            if isinstance(class_type, str):
+                class_type_actual = ClassType(class_type.lower())
+            else:
+                class_type_actual = class_type
+        else:
+            class_type_actual = cls._infer_class_type()
 
-        cls._cls_meta_type = class_meta_type
+        cls._class_id = class_id_actual
+        cls._class_type = class_type_actual
 
-        # make sure the two are valid together
-        if class_meta_type == ClassMetaTypeEnum.CONCRETE:
-            if concrete_class_id is None:
-                raise ValueError(
-                    f"'{cls.__name__}' didn't specify their concrete_class_id and "
-                    f"and be a non-concrete metatype"
-                )
-            class_id = ClassId(concrete_class_id)
-            cls._cls_id = class_id
+        # if class_type_actual is CONCRETE, we adjust the schema gen stuff
+        if class_type_actual == ClassType.CONCRETE:
+            cls.model_config["schema_generator"] = _PydanticSchemaGenerator[cls._class_id]
 
-            class _CustomSchemaGen(_PydanticSchemaGenerator, class_id=str(cls._cls_id)):
-                ...
-            cls.model_config["schema_generator"] = _CustomSchemaGen
+        # if class_type is SUPER_ROOT, we initialize the class id path
+        if class_type_actual == ClassType.SUPER_ROOT:
+            cls._class_id_path = ()
+
+        # if it is anything else, we set it using parent class' path
+        else:
+            parent_cls = cls._get_direct_parent()
+            cls._class_id_path = parent_cls._class_id_path + (cls._class_id, )
 
     @classmethod
-    def get_class_meta_type(cls) -> ClassMetaTypeEnum:
-        return cls._cls_meta_type
+    def get_class_type(cls) -> ClassType:
+        return cls._class_type
+
+    @classmethod
+    def get_class_id(cls) -> ClassId:
+        return cls._class_id
+
+    @classmethod
+    def get_class_id_path(cls) -> ClassIdPathT:
+        return cls._class_id_path
 
     @classmethod
     def is_concrete(cls) -> bool:
-        return cls._cls_meta_type == ClassMetaTypeEnum.CONCRETE
+        return cls._class_type == ClassType.CONCRETE
 
     @classmethod
     def iter_concrete_subclasses(cls: t.Type[SelfTV]) -> t.Iterator[t.Type[SelfTV]]:
-        if cls._cls_meta_type == ClassMetaTypeEnum.SUPER_ROOT:
+        if cls._class_type == ClassType.SUPER_ROOT:
             raise ValueError(
                 f"don't call iter_concrete_subclasses on super root classes, "
                 f"which '{cls.__name__}' is "
@@ -195,7 +243,7 @@ class DispatchedModelMixin(pydantic.BaseModel, _base_base.CommonModelMethods):
         if isinstance(data, dict):
             class_id_found = data.get("class_id")
             if not class_id_found:
-                data["class_id"] = str(cls._cls_id)
+                data["class_id"] = str(cls._class_id)
         return data
 
     @classmethod
@@ -205,7 +253,7 @@ class DispatchedModelMixin(pydantic.BaseModel, _base_base.CommonModelMethods):
         *args,
         **kwargs,
     ) -> SelfTV:
-        if cls._cls_meta_type != ClassMetaTypeEnum.CONCRETE:
+        if cls._class_type != ClassType.CONCRETE:
             raise ValueError(
                 f"'{cls.__name__}' is not concrete, so we do not want"
                 f" to initialize instances of this class"

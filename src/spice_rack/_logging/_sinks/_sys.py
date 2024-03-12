@@ -13,7 +13,7 @@ __all__ = (
 )
 
 
-class SysLogSink(_base.AbstractLogSink, dispatch_param="sys"):
+class SysLogSink(_base.AbstractLogSink, class_id="sys"):
     channel: t.Literal["stdout", "stderr"] = "stdout"
     struct_log: bool = Field(
         description="if true, we serialize the logs for usage in a structured way. "

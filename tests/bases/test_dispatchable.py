@@ -11,28 +11,35 @@ class AbstractClass(dispatchable.DispatchedModelMixin):
     root_field: str
 
 
-class ChildClass1(AbstractClass, dispatch_param="child1"):
+class ChildClass1(AbstractClass, class_id="child1"):
     ...
 
 
-class ChildClass2(AbstractClass, dispatch_param="child2"):
+class ChildClass2(AbstractClass, class_id="child2"):
     ...
 
 
-class AbstractPassthroughChild(AbstractClass):
+class AbstractPassthroughChild(AbstractClass, class_type="root", class_id="root_child"):
     ...
 
 
-class GrandchildClass1(AbstractPassthroughChild, dispatch_param="gc1"):
+class GrandchildClass1(AbstractPassthroughChild, class_id="gc1"):
     ...
 
 
-class GrandchildClass2(AbstractPassthroughChild, dispatch_param="gc2"):
+class GrandchildClass2(AbstractPassthroughChild, class_id="gc2"):
     ...
 
 
 class ClassDispatcher(dispatchable.DispatchedClassContainer[AbstractClass]):
     ...
+
+
+def test_class_attrs():
+    assert ChildClass1.get_class_id_path() == ("abstract_class", "child1")
+    assert GrandchildClass1.get_class_id_path() == (
+        "abstract_class", "root_child", "gc1"
+    )
 
 
 @pytest.fixture(scope="function")  # keep function score bc we mutate it
