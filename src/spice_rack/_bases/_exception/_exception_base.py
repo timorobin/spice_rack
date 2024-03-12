@@ -91,7 +91,7 @@ class CustomExceptionBase(Exception, t.Generic[ErrorInfoTV]):
         self._verbose = verbose
 
         try:
-            self._error_info_inst = self.get_error_info_cls().validate(error_info)
+            self._error_info_inst = self.get_error_info_cls().model_validate(error_info)
 
         except Exception as e:
             raise _exception_exception.CustomExceptionInitializationError(

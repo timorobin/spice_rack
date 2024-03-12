@@ -26,9 +26,7 @@ class SettingsBase(pydantic_settings.BaseSettings):
     """
     _singleton_source: t.ClassVar[t.Optional[_sources.SingletonSource]] = None
 
-    model_config = pydantic_settings.SettingsConfigDict(
-
-    )
+    model_config = pydantic_settings.SettingsConfigDict()
 
     def __init_subclass__(cls, singleton_mode: bool = True, **kwargs):
         if singleton_mode:
@@ -79,7 +77,7 @@ class SettingsBase(pydantic_settings.BaseSettings):
             **kwargs
     ) -> Self:
         env_files: list[str] = []
-        for fp in cls.get_dot_env_files():  # type: ignore
+        for fp in cls._get_dot_env_files():  # type: ignore
             env_files.append(str(fp))
 
         if use_cls_env_files:

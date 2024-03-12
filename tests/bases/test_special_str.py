@@ -90,9 +90,9 @@ def test_special_str_as_field():
     assert isinstance(inst.f, SomeSpecialStr)
 
     assert inst.f == "A"
-    assert inst.dict() == {"f": "A"}
+    assert inst.model_dump() == {"f": "A"}
 
-    assert SomeClass.parse_raw(inst.json()) == inst
+    assert SomeClass.model_validate_json(inst.json()) == inst
 
     assert json.loads(inst.json()) == {"f": "A"}
 

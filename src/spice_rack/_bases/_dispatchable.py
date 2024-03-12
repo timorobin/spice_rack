@@ -8,13 +8,14 @@ import pydantic_core
 import inflection
 
 from spice_rack._bases import _special_str
-from spice_rack._bases import _base_base
+from spice_rack._bases import _base_base, _value_model
 
 
 __all__ = (
     "DispatchedModelMixin",
     "ClassId",
-    "DispatchedClassContainer"
+    "DispatchedClassContainer",
+    "DispatchableValueModelBase"
 )
 
 
@@ -301,3 +302,11 @@ class DispatchedClassContainer(pydantic.RootModel[DispatchedClsTV], t.Generic[Di
         return super().__class_getitem__(
             item.build_dispatched_ann()
         )  # type: ignore
+
+
+class DispatchableValueModelBase(DispatchedModelMixin, class_type=ClassType.SUPER_ROOT):
+    """
+    convenience class that combines dispatchable model mixin and value model,
+    which is a common use-case for dispatchable models.
+    """
+    model_config = _value_model.VALUE_MODEL_CONFIG

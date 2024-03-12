@@ -69,7 +69,7 @@ def test_json_roundtrip():
 
     json_dict = json.loads(x.json())
 
-    x_prime = X.parse_obj(json_dict)
+    x_prime = X.model_validate(json_dict)
 
     assert x == x_prime
     from devtools import debug

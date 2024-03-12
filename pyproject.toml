@@ -35,8 +35,20 @@ inflection = { version = "*", extras = [] }
 # why?
 tabulate = { version = "*", extras = [] }
 
+# optional dependencies
 
-[tool.poetry.group.gcp.dependencies]
+# gcp
+gcsfs = { version = "*", optional = true}
+
+
+# s3
+s3fs = { version = "*", optional = true }
+jmespath = { version = "*", optional = true }  # dep of s3fs that isn't picked up for some reason
+urllib3 = { version = "<2", optional = true }  # https://stackoverflow.com/questions/76414514/cannot-import-name-default-ciphers-from-urllib3-util-ssl-on-aws-lambda-us
+
+[tool.poetry.extras]
+gcp = ["gcsfs"]
+aws = ["s3fs", "jmespath", "urrlib3"]
 
 
 [tool.poetry.dev-dependencies]

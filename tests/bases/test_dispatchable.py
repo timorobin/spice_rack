@@ -71,7 +71,7 @@ def test_discrim_field_strict(child_kwargs):
 
 def test_child_dispatch_root_based(child_kwargs):
     with pytest.raises(ValueError):
-        AbstractClass.validate(child_kwargs)
+        AbstractClass.model_validate(child_kwargs)
 
     # dispatches based on class id
     child_kwargs["class_id"] = "child1"
@@ -82,14 +82,14 @@ def test_child_dispatch_root_based(child_kwargs):
     child_kwargs = dispatch_res.model_dump()
 
     child_kwargs["class_id"] = "child2"
-    dispatch_res = ClassDispatcher.validate(child_kwargs)
+    dispatch_res = ClassDispatcher.model_validate(child_kwargs)
     assert isinstance(dispatch_res.root, ChildClass2)
     assert dispatch_res.root.class_id == "child2"
 
 
 def test_child_dispatch_type_adapter(child_kwargs):
     with pytest.raises(ValueError):
-        AbstractClass.validate(child_kwargs)
+        AbstractClass.model_validate(child_kwargs)
 
     dispatcher = AbstractClass.build_dispatcher_type_adapter()
 

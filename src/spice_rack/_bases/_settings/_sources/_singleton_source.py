@@ -38,7 +38,7 @@ class SingletonSource(_base.CustomSettingSourceBase, t.Generic[SettingsInstTV]):
     def __call__(self) -> dict[str, t.Any]:
         cached_inst_maybe = self._registry.get_maybe(self.settings_cls)  # type: ignore
         if cached_inst_maybe:
-            return cached_inst_maybe.dict()
+            return cached_inst_maybe.model_dump()
         else:
             return {}
 
