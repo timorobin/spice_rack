@@ -4,12 +4,13 @@ import typing as t
 from pathlib import Path
 
 from spice_rack._fs_ops._path_strs import _base
+from spice_rack._fs_ops import _helpers, _file_ext
 
 
 __all__ = (
     "RelFilePathStr",
     "RelDirPathStr",
-    "AnyRelPathT"
+    "FileOrDirRelPathT"
 )
 
 
@@ -59,19 +60,19 @@ class RelFilePathStr(_AbstractRelPathStr):
         else:
             return name_w_suffixes.split(".")[0]
 
-    # def get_suffixes(self) -> list[_special_types.FileExt]:
-    #     suffixes = str(self).split(".")[1:]
-    #     return [
-    #         _special_types.FileExt(suffix) for suffix in suffixes
-    #     ]
-    #
-    # def get_file_ext(self) -> Optional[_special_types.FileExt]:
-    #     suffixes = self.get_suffixes()
-    #     if suffixes:
-    #         return suffixes[-1]
-    #     else:
-    #         return None
-    #
+    def get_suffixes(self) -> list[_file_ext.FileExt]:
+        suffixes = str(self).split(".")[1:]
+        return [
+            _file_ext.FileExt(suffix) for suffix in suffixes
+        ]
+
+    def get_file_ext(self) -> t.Optional[_file_ext.FileExt]:
+        suffixes = self.get_suffixes()
+        if suffixes:
+            return suffixes[-1]
+        else:
+            return None
+
     # def get_mime_type(self) -> Optional[_special_types.MimeType]:
     #     file_ext = self.get_file_ext()
     #     if file_ext:
@@ -88,15 +89,12 @@ class RelDirPathStr(_AbstractRelPathStr):
     @classmethod
     def _format_str_val(cls, root_data: str) -> str:
         root_data = super()._format_str_val(root_data)
+        if not _helpers.is_dir_like(raw_str=root_data):
+            raise ValueError(
+                f"'{root_data}' is not a directory path"
+            )
         if not root_data.endswith("/"):
-
-            # if no extensions, we'll treat as dir anyway
-            if not Path(root_data).suffix:
-                root_data = root_data + "/"
-            else:
-                raise ValueError(
-                    f"'{root_data}' is not a directory path"
-                )
+            root_data = root_data + "/"
         return root_data
 
     def get_name(self) -> str:
@@ -112,14 +110,14 @@ class RelDirPathStr(_AbstractRelPathStr):
         ...
 
     @t.overload
-    def joinpath(self, rel_path: str) -> AnyRelPathT:
+    def joinpath(self, rel_path: str) -> FileOrDirRelPathT:
         ...
 
     def joinpath(
             self,
-            rel_path: t.Union[str, AnyRelPathT]
-    ) -> AnyRelPathT:
-        rel_path_parsed: AnyRelPathT
+            rel_path: t.Union[str, FileOrDirRelPathT]
+    ) -> FileOrDirRelPathT:
+        rel_path_parsed: FileOrDirRelPathT
         try:
             rel_path_parsed = RelDirPathStr(rel_path)
 
@@ -143,4 +141,4 @@ class RelDirPathStr(_AbstractRelPathStr):
         return extended_path
 
 
-AnyRelPathT = t.Union[RelFilePathStr, RelDirPathStr]
+FileOrDirRelPathT = t.Union[RelFilePathStr, RelDirPathStr]
