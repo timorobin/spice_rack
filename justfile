@@ -6,7 +6,7 @@ default:
 
 dev-env-setup:
     poetry lock -vv
-    poetry install
+    poetry install --all-extras
 
 
 launch-jupyter-lab:

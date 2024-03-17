@@ -74,6 +74,12 @@ class AbstractFileSystem(
     def special_repr(self) -> str:
         return f"FileSystem[{self.class_id}]"
 
+    def __get_logger_data__(self) -> t.Dict:
+        return {
+            "file_system_type": self.class_id,
+            "file_system_home_dir": self.contextualize_abs_path(self.get_home_dir())
+        }
+
     @t.final
     def exists(self, path: _path_strs.FileOrDirAbsPathT) -> bool:
         """
@@ -374,52 +380,47 @@ class AbstractFileSystem(
             data = f.read()
         return data.decode()
 
-    # def download_file_locally(
-    #         self,
-    #         path: _path_strs.AbsoluteFilePathStr,
-    #         dest_dir: _path_strs.AbsoluteDirPathStr
-    # ) -> _path_strs.AbsoluteFilePathStr:
-    #     from fs_ops._file_systems import LocalFileSystem
-    #     local_fs = LocalFileSystem()
-    #     local_fs.make_dir(dest_dir, if_exists="return", create_parents=True)
-    #
-    #     local_path = dest_dir.joinpath(
-    #         _path_strs.RelFilePathStr(path.get_name(include_suffixes=True))
-    #     )
-    #     self.fsspec_obj.download(
-    #         lpath=local_fs.contextualize_abs_path(local_path),
-    #         rpath=self.contextualize_abs_path(path)
-    #     )
-    #     return local_path
-    #
-    # def download_dir_locally(
-    #         self,
-    #         path: _path_strs.AbsoluteDirPathStr,
-    #         dest_dir: _path_strs.AbsoluteDirPathStr
-    # ) -> _path_strs.AbsoluteDirPathStr:
-    #     from fs_ops._file_systems import LocalFileSystem
-    #
-    #     local_fs = LocalFileSystem()
-    #     local_fs.make_dir(dest_dir, if_exists="return", create_parents=True)
-    #
-    #     local_path = dest_dir.joinpath(
-    #         _path_strs.RelDirPathStr(path.get_name())
-    #     )
-    #     self.fsspec_obj.download(
-    #         lpath=local_fs.contextualize_abs_path(local_path),
-    #         rpath=self.contextualize_abs_path(path),
-    #         recursive=True
-    #     )
-    #
-    #     for local_path_i in local_fs.iter_dir_contents_files_only(local_path):
-    #         if _helpers.is_placeholder_file_path(local_path_i):
-    #             local_fs.delete_file(
-    #                 local_path_i, if_non_existent="return"
-    #             )
-    #     return local_path
+    def download_file_locally(
+            self,
+            path: _path_strs.AbsoluteFilePathStr,
+            dest_dir: _path_strs.AbsoluteDirPathStr
+    ) -> _path_strs.AbsoluteFilePathStr:
+        from spice_rack._fs_ops._file_systems import _local
+        local_fs = _local.LocalFileSystem()
+        local_fs.make_dir(dest_dir, if_exists="return", create_parents=True)
 
-    def __get_logger_data__(self) -> t.Dict:
-        return {
-            "file_system_type": self.class_id,
-            "file_system_home_dir": self.contextualize_abs_path(self.get_home_dir())
-        }
+        local_path = dest_dir.joinpath(
+            _path_strs.RelFilePathStr(path.get_name(include_suffixes=True))
+        )
+        self.fsspec_obj.download(
+            lpath=local_fs.contextualize_abs_path(local_path),
+            rpath=self.contextualize_abs_path(path)
+        )
+        return local_path
+
+    def download_dir_locally(
+            self,
+            path: _path_strs.AbsoluteDirPathStr,
+            dest_dir: _path_strs.AbsoluteDirPathStr
+    ) -> _path_strs.AbsoluteDirPathStr:
+        from spice_rack._fs_ops._file_systems import _local
+        from spice_rack._fs_ops._helpers import is_placeholder_file_path
+        local_fs = _local.LocalFileSystem()
+        local_fs.make_dir(dest_dir, if_exists="return", create_parents=True)
+
+        local_path = dest_dir.joinpath(
+            _path_strs.RelDirPathStr(path.get_name())
+        )
+        self.fsspec_obj.download(
+            lpath=local_fs.contextualize_abs_path(local_path),
+            rpath=self.contextualize_abs_path(path),
+            recursive=True
+        )
+
+        # remove possible placeholder files
+        for local_path_i in local_fs.iter_dir_contents_files_only(local_path):
+            if is_placeholder_file_path(local_path_i):
+                local_fs.delete_file(
+                    local_path_i, if_non_existent="return"
+                )
+        return local_path
