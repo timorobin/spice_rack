@@ -15,7 +15,7 @@ def file_validator(
         raw_str: str
 ) -> t.List[str]:
     """checks path makes sense as a relative or absolute file"""
-    if raw_str.startswith("/"):
+    if raw_str.endswith("/"):
         return ["a file path str cannot end in '/'"]
     else:
         return []
@@ -32,8 +32,10 @@ def dir_validator(raw_str: str, strict: bool = False) -> t.List[str]:
         if strict:
             issue = "a dir path must end in '/'"
 
-    if issue:
+    if issue is not None:
         return [issue]
+    else:
+        return []
 
 
 def rel_validator(raw_str: str) -> t.List[str]:

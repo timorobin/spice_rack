@@ -242,16 +242,6 @@ class FilePath(_AbstractFileSystemObj):
     def get_name(self, include_suffixes: bool = False) -> str:
         return self.path.get_name(include_suffixes=include_suffixes)
 
-    def write_text(self, data: t.Union[bytes, str], mode: t.Literal["wb", "ab"] = "wb") -> None:
-        byte_data: bytes
-        if isinstance(data, bytes):
-            byte_data = data
-        else:
-            byte_data = data.encode()
-
-        with self.open(mode=mode) as f:
-            f.write(byte_data)
-
     def download_locally(
             self,
             dest_dir: _path_strs.AbsoluteDirPathStr

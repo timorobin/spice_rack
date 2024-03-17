@@ -115,15 +115,9 @@ class AbsoluteDirPathStr(_AbstractAbsolutePathStr):
             rel_path: t.Union[str, _rel.FileOrDirRelPathT]
     ) -> FileOrDirAbsPathT:
         rel_path_parsed: _rel.FileOrDirRelPathT
-        try:
-            rel_path_parsed = _rel.RelDirPathStr(rel_path)
-
-        except ValueError:
-            rel_path_parsed = _rel.RelFilePathStr(rel_path)
-
-        except Exception as e:
-            raise e
-
+        rel_path_parsed = _rel.FileOrDirRelPathTypeAdapter.validate_python(
+            rel_path
+        )
         extended_path_raw: str = str(self) + str(rel_path_parsed)
 
         if isinstance(rel_path_parsed, _rel.RelFilePathStr):

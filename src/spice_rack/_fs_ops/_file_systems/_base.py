@@ -4,7 +4,7 @@ import typing as t
 from fsspec.spec import AbstractFileSystem as AbstractFsSpecFileSystem
 
 from spice_rack import _bases, _logging
-from spice_rack._fs_ops import _path_strs, _file_ext, _open_modes
+from spice_rack._fs_ops import _path_strs, _file_ext, _open_modes, _exceptions
 
 
 __all__ = (
@@ -104,15 +104,10 @@ class AbstractFileSystem(
         """
         exists = self.exists(path)
         if not exists:
-            raise ValueError(
-                f"'{self.contextualize_abs_path(path)}' "
-                f"either doesn't exist or we don't have access to it"
+            raise _exceptions.NonExistentPathException(
+                file_system=self,
+                path=path,
             )
-            # raise _exceptions.NonExistentPathException(
-            #     file_system=self,
-            #     path=path,
-            #     extra_info={}
-            # )
         else:
             return
 
@@ -356,29 +351,6 @@ class AbstractFileSystem(
                 path=self.contextualize_abs_path(path),
                 create_parents=create_parents
             )
-
-    def write_text(
-            self,
-            data: str,
-            path: _path_strs.AbsoluteFilePathStr,
-            if_exists: t.Literal["raise", "overwrite"]
-    ) -> None:
-        if self.exists(path):
-            if if_exists == "raise":
-                raise ValueError(f"'{self.contextualize_abs_path(path)}' exists already")
-            else:
-                self.delete_file(path)
-
-        self.ensure_exists(path)
-        with self.open_file(path, mode="wb") as f:
-            f.write(data)
-        return
-
-    def read_text(self, path: _path_strs.AbsoluteFilePathStr) -> str:
-        self.ensure_exists(path)
-        with self.open_file(path, mode="rb") as f:
-            data = f.read()
-        return data.decode()
 
     def download_file_locally(
             self,

@@ -28,14 +28,16 @@ class GcsFileSystem(_base.AbstractFileSystem, class_id="gcs"):
     def _get_gcsfs_token(
             self,
     ) -> Union[str, dict]:
-        if isinstance(self.creds, _gcp_auth.auth_strategies.AnonAuthStrategy):
+        creds: _gcp_auth.auth_strategies.AbstractGcpAuthStrategy = self.creds.root
+
+        if isinstance(creds, _gcp_auth.auth_strategies.AnonAuthStrategy):
             return "anon"
-        elif isinstance(self.creds, _gcp_auth.auth_strategies.DefaultAuthStrategy):
+        elif isinstance(creds, _gcp_auth.auth_strategies.DefaultAuthStrategy):
             return "google_default"
-        elif isinstance(self.creds, _gcp_auth.auth_strategies.ServiceAcctKeyFileAuthStrategy):
-            return self.creds.file_path
-        elif isinstance(self.creds, _gcp_auth.auth_strategies.ServiceAcctKeyAuthStrategy):
-            return self.creds.key_data.dict(exclude_defaults=True)
+        elif isinstance(creds, _gcp_auth.auth_strategies.ServiceAcctKeyFileAuthStrategy):
+            return creds.file_path
+        elif isinstance(creds, _gcp_auth.auth_strategies.ServiceAcctKeyAuthStrategy):
+            return creds.key_data.dict(exclude_defaults=True)
         else:
             raise ValueError(f"unexpected auth strategy type: {type(self.creds,)}")
 
