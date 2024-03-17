@@ -84,8 +84,8 @@ class CustomExceptionBase(Exception, t.Generic[ErrorInfoTV]):
             self,
             detail: str,
             error_info: t.Union[ErrorInfoTV, dict],
-            verbose: bool,
-            extra_info: t.Optional[dict]
+            verbose: bool = True,
+            extra_info: t.Optional[dict] = None
     ):
         self._detail = detail
         self._verbose = verbose

@@ -2,15 +2,17 @@ from __future__ import annotations
 from abc import abstractmethod
 import typing as t
 from pathlib import Path
+import pydantic
 
-from spice_rack._fs_ops._path_strs import _base
-from spice_rack._fs_ops import _helpers, _file_ext
+from spice_rack._fs_ops._path_strs import _base, _path_checkers
+from spice_rack._fs_ops import _file_ext
 
 
 __all__ = (
     "RelFilePathStr",
     "RelDirPathStr",
-    "FileOrDirRelPathT"
+    "FileOrDirRelPathT",
+    "FileOrDirRelPathTypeAdapter"
 )
 
 
@@ -21,13 +23,10 @@ class _AbstractRelPathStr(_base.AbstractPathStr):
         ...
 
     @classmethod
-    def _format_str_val(cls, root_data: str) -> str:
-        root_data = super()._format_str_val(root_data)
-        if root_data.startswith("/"):
-            raise ValueError(
-                f"'{root_data}' is absolute so it is not a valid relative path"
-            )
-        return root_data
+    def _check_str_val(cls, __raw_str: str) -> t.List[str]:
+        issues = super()._check_str_val(__raw_str)
+        issues.extend(_path_checkers.rel_validator(__raw_str))
+        return issues
 
     def get_parent(self) -> RelDirPathStr:
         parent_path_raw = str(Path(str(self)).parent)
@@ -42,15 +41,11 @@ class RelFilePathStr(_AbstractRelPathStr):
     This represents an absolute file path string. It must start with a backslash and must not end
     with a backslash.
     """
-
     @classmethod
-    def _format_str_val(cls, root_data: str) -> str:
-        root_data = super()._format_str_val(root_data)
-        if root_data.endswith("/"):
-            raise ValueError(
-                f"'{root_data}' ends with '/' so it is not a file path"
-            )
-        return root_data
+    def _check_str_val(cls, __raw_str: str) -> t.List[str]:
+        issues = super()._check_str_val(__raw_str)
+        issues.extend(_path_checkers.file_validator(__raw_str))
+        return issues
 
     def get_name(self, include_suffixes: bool = False) -> str:
         """get simple name, i.e. the most terminal chunk in the path"""
@@ -87,12 +82,14 @@ class RelDirPathStr(_AbstractRelPathStr):
     """subclasses string to enforce constraints on the dir path str"""
 
     @classmethod
+    def _check_str_val(cls, __raw_str: str) -> t.List[str]:
+        issues = super()._check_str_val(__raw_str)
+        issues.extend(_path_checkers.dir_validator(__raw_str))
+        return issues
+
+    @classmethod
     def _format_str_val(cls, root_data: str) -> str:
         root_data = super()._format_str_val(root_data)
-        if not _helpers.is_dir_like(raw_str=root_data):
-            raise ValueError(
-                f"'{root_data}' is not a directory path"
-            )
         if not root_data.endswith("/"):
             root_data = root_data + "/"
         return root_data
@@ -141,4 +138,23 @@ class RelDirPathStr(_AbstractRelPathStr):
         return extended_path
 
 
-FileOrDirRelPathT = t.Union[RelFilePathStr, RelDirPathStr]
+_TagsT = t.Literal["dir", "file"]
+
+
+def _discrim(raw_str: str) -> _TagsT:
+    if raw_str.endswith("/"):
+        return "dir"
+    else:
+        return "file"
+
+
+FileOrDirRelPathT = t.Annotated[
+    t.Union[
+        t.Annotated[RelFilePathStr, pydantic.Tag("file")],
+        t.Annotated[RelDirPathStr, pydantic.Tag("dir")],
+    ],
+    pydantic.Discriminator(_discrim)
+]
+
+
+FileOrDirRelPathTypeAdapter = pydantic.TypeAdapter(FileOrDirRelPathT)

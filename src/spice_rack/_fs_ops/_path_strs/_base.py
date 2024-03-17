@@ -4,6 +4,7 @@ from abc import abstractmethod
 from pathlib import Path
 
 from spice_rack import _bases
+from spice_rack._fs_ops import _exceptions
 
 
 __all__ = (
@@ -13,9 +14,6 @@ __all__ = (
 
 class AbstractPathStr(_bases.special_str.SpecialStrBase):
     """Base class for all path string classes"""
-    @classmethod
-    def _format_str_val(cls, root_data: str) -> str:
-        return root_data
 
     @classmethod
     def _parse_non_str(cls, root_data: t.Any) -> str:
@@ -34,6 +32,24 @@ class AbstractPathStr(_bases.special_str.SpecialStrBase):
             return str_val
         else:
             return super()._parse_non_str(root_data)
+
+    @classmethod
+    def _check_str_val(cls, __raw_str: str) -> t.List[str]:
+        """checks str val for issues, returning a list of them if any found"""
+        return []
+
+    @classmethod
+    def _format_str_val(cls, root_data: str) -> str:
+        issues = cls._check_str_val(root_data)
+        if issues:
+            raise _exceptions.InvalidPathStrException(
+                detail=f"raw path str, '{root_data}', "
+                       f"not valid for '{cls.get_cls_name()}' path type.",
+                raw_str=root_data,
+                issues=issues,
+            )
+        else:
+            return root_data
 
     @classmethod
     def get_cls_name(cls) -> str:

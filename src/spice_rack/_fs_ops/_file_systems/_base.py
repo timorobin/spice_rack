@@ -3,8 +3,8 @@ from abc import abstractmethod
 import typing as t
 from fsspec.spec import AbstractFileSystem as AbstractFsSpecFileSystem
 
-from spice_rack import _bases
-from spice_rack._fs_ops import _path_strs, _helpers, _file_ext, _open_modes
+from spice_rack import _bases, _logging
+from spice_rack._fs_ops import _path_strs, _file_ext, _open_modes
 
 
 __all__ = (
@@ -12,7 +12,10 @@ __all__ = (
 )
 
 
-class AbstractFileSystem(_bases.dispatchable.DispatchableValueModelBase):
+class AbstractFileSystem(
+    _bases.dispatchable.DispatchableValueModelBase,
+    _logging.log_extra.LoggableObjMixin
+):
     """base class for all fsspec file system wrappers"""
 
     @abstractmethod
@@ -38,10 +41,9 @@ class AbstractFileSystem(_bases.dispatchable.DispatchableValueModelBase):
             "/",
             1
         )
-        if _helpers.is_dir_like(raw_str=cleaned_path):
-            return _path_strs.AbsoluteDirPathStr(cleaned_path)
-        else:
-            return _path_strs.AbsoluteFilePathStr(cleaned_path)
+        return _path_strs.FileOrDirAbsPathTypeAdapter.validate_python(
+            cleaned_path
+        )
 
     def contextualize_abs_path(self, path: _path_strs.FileOrDirAbsPathT) -> str:
         """
@@ -70,7 +72,7 @@ class AbstractFileSystem(_bases.dispatchable.DispatchableValueModelBase):
         return False
 
     def special_repr(self) -> str:
-        return self.get_file_system_type().value
+        return f"FileSystem[{self.class_id}]"
 
     @t.final
     def exists(self, path: _path_strs.FileOrDirAbsPathT) -> bool:
@@ -415,3 +417,9 @@ class AbstractFileSystem(_bases.dispatchable.DispatchableValueModelBase):
     #                 local_path_i, if_non_existent="return"
     #             )
     #     return local_path
+
+    def __get_logger_data__(self) -> t.Dict:
+        return {
+            "file_system_type": self.class_id,
+            "file_system_home_dir": self.contextualize_abs_path(self.get_home_dir())
+        }
