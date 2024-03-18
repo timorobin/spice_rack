@@ -4,7 +4,7 @@ import typing as t
 from fsspec.spec import AbstractFileSystem as AbstractFsSpecFileSystem
 
 from spice_rack import _bases, _logging
-from spice_rack._fs_ops import _path_strs, _file_ext, _open_modes, _exceptions
+from spice_rack._fs_ops import _path_strs, _file_info, _open_modes, _exceptions
 
 
 __all__ = (
@@ -114,7 +114,7 @@ class AbstractFileSystem(
     @staticmethod
     def ensure_correct_file_ext(
             path: _path_strs.RelOrAbsFilePathT,
-            choices: list[_file_ext.FileExt]
+            choices: list[_file_info.FileExt]
     ) -> None:
         """
         ensure the file path has one of the specified extensions

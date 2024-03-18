@@ -11,7 +11,7 @@ from spice_rack._fs_ops import (
     _file_systems,
     _helpers,
     _open_modes,
-    _file_ext
+    _file_info
 )
 
 __all__ = (
@@ -253,15 +253,21 @@ class FilePath(_AbstractFileSystemObj):
 
     def ensure_correct_file_ext(self, choices: list[str]) -> None:
         choices = [
-            _file_ext.FileExt(choice) for choice in choices
+            _file_info.FileExt(choice) for choice in choices
         ]
         self.file_system.ensure_correct_file_ext(self.path, choices=choices)
-    #
-    # def ensure_correct_mime_type(self, choices: list[str]) -> None:
-    #     choices = [
-    #         _file_ext.MimeType(choice) for choice in choices
-    #     ]
-    #     self.file_system.ensure_correct_mime_type(self.path, choices=choices)
+
+    def ensure_correct_mime_type(self, choices: list[str]) -> None:
+        choices = [
+            _file_info.MimeType(choice) for choice in choices
+        ]
+        self.file_system.ensure_correct_mime_type(self.path, choices=choices)
+
+    def get_file_ext(self) -> t.Optional[_file_info.FileExt]:
+        return self.path.get_file_ext()
+
+    def get_mime_type(self) -> t.Optional[_file_info.MimeType]:
+        return self.path.get_mime_type()
 
     @classmethod
     def init_from_str(cls, raw_str: str) -> FilePath:

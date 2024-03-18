@@ -5,7 +5,7 @@ from pathlib import Path
 import pydantic
 
 from spice_rack._fs_ops._path_strs import _base, _rel, _path_checkers
-from spice_rack._fs_ops import _file_ext
+from spice_rack._fs_ops import _file_info
 
 
 __all__ = (
@@ -55,26 +55,26 @@ class AbsoluteFilePathStr(_AbstractAbsolutePathStr):
         else:
             return name_w_suffixes.split(".")[0]
 
-    def get_suffixes(self) -> list[_file_ext.FileExt]:
+    def get_suffixes(self) -> list[_file_info.FileExt]:
         suffixes = str(self).split(".")[1:]
         return [
-            _file_ext.FileExt(suffix) for suffix in suffixes
+            _file_info.FileExt(suffix) for suffix in suffixes
         ]
 
-    def get_file_ext(self) -> t.Optional[_file_ext.FileExt]:
+    def get_file_ext(self) -> t.Optional[_file_info.FileExt]:
         suffixes = self.get_suffixes()
         if suffixes:
             return suffixes[-1]
         else:
             return None
 
-    # def get_mime_type(self) -> Optional[_special_types.MimeType]:
-    #     file_ext = self.get_file_ext()
-    #     if file_ext:
-    #         mime_type_maybe = file_ext.get_mime_type()
-    #         return mime_type_maybe
-    #     else:
-    #         return None
+    def get_mime_type(self) -> t.Optional[_file_info.MimeType]:
+        file_ext = self.get_file_ext()
+        if file_ext:
+            mime_type_maybe = file_ext.get_mime_type()
+            return mime_type_maybe
+        else:
+            return None
 
 
 @t.final
