@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bases &mdash; Spice Rack 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Welcome to spice_rack’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Spice Rack
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Bases</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#base-base">Base Base</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#spice_rack._bases._base_base.CommonModelMethods"><code class="docutils literal notranslate"><span class="pre">CommonModelMethods</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._base_base.CommonModelMethods._import_forward_refs"><code class="docutils literal notranslate"><span class="pre">CommonModelMethods._import_forward_refs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._base_base.CommonModelMethods.json_dict"><code class="docutils literal notranslate"><span class="pre">CommonModelMethods.json_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._base_base.CommonModelMethods.update_forward_refs"><code class="docutils literal notranslate"><span class="pre">CommonModelMethods.update_forward_refs()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#dispatchable-bases">Dispatchable Bases</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#spice_rack._bases._dispatchable.DispatchedModelMixin"><code class="docutils literal notranslate"><span class="pre">DispatchedModelMixin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._dispatchable.DispatchedModelMixin.class_id"><code class="docutils literal notranslate"><span class="pre">DispatchedModelMixin.class_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._dispatchable.DispatchedModelMixin.__init_subclass__"><code class="docutils literal notranslate"><span class="pre">DispatchedModelMixin.__init_subclass__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._dispatchable.DispatchedModelMixin.build_dispatched_ann"><code class="docutils literal notranslate"><span class="pre">DispatchedModelMixin.build_dispatched_ann()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._dispatchable.DispatchedModelMixin.build_dispatcher_type_adapter"><code class="docutils literal notranslate"><span class="pre">DispatchedModelMixin.build_dispatcher_type_adapter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._dispatchable.DispatchedModelMixin.get_class_id"><code class="docutils literal notranslate"><span class="pre">DispatchedModelMixin.get_class_id()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._dispatchable.DispatchedModelMixin.get_class_id_path"><code class="docutils literal notranslate"><span class="pre">DispatchedModelMixin.get_class_id_path()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._dispatchable.DispatchedModelMixin.get_class_type"><code class="docutils literal notranslate"><span class="pre">DispatchedModelMixin.get_class_type()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._dispatchable.DispatchedModelMixin.is_concrete"><code class="docutils literal notranslate"><span class="pre">DispatchedModelMixin.is_concrete()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._dispatchable.DispatchedModelMixin.iter_concrete_subclasses"><code class="docutils literal notranslate"><span class="pre">DispatchedModelMixin.iter_concrete_subclasses()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._dispatchable.DispatchedModelMixin.model_post_init"><code class="docutils literal notranslate"><span class="pre">DispatchedModelMixin.model_post_init()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._dispatchable.DispatchedModelMixin.model_validate"><code class="docutils literal notranslate"><span class="pre">DispatchedModelMixin.model_validate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._dispatchable.DispatchedModelMixin.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">DispatchedModelMixin.model_computed_fields</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#spice_rack._bases._dispatchable.DispatchableValueModelBase"><code class="docutils literal notranslate"><span class="pre">DispatchableValueModelBase</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._dispatchable.DispatchableValueModelBase.class_id"><code class="docutils literal notranslate"><span class="pre">DispatchableValueModelBase.class_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._dispatchable.DispatchableValueModelBase.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">DispatchableValueModelBase.model_computed_fields</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#spice_rack._bases._dispatchable.DispatchedClassContainer"><code class="docutils literal notranslate"><span class="pre">DispatchedClassContainer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._dispatchable.DispatchedClassContainer.root"><code class="docutils literal notranslate"><span class="pre">DispatchedClassContainer.root</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._dispatchable.DispatchedClassContainer.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">DispatchedClassContainer.model_computed_fields</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#settings">Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#spice_rack._bases._settings.SettingsBase"><code class="docutils literal notranslate"><span class="pre">SettingsBase</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._settings.SettingsBase.load"><code class="docutils literal notranslate"><span class="pre">SettingsBase.load()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._settings.SettingsBase.model_post_init"><code class="docutils literal notranslate"><span class="pre">SettingsBase.model_post_init()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._settings.SettingsBase.settings_customise_sources"><code class="docutils literal notranslate"><span class="pre">SettingsBase.settings_customise_sources()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._settings.SettingsBase.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">SettingsBase.model_computed_fields</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#exceptions">Exceptions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#spice_rack._bases._exception._exception_base.CustomExceptionBase"><code class="docutils literal notranslate"><span class="pre">CustomExceptionBase</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._exception._exception_base.CustomExceptionBase.get_error_payload_cls"><code class="docutils literal notranslate"><span class="pre">CustomExceptionBase.get_error_payload_cls()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._exception._exception_base.CustomExceptionBase.get_error_payload_schema_title"><code class="docutils literal notranslate"><span class="pre">CustomExceptionBase.get_error_payload_schema_title()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#spice_rack._bases._exception._error_info.ErrorInfoBase"><code class="docutils literal notranslate"><span class="pre">ErrorInfoBase</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._exception._error_info.ErrorInfoBase.extra"><code class="docutils literal notranslate"><span class="pre">ErrorInfoBase.extra</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._exception._error_info.ErrorInfoBase.get_json_data"><code class="docutils literal notranslate"><span class="pre">ErrorInfoBase.get_json_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._exception._error_info.ErrorInfoBase.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">ErrorInfoBase.model_computed_fields</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#spice_rack._bases._exception._error_info.ErrorPayload"><code class="docutils literal notranslate"><span class="pre">ErrorPayload</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._exception._error_info.ErrorPayload.detail"><code class="docutils literal notranslate"><span class="pre">ErrorPayload.detail</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._exception._error_info.ErrorPayload.error_type"><code class="docutils literal notranslate"><span class="pre">ErrorPayload.error_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._exception._error_info.ErrorPayload.info"><code class="docutils literal notranslate"><span class="pre">ErrorPayload.info</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._exception._error_info.ErrorPayload.json_dict"><code class="docutils literal notranslate"><span class="pre">ErrorPayload.json_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._exception._error_info.ErrorPayload.model_post_init"><code class="docutils literal notranslate"><span class="pre">ErrorPayload.model_post_init()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._exception._error_info.ErrorPayload.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">ErrorPayload.model_computed_fields</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#spice_rack._bases._exception._external_wrapper.WrappedExternalException"><code class="docutils literal notranslate"><span class="pre">WrappedExternalException</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._exception._external_wrapper.WrappedExternalException.detail"><code class="docutils literal notranslate"><span class="pre">WrappedExternalException.detail</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._exception._external_wrapper.WrappedExternalException.type"><code class="docutils literal notranslate"><span class="pre">WrappedExternalException.type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._exception._external_wrapper.WrappedExternalException.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">WrappedExternalException.model_computed_fields</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#spice_rack._bases._exception._exception_exception.CustomExceptionInitializationError"><code class="docutils literal notranslate"><span class="pre">CustomExceptionInitializationError</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#special-str">Special Str</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#spice_rack._bases._special_str.SpecialStrBase"><code class="docutils literal notranslate"><span class="pre">SpecialStrBase</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._special_str.SpecialStrBase._format_str_val"><code class="docutils literal notranslate"><span class="pre">SpecialStrBase._format_str_val()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._special_str.SpecialStrBase._parse_non_str"><code class="docutils literal notranslate"><span class="pre">SpecialStrBase._parse_non_str()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._special_str.SpecialStrBase._validate_str_val"><code class="docutils literal notranslate"><span class="pre">SpecialStrBase._validate_str_val()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._special_str.SpecialStrBase.special_repr"><code class="docutils literal notranslate"><span class="pre">SpecialStrBase.special_repr()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Spice Rack</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Bases</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/bases.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="bases">
+<h1>Bases<a class="headerlink" href="#bases" title="Link to this heading"></a></h1>
+<p>This package contains base classes you can use to create classes with common functionality.</p>
+<section id="base-base">
+<h2>Base Base<a class="headerlink" href="#base-base" title="Link to this heading"></a></h2>
+<p>Common bases used by other base classes</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="spice_rack._bases._base_base.CommonModelMethods">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CommonModelMethods</span></span><a class="headerlink" href="#spice_rack._bases._base_base.CommonModelMethods" title="Link to this definition"></a></dt>
+<dd><p>a base model we use for all pydantic models, even the other bases</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="spice_rack._bases._base_base.CommonModelMethods._import_forward_refs">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_import_forward_refs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#spice_rack._bases._base_base.CommonModelMethods._import_forward_refs" title="Link to this definition"></a></dt>
+<dd><p>hook provided for convenience when you define a subclass with forward refs,
+to avoid circular import issue. Overwrite this method to do the imports and
+add the newly imported objects to a dict.</p>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>If you’re not sure what to import and what keys to use, look at the stuff
+in the <cite>if TYPE_CHECKING:</cite> block, paste those exact imports in here and
+set them equal to their variable name within your current module’s context.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a dict of references to update</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spice_rack._bases._base_base.CommonModelMethods.json_dict">
+<span class="sig-name descname"><span class="pre">json_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">use_str_fallback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">pydantic_kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#spice_rack._bases._base_base.CommonModelMethods.json_dict" title="Link to this definition"></a></dt>
+<dd><p>Converts a pydantic instance to a dict, going through json first.
+This is a convenience function for when you want a dict, but want to use the json
+encoders connected to the pydantic object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>use_str_fallback</strong> – if true, we cast anything we cannot encode to a string</p></li>
+<li><p><strong>**pydantic_kwargs</strong> – any kwargs available for pydantic’s json method. see their docs</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a natively json-encodable dict</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>If the obj is a RootModel, calling <cite>obj.json</cite> would not necessarily return a dict,
+so we convert it to the form, <cite>{“__root__”: data}</cite> to align with how pydantic
+would return <cite>obj.dict()</cite> in this scenario.</p>
+<p class="rubric">Examples</p>
+<p>simple class with custom date encoder:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Data</span><span class="p">(</span><span class="n">PydanticBase</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">json_encoders</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">dt</span><span class="o">.</span><span class="n">date</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">date_obj</span><span class="p">:</span> <span class="n">date_obj</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y&quot;</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="n">x</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">date</span><span class="p">:</span> <span class="n">dt</span><span class="o">.</span><span class="n">date</span>
+
+<span class="n">inst</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">dt</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2023</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+<span class="c1"># regular dict</span>
+<span class="n">inst</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span> <span class="o">==</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="n">dt</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2023</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">1</span><span class="p">)}</span>
+
+<span class="c1"># this method</span>
+<span class="n">inst</span><span class="o">.</span><span class="n">json_dict</span><span class="p">()</span> <span class="o">==</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="s2">&quot;01/01/2023&quot;</span><span class="p">}</span>
+<span class="c1"># note that the date is the json encoding tied to the encoder for this pydantic</span>
+<span class="c1"># class. I just used a familiar string format, it could be whatever is specified</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spice_rack._bases._base_base.CommonModelMethods.update_forward_refs">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update_forward_refs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#spice_rack._bases._base_base.CommonModelMethods.update_forward_refs" title="Link to this definition"></a></dt>
+<dd><p>This extends pydantic’s builtin hook for updating forward refs.
+We call our special ‘_import_forward_refs’ hook to automatically bring in the things
+imported there, but also if you want to use it like pydantic, i.e. call it directly and
+provide your refs to update via kwargs, that is still supported.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>doesn’t return anything, mutates the class calling this method</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>NameError</strong> – pydantic raises a NameError if a forward ref is not accounted for
+    in the kwargs</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="dispatchable-bases">
+<h2>Dispatchable Bases<a class="headerlink" href="#dispatchable-bases" title="Link to this heading"></a></h2>
+<p>Base classes that help you create a group of polymorphic pydantic classes with hooks
+to create pydantic types that build a dispatched union json schema and parse correctly</p>
+<dl class="py class pydantic_model">
+<dt class="sig sig-object py" id="spice_rack._bases._dispatchable.DispatchedModelMixin">
+<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DispatchedModelMixin</span></span><a class="headerlink" href="#spice_rack._bases._dispatchable.DispatchedModelMixin" title="Link to this definition"></a></dt>
+<dd><p>the entrypoint for creating dispatchable family trees using pydantic’s internal
+engine for schema generation. Be careful not to inherit from two different
+dispatchable family trees at once. It will cause weird behavior and there
+are no checks to protect against this.</p>
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="spice_rack._bases._dispatchable.DispatchedModelMixin.class_id">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">class_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">_ClassIdStr</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spice_rack._bases._dispatchable.DispatchedModelMixin.class_id" title="Link to this definition"></a></dt>
+<dd><p>this is the field we dispatch the different sub-classes on. Concrete classes will constrain this to be only one specific value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Validated by<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_ensure_class_id</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spice_rack._bases._dispatchable.DispatchedModelMixin.__init_subclass__">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__init_subclass__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ClassType</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ClassType</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#spice_rack._bases._dispatchable.DispatchedModelMixin.__init_subclass__" title="Link to this definition"></a></dt>
+<dd><p>control how this subclass is set up.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>class_type</strong> – specifies the class_id for the class. If specified, we’ll use it
+otherwise it’ll be constructed from the cls.__name__.</p></li>
+<li><p><strong>class_id</strong> – If specified, we’ll ensure it is valid based on the parent class’ ClassType.
+See table below for more info</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns: None</p>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Class Type specific behavior</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 57.1%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Class Type</p></th>
+<th class="head"><p>Behavior</p></th>
+<th class="head"><p>Possible Parents</p></th>
+<th class="head"><p>Possible Children</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>SUPER_ROOT</p></td>
+<td><dl class="simple">
+<dt>sits above the family tree. Subclass DispatchedModelMixin</dt><dd><p>of the dispatching for entire trees.</p>
+</dd>
+</dl>
+</td>
+<td><p>SUPER_ROOT only</p></td>
+<td><p>SUPER_ROOT or ROOT</p></td>
+</tr>
+<tr class="row-odd"><td><p>ROOT</p></td>
+<td><p>means a class is not concrete, thus it cannot be instantiated directly</p></td>
+<td><p>SUPER_ROOT or ROOT</p></td>
+<td><p>ROOT or CONCRETE</p></td>
+</tr>
+<tr class="row-even"><td><p>CONCRETE</p></td>
+<td><dl class="simple">
+<dt>means this is a “leaf” in the family tree. This class can be</dt><dd><p>instantiated, and it should not be subclassed further.</p>
+</dd>
+</dl>
+</td>
+<td><p>ROOT only</p></td>
+<td><p>None</p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spice_rack._bases._dispatchable.DispatchedModelMixin.build_dispatched_ann">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">build_dispatched_ann</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">SelfTV</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#spice_rack._bases._dispatchable.DispatchedModelMixin.build_dispatched_ann" title="Link to this definition"></a></dt>
+<dd><p>build a type annotation that is equivalent to Union[all concrete subclasses of this class]
+using class_id as a discriminator. This can be used as an annotation for a field in
+another pydantic class.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spice_rack._bases._dispatchable.DispatchedModelMixin.build_dispatcher_type_adapter">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">build_dispatcher_type_adapter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TypeAdapter</span><span class="p"><span class="pre">[</span></span><span class="pre">SelfTV</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#spice_rack._bases._dispatchable.DispatchedModelMixin.build_dispatcher_type_adapter" title="Link to this definition"></a></dt>
+<dd><p>use the type annotation created by <cite>build_dispatched_ann</cite> in a pydantic TypeAdapter
+that allows us to get the “discriminated union” parsing functionality outside a
+pydantic class context. see pydantic type adapter docs</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spice_rack._bases._dispatchable.DispatchedModelMixin.get_class_id">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_class_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ClassId</span></span></span><a class="headerlink" href="#spice_rack._bases._dispatchable.DispatchedModelMixin.get_class_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spice_rack._bases._dispatchable.DispatchedModelMixin.get_class_id_path">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_class_id_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ClassId</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#spice_rack._bases._dispatchable.DispatchedModelMixin.get_class_id_path" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spice_rack._bases._dispatchable.DispatchedModelMixin.get_class_type">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_class_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ClassType</span></span></span><a class="headerlink" href="#spice_rack._bases._dispatchable.DispatchedModelMixin.get_class_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spice_rack._bases._dispatchable.DispatchedModelMixin.is_concrete">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_concrete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#spice_rack._bases._dispatchable.DispatchedModelMixin.is_concrete" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spice_rack._bases._dispatchable.DispatchedModelMixin.iter_concrete_subclasses">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">iter_concrete_subclasses</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">SelfTV</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#spice_rack._bases._dispatchable.DispatchedModelMixin.iter_concrete_subclasses" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spice_rack._bases._dispatchable.DispatchedModelMixin.model_post_init">
+<span class="sig-name descname"><span class="pre">model_post_init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">__context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#spice_rack._bases._dispatchable.DispatchedModelMixin.model_post_init" title="Link to this definition"></a></dt>
+<dd><p>This function is meant to behave like a BaseModel method to initialise private attributes.</p>
+<p>It takes context as an argument since that’s what pydantic-core passes when calling it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The BaseModel instance.</p></li>
+<li><p><strong>__context</strong> – The context.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spice_rack._bases._dispatchable.DispatchedModelMixin.model_validate">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">model_validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SelfTV</span></span></span><a class="headerlink" href="#spice_rack._bases._dispatchable.DispatchedModelMixin.model_validate" title="Link to this definition"></a></dt>
+<dd><p>Validate a pydantic model instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> – The object to validate.</p></li>
+<li><p><strong>strict</strong> – Whether to enforce types strictly.</p></li>
+<li><p><strong>from_attributes</strong> – Whether to extract data from object attributes.</p></li>
+<li><p><strong>context</strong> – Additional context to pass to the validator.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValidationError</strong> – If the object could not be validated.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The validated model instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spice_rack._bases._dispatchable.DispatchedModelMixin.model_computed_fields">
+<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#spice_rack._bases._dispatchable.DispatchedModelMixin.model_computed_fields" title="Link to this definition"></a></dt>
+<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class pydantic_model">
+<dt class="sig sig-object py" id="spice_rack._bases._dispatchable.DispatchableValueModelBase">
+<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DispatchableValueModelBase</span></span><a class="headerlink" href="#spice_rack._bases._dispatchable.DispatchableValueModelBase" title="Link to this definition"></a></dt>
+<dd><p>convenience class that combines dispatchable model mixin and value model,
+which is a common use-case for dispatchable models. This has the value model config
+and the <cite>DispatchedModelMixin</cite> functionality.</p>
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="spice_rack._bases._dispatchable.DispatchableValueModelBase.class_id">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">class_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">_ClassIdStr</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spice_rack._bases._dispatchable.DispatchableValueModelBase.class_id" title="Link to this definition"></a></dt>
+<dd><p>this is the field we dispatch the different sub-classes on. Concrete classes will constrain this to be only one specific value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Validated by<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_ensure_class_id</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spice_rack._bases._dispatchable.DispatchableValueModelBase.model_computed_fields">
+<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#spice_rack._bases._dispatchable.DispatchableValueModelBase.model_computed_fields" title="Link to this definition"></a></dt>
+<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class pydantic_model">
+<dt class="sig sig-object py" id="spice_rack._bases._dispatchable.DispatchedClassContainer">
+<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DispatchedClassContainer</span></span><a class="headerlink" href="#spice_rack._bases._dispatchable.DispatchedClassContainer" title="Link to this definition"></a></dt>
+<dd><p>convenience wrapper allowing you to specify a dispatched family root class as the class
+parameter, and it’ll build the correct discriminated union type under the hood for you.</p>
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="spice_rack._bases._dispatchable.DispatchedClassContainer.root">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">root</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DispatchedClsTV</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#spice_rack._bases._dispatchable.DispatchedClassContainer.root" title="Link to this definition"></a></dt>
+<dd><p>the underlying concrete class instance</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spice_rack._bases._dispatchable.DispatchedClassContainer.model_computed_fields">
+<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#spice_rack._bases._dispatchable.DispatchedClassContainer.model_computed_fields" title="Link to this definition"></a></dt>
+<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="settings">
+<h2>Settings<a class="headerlink" href="#settings" title="Link to this heading"></a></h2>
+<p>subclasses pydantic_settings’ base class to allow us to customize behavior.</p>
+<dl class="py class pydantic_settings">
+<dt class="sig sig-object py" id="spice_rack._bases._settings.SettingsBase">
+<em class="property"><span class="pre">pydantic</span> <span class="pre">settings</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SettingsBase</span></span><a class="headerlink" href="#spice_rack._bases._settings.SettingsBase" title="Link to this definition"></a></dt>
+<dd><p>Base class inheriting from v1 version of Pydantic’s BaseSettings.
+This will be adjusted when we fully move to Pydantic v2.</p>
+<p class="rubric">Notes</p>
+<p>use double underscores, ‘__’, as the nested delimiter</p>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.pydantic.dev/1.10/usage/settings/">https://docs.pydantic.dev/1.10/usage/settings/</a></p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="spice_rack._bases._settings.SettingsBase.load">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">use_cls_env_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="headerlink" href="#spice_rack._bases._settings.SettingsBase.load" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spice_rack._bases._settings.SettingsBase.model_post_init">
+<span class="sig-name descname"><span class="pre">model_post_init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">__context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#spice_rack._bases._settings.SettingsBase.model_post_init" title="Link to this definition"></a></dt>
+<dd><p>This function is meant to behave like a BaseModel method to initialise private attributes.</p>
+<p>It takes context as an argument since that’s what pydantic-core passes when calling it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The BaseModel instance.</p></li>
+<li><p><strong>__context</strong> – The context.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spice_rack._bases._settings.SettingsBase.settings_customise_sources">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">settings_customise_sources</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">settings_cls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span><span class="p"><span class="pre">[</span></span><span class="pre">BaseSettings</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_settings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PydanticBaseSettingsSource</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">env_settings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PydanticBaseSettingsSource</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dotenv_settings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PydanticBaseSettingsSource</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_secret_settings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PydanticBaseSettingsSource</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">PydanticBaseSettingsSource</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#spice_rack._bases._settings.SettingsBase.settings_customise_sources" title="Link to this definition"></a></dt>
+<dd><p>Define the sources and their order for loading the settings values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>settings_cls</strong> – The Settings class.</p></li>
+<li><p><strong>init_settings</strong> – The <cite>InitSettingsSource</cite> instance.</p></li>
+<li><p><strong>env_settings</strong> – The <cite>EnvSettingsSource</cite> instance.</p></li>
+<li><p><strong>dotenv_settings</strong> – The <cite>DotEnvSettingsSource</cite> instance.</p></li>
+<li><p><strong>file_secret_settings</strong> – The <cite>SecretsSettingsSource</cite> instance.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing the sources and their order for loading the settings values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spice_rack._bases._settings.SettingsBase.model_computed_fields">
+<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#spice_rack._bases._settings.SettingsBase.model_computed_fields" title="Link to this definition"></a></dt>
+<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="exceptions">
+<h2>Exceptions<a class="headerlink" href="#exceptions" title="Link to this heading"></a></h2>
+<p>Standardized why to specify custom errors that include pydantic classes as error info
+payloads. These play nice with our loggers especially, but in general output pretty formatted
+structured error messages.</p>
+<dl class="py exception" id="module-spice_rack._bases._exception._exception_base">
+<dt class="sig sig-object py" id="spice_rack._bases._exception._exception_base.CustomExceptionBase">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CustomExceptionBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ErrorInfoTV</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spice_rack._bases._exception._exception_base.CustomExceptionBase" title="Link to this definition"></a></dt>
+<dd><p>Base for a custom-built exception class.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>the typing for the</p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="spice_rack._bases._exception._exception_base.CustomExceptionBase.get_error_payload_cls">
+<em class="property"><span class="pre">final</span><span class="w"> </span><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_error_payload_cls</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#spice_rack._bases._exception._error_info.ErrorPayload" title="spice_rack._bases._exception._error_info.ErrorPayload"><span class="pre">ErrorPayload</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ErrorInfoTV</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#spice_rack._bases._exception._exception_base.CustomExceptionBase.get_error_payload_cls" title="Link to this definition"></a></dt>
+<dd><p>Returns: an ErrorPayload class parameterized with the correct
+concrete subclass of ErrorInfoBase</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spice_rack._bases._exception._exception_base.CustomExceptionBase.get_error_payload_schema_title">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_error_payload_schema_title</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#spice_rack._bases._exception._exception_base.CustomExceptionBase.get_error_payload_schema_title" title="Link to this definition"></a></dt>
+<dd><p>overwrite this to customize the title of schema of the payload class.
+default is to return None and not customize it</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class pydantic_model" id="module-spice_rack._bases._exception._error_info">
+<dt class="sig sig-object py" id="spice_rack._bases._exception._error_info.ErrorInfoBase">
+<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ErrorInfoBase</span></span><a class="headerlink" href="#spice_rack._bases._exception._error_info.ErrorInfoBase" title="Link to this definition"></a></dt>
+<dd><p>base object that holds information about a specific error.</p>
+<p><details  class="autodoc_pydantic_collapsable_json">
+<summary>Show JSON schema</summary><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ErrorInfoBase&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;base object that holds information about a specific error.&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;extra&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dict field where you can add extra info. Can include any data types but everything must be json serializable&quot;</span><span class="p">,</span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Extra&quot;</span><span class="p">,</span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">   </span><span class="p">},</span>
+<span class="w">   </span><span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</details></p><dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="spice_rack._bases._exception._error_info.ErrorInfoBase.extra">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extra</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><em class="property"> <span class="pre">[Optional]</span></em><a class="headerlink" href="#spice_rack._bases._exception._error_info.ErrorInfoBase.extra" title="Link to this definition"></a></dt>
+<dd><p>dict field where you can add extra info. Can include any data types but everything must be json serializable</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spice_rack._bases._exception._error_info.ErrorInfoBase.get_json_data">
+<span class="sig-name descname"><span class="pre">get_json_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">pydantic_kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#spice_rack._bases._exception._error_info.ErrorInfoBase.get_json_data" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spice_rack._bases._exception._error_info.ErrorInfoBase.model_computed_fields">
+<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#spice_rack._bases._exception._error_info.ErrorInfoBase.model_computed_fields" title="Link to this definition"></a></dt>
+<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class pydantic_model">
+<dt class="sig sig-object py" id="spice_rack._bases._exception._error_info.ErrorPayload">
+<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ErrorPayload</span></span><a class="headerlink" href="#spice_rack._bases._exception._error_info.ErrorPayload" title="Link to this definition"></a></dt>
+<dd><p>Generic payload class holding the error detail string, and the info object.
+The ErrorInfoTV type var dictates the unique
+schema information about the concrete class</p>
+<p><details  class="autodoc_pydantic_collapsable_json">
+<summary>Show JSON schema</summary><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ErrorPayload&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Generic payload class holding the error detail string, and the info object.\nThe ErrorInfoTV type var dictates the unique\nschema information about the concrete class&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;the top line error&quot;</span><span class="p">,</span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Detail&quot;</span><span class="p">,</span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;error_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;the name of the error class this payload is connected to&quot;</span><span class="p">,</span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Error Type&quot;</span><span class="p">,</span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;info&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="nt">&quot;allOf&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">               </span><span class="nt">&quot;$ref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#/$defs/ErrorInfoBase&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">         </span><span class="p">],</span>
+<span class="w">         </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object containing more detailed information about the error&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">   </span><span class="p">},</span>
+<span class="w">   </span><span class="nt">&quot;$defs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;ErrorInfoBase&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">         </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;base object that holds information about a specific error.&quot;</span><span class="p">,</span>
+<span class="w">         </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;extra&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">               </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dict field where you can add extra info. Can include any data types but everything must be json serializable&quot;</span><span class="p">,</span>
+<span class="w">               </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Extra&quot;</span><span class="p">,</span>
+<span class="w">               </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">         </span><span class="p">},</span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ErrorInfoBase&quot;</span><span class="p">,</span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">   </span><span class="p">},</span>
+<span class="w">   </span><span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="s2">&quot;detail&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;error_type&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;info&quot;</span>
+<span class="w">   </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</details></p><dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="spice_rack._bases._exception._error_info.ErrorPayload.detail">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">detail</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#spice_rack._bases._exception._error_info.ErrorPayload.detail" title="Link to this definition"></a></dt>
+<dd><p>the top line error</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="spice_rack._bases._exception._error_info.ErrorPayload.error_type">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">error_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#spice_rack._bases._exception._error_info.ErrorPayload.error_type" title="Link to this definition"></a></dt>
+<dd><p>the name of the error class this payload is connected to</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="spice_rack._bases._exception._error_info.ErrorPayload.info">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">info</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ErrorInfoTV</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#spice_rack._bases._exception._error_info.ErrorPayload.info" title="Link to this definition"></a></dt>
+<dd><p>object containing more detailed information about the error</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spice_rack._bases._exception._error_info.ErrorPayload.json_dict">
+<span class="sig-name descname"><span class="pre">json_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">use_str_fallback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">pydantic_kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#spice_rack._bases._exception._error_info.ErrorPayload.json_dict" title="Link to this definition"></a></dt>
+<dd><p>Converts a pydantic instance to a dict, going through json first.
+This is a convenience function for when you want a dict, but want to use the json
+encoders connected to the pydantic object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>use_str_fallback</strong> – if true, we cast anything we cannot encode to a string</p></li>
+<li><p><strong>**pydantic_kwargs</strong> – any kwargs available for pydantic’s json method. see their docs</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a natively json-encodable dict</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>If the obj is a RootModel, calling <cite>obj.json</cite> would not necessarily return a dict,
+so we convert it to the form, <cite>{“__root__”: data}</cite> to align with how pydantic
+would return <cite>obj.dict()</cite> in this scenario.</p>
+<p class="rubric">Examples</p>
+<p>simple class with custom date encoder:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Data</span><span class="p">(</span><span class="n">PydanticBase</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">json_encoders</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">dt</span><span class="o">.</span><span class="n">date</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">date_obj</span><span class="p">:</span> <span class="n">date_obj</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y&quot;</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="n">x</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">date</span><span class="p">:</span> <span class="n">dt</span><span class="o">.</span><span class="n">date</span>
+
+<span class="n">inst</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">dt</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2023</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+<span class="c1"># regular dict</span>
+<span class="n">inst</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span> <span class="o">==</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="n">dt</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2023</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">1</span><span class="p">)}</span>
+
+<span class="c1"># this method</span>
+<span class="n">inst</span><span class="o">.</span><span class="n">json_dict</span><span class="p">()</span> <span class="o">==</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="s2">&quot;01/01/2023&quot;</span><span class="p">}</span>
+<span class="c1"># note that the date is the json encoding tied to the encoder for this pydantic</span>
+<span class="c1"># class. I just used a familiar string format, it could be whatever is specified</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spice_rack._bases._exception._error_info.ErrorPayload.model_post_init">
+<span class="sig-name descname"><span class="pre">model_post_init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">__context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#spice_rack._bases._exception._error_info.ErrorPayload.model_post_init" title="Link to this definition"></a></dt>
+<dd><p>This function is meant to behave like a BaseModel method to initialise private attributes.</p>
+<p>It takes context as an argument since that’s what pydantic-core passes when calling it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The BaseModel instance.</p></li>
+<li><p><strong>__context</strong> – The context.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spice_rack._bases._exception._error_info.ErrorPayload.model_computed_fields">
+<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#spice_rack._bases._exception._error_info.ErrorPayload.model_computed_fields" title="Link to this definition"></a></dt>
+<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class pydantic_model" id="module-spice_rack._bases._exception._external_wrapper">
+<dt class="sig sig-object py" id="spice_rack._bases._exception._external_wrapper.WrappedExternalException">
+<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">WrappedExternalException</span></span><a class="headerlink" href="#spice_rack._bases._exception._external_wrapper.WrappedExternalException" title="Link to this definition"></a></dt>
+<dd><p><details  class="autodoc_pydantic_collapsable_json">
+<summary>Show JSON schema</summary><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;WrappedExternalException&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;the name of the type of the error&quot;</span><span class="p">,</span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Type&quot;</span><span class="p">,</span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="nt">&quot;anyOf&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">               </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">               </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">         </span><span class="p">],</span>
+<span class="w">         </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The string representation of the error&quot;</span><span class="p">,</span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Detail&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">   </span><span class="p">},</span>
+<span class="w">   </span><span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="s2">&quot;type&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;detail&quot;</span>
+<span class="w">   </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</details></p><dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="spice_rack._bases._exception._external_wrapper.WrappedExternalException.detail">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">detail</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#spice_rack._bases._exception._external_wrapper.WrappedExternalException.detail" title="Link to this definition"></a></dt>
+<dd><p>The string representation of the error</p>
+<dl class="field-list simple">
+<dt class="field-odd">Validated by<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_parse_exception</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="spice_rack._bases._exception._external_wrapper.WrappedExternalException.type">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#spice_rack._bases._exception._external_wrapper.WrappedExternalException.type" title="Link to this definition"></a></dt>
+<dd><p>the name of the type of the error</p>
+<dl class="field-list simple">
+<dt class="field-odd">Validated by<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_parse_exception</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spice_rack._bases._exception._external_wrapper.WrappedExternalException.model_computed_fields">
+<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#spice_rack._bases._exception._external_wrapper.WrappedExternalException.model_computed_fields" title="Link to this definition"></a></dt>
+<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception" id="module-spice_rack._bases._exception._exception_exception">
+<dt class="sig sig-object py" id="spice_rack._bases._exception._exception_exception.CustomExceptionInitializationError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CustomExceptionInitializationError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caught_exception</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Exception</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spice_rack._bases._exception._exception_exception.CustomExceptionInitializationError" title="Link to this definition"></a></dt>
+<dd><p>this is raised when we encounter an exception in our custom exception class</p>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>This is NOT a subclass of our custom exception base class, so if we have a problem
+with our base class we won’t end up in recursive spiral</p></li>
+</ul>
+</dd></dl>
+
+</section>
+<section id="special-str">
+<h2>Special Str<a class="headerlink" href="#special-str" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="spice_rack._bases._special_str.SpecialStrBase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SpecialStrBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_CoercibleTV</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spice_rack._bases._special_str.SpecialStrBase" title="Link to this definition"></a></dt>
+<dd><p>makes it convenient to subclass str to let us signify a given str is a special
+type, like an ID or key. This helps type checking and also allows us to add formatting and
+validation. This class also hooks into pydantic validation automatically.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="spice_rack._bases._special_str.SpecialStrBase._format_str_val">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_format_str_val</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#spice_rack._bases._special_str.SpecialStrBase._format_str_val" title="Link to this definition"></a></dt>
+<dd><p>overwrite this to specify the custom str formatting for this class</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spice_rack._bases._special_str.SpecialStrBase._parse_non_str">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_parse_non_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#spice_rack._bases._special_str.SpecialStrBase._parse_non_str" title="Link to this definition"></a></dt>
+<dd><p>Overwrite this to allow the special str class to parse non-string input.
+Manually check the root_data type to determine if you want to parse, it and return
+super()._parse_non_str if you want to avoid handling the data type.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spice_rack._bases._special_str.SpecialStrBase._validate_str_val">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_validate_str_val</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#spice_rack._bases._special_str.SpecialStrBase._validate_str_val" title="Link to this definition"></a></dt>
+<dd><p>validate that the formatted string data is valid</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spice_rack._bases._special_str.SpecialStrBase.special_repr">
+<span class="sig-name descname"><span class="pre">special_repr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#spice_rack._bases._special_str.SpecialStrBase.special_repr" title="Link to this definition"></a></dt>
+<dd><p>Gives us a special representation indicating the instance is a special string, not just
+a normal one.</p>
+<p>This keeps the regular ‘__repr__’ method is the same as a normal str instance</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to spice_rack’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Tim Robin.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
