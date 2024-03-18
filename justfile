@@ -6,12 +6,11 @@ default:
 
 dev-env-setup:
     poetry lock -vv
-    poetry install
+    poetry install --all-extras
 
 
 launch-jupyter-lab:
     cd notebooks/  && jupyter lab
-
 
 unit-tests:
     pytest tests/ --doctest-modules  --pyargs src/
@@ -21,3 +20,9 @@ all-tests:
     poetry run ruff check .
     # poetry run mypy src/
     poetry run pytest tests/ --doctest-modules  --pyargs src/
+
+make-docs:
+    #!/usr/bin/env bash
+    cd docs
+    make clean
+    make html

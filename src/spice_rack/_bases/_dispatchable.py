@@ -20,7 +20,7 @@ __all__ = (
 
 
 class ClassId(_special_str.SpecialStrBase):
-    """a class id for a member of the dispatched family"""
+    """the unique class id for a member of the dispatched family"""
     ...
 
 
@@ -49,6 +49,9 @@ class ClassType(enum.Enum):
     You cannot inherit from this class it is Final
     """
 
+
+# looks like we could remove this and just use ClassId, but we have to use this
+# or the typing won't dispatch. I'm not sure why.
 
 class _ClassIdStr(str):
     ...
@@ -93,32 +96,6 @@ class DispatchedModelMixin(pydantic.BaseModel, _base_base.CommonModelMethods):
     dispatchable family trees at once. It will cause weird behavior and there
     are no checks to protect against this.
 
-    class_id(str or None)::
-        specifies the class_id for the class. If specified, we'll use it
-        otherwise it'll be constructed from the cls.__name__. The class
-
-    class_type(ClassType or None)::
-        A member of the ClassType. If specified, we'll ensure it is valid
-        based on the parent class' ClassType. Type specific behavior:
-
-            SUPER_ROOT: sits above the family tree. Subclass DispatchedModelMixin
-                specifying the class to be this type, to customize the behavior
-                of the dispatching for entire trees. Can be thought of as
-                indicating the class is a "metaclass" but not exactly the
-                same as true python metaclass.
-    
-                Can Inherit from: SUPER_ROOT only
-                Direct Children can be: SUPER_ROOT or ROOT
-                
-            ROOT: means a class is not concrete, thus it cannot be instantiated directly.
-                Can Inherit from: SUPER_ROOT or ROOT
-                Direct Children can be: ROOT or CONCRETE
-            
-            CONCRETE: means this is a "leaf" in the family tree. This class can be instantiated, 
-                and it should not be subclassed further.
-                
-                Can Inherit from: ROOT only
-                Direct Children can be: None
     """
     model_config = _model_config
 
@@ -172,10 +149,42 @@ class DispatchedModelMixin(pydantic.BaseModel, _base_base.CommonModelMethods):
     def __init_subclass__(
             cls,
             class_type: t.Optional[t.Union[str, ClassType]] = None,
-            class_id: t.Optional[str] = None,
+            class_id: t.Optional[t.Union[str, ClassType]] = None,
     ) -> None:
         """
-        control how this subclass is set up. see class docstring for more info
+        control how this subclass is set up.
+
+        Args:
+            class_type: specifies the class_id for the class. If specified, we'll use it
+                otherwise it'll be constructed from the cls.__name__.
+            class_id: If specified, we'll ensure it is valid based on the parent class' ClassType.
+                See table below for more info
+
+        Returns: None
+
+
+        .. list-table:: Class Type specific behavior
+           :widths: 100 25 25 25
+           :header-rows: 1
+
+           * - Class Type
+             - Behavior
+             - Possible Parents
+             - Possible Children
+           * - SUPER_ROOT
+             - sits above the family tree. Subclass DispatchedModelMixin
+                of the dispatching for entire trees.
+             - SUPER_ROOT only
+             - SUPER_ROOT or ROOT
+           * - ROOT
+             - means a class is not concrete, thus it cannot be instantiated directly
+             - SUPER_ROOT or ROOT
+             - ROOT or CONCRETE
+           * - CONCRETE
+             - means this is a "leaf" in the family tree. This class can be
+                instantiated, and it should not be subclassed further.
+             - ROOT only
+             - None
         """
 
         class_id_actual: ClassId
@@ -264,6 +273,11 @@ class DispatchedModelMixin(pydantic.BaseModel, _base_base.CommonModelMethods):
 
     @classmethod
     def build_dispatched_ann(cls: t.Type[SelfTV]) -> t.Type[SelfTV]:
+        """
+        build a type annotation that is equivalent to Union[all concrete subclasses of this class]
+        using class_id as a discriminator. This can be used as an annotation for a field in
+        another pydantic class.
+        """
         options = list(cls.iter_concrete_subclasses())
 
         if len(options) == 0:
@@ -282,6 +296,11 @@ class DispatchedModelMixin(pydantic.BaseModel, _base_base.CommonModelMethods):
 
     @classmethod
     def build_dispatcher_type_adapter(cls: t.Type[SelfTV]) -> pydantic.TypeAdapter[SelfTV]:
+        """
+        use the type annotation created by `build_dispatched_ann` in a pydantic TypeAdapter
+        that allows us to get the "discriminated union" parsing functionality outside a
+        pydantic class context. see pydantic type adapter docs
+        """
         return pydantic.TypeAdapter(cls.build_dispatched_ann())
 
 
@@ -289,8 +308,12 @@ DispatchedClsTV = t.TypeVar("DispatchedClsTV", bound=DispatchedModelMixin)
 
 
 class DispatchedClassContainer(pydantic.RootModel[DispatchedClsTV], t.Generic[DispatchedClsTV]):
+    """
+    convenience wrapper allowing you to specify a dispatched family root class as the class
+    parameter, and it'll build the correct discriminated union type under the hood for you.
+    """
     root: DispatchedClsTV = pydantic.Field(
-        description="the root class ",
+        description="the underlying concrete class instance",
     )
 
     def __class_getitem__(
@@ -307,6 +330,7 @@ class DispatchedClassContainer(pydantic.RootModel[DispatchedClsTV], t.Generic[Di
 class DispatchableValueModelBase(DispatchedModelMixin, class_type=ClassType.SUPER_ROOT):
     """
     convenience class that combines dispatchable model mixin and value model,
-    which is a common use-case for dispatchable models.
+    which is a common use-case for dispatchable models. This has the value model config
+    and the `DispatchedModelMixin` functionality.
     """
     model_config = _value_model.VALUE_MODEL_CONFIG

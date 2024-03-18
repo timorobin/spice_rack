@@ -15,11 +15,18 @@ SelfTV = t.TypeVar("SelfTV", bound="SpecialStrBase")
 
 
 class SpecialStrBase(str):
-    """container for a special string to avoid having """
-
+    """
+    makes it convenient to subclass str to let us signify a given str is a special
+    type, like an ID or key. This helps type checking and also allows us to add formatting and
+    validation. This class also hooks into pydantic validation automatically.
+    """
     @classmethod
     def _parse_non_str(cls, root_data: t.Any) -> str:
-        """overwrite this to allow the special str class to parse non-string input"""
+        """
+        Overwrite this to allow the special str class to parse non-string input.
+        Manually check the root_data type to determine if you want to parse, it and return
+        super()._parse_non_str if you want to avoid handling the data type.
+        """
         raise TypeError(f"'{cls.__name__}' cannot parse data of type {type(root_data)}")
 
     @classmethod
