@@ -26,6 +26,16 @@ class CommonModelMethods(abc.ABC):
             f"'{self.__class__.__name__}' doesn't have iteration implemented"
         )
 
+    def _post_init_setup(self) -> None:
+        return
+
+    def _post_init_validation(self) -> None:
+        return
+
+    def model_post_init(self, __context: t.Any) -> None:
+        self._post_init_setup()
+        self._post_init_validation()
+
     def json_dict(
             self,
             use_str_fallback: bool = False,
