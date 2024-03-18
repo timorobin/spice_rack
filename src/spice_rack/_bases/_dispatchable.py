@@ -50,6 +50,13 @@ class ClassType(enum.Enum):
     """
 
 
+# looks like we could remove this and just use ClassId, but we have to use this
+# or the typing won't dispatch. I'm not sure why.
+
+class _ClassIdStr(str):
+    ...
+
+
 class _PydanticSchemaGenerator(pydantic.GenerateSchema):
     _specified_class_id: t.ClassVar[t.Optional[str]] = None
 
@@ -61,7 +68,7 @@ class _PydanticSchemaGenerator(pydantic.GenerateSchema):
         return new_cls
 
     def match_type(self, obj: t.Type[t.Any]) -> pydantic_core.core_schema.CoreSchema:
-        if obj is ClassId:
+        if obj is _ClassIdStr:
             return self.gen_class_id_schema()
         else:
             return super().match_type(obj)
@@ -96,7 +103,7 @@ class DispatchedModelMixin(pydantic.BaseModel, _base_base.CommonModelMethods):
     _class_id: t.ClassVar[ClassId]
     _class_id_path: t.ClassVar[ClassIdPathT] = ()
 
-    class_id: ClassId = pydantic.Field(
+    class_id: _ClassIdStr = pydantic.Field(
         description="this is the field we dispatch the different sub-classes on. "
                     "Concrete classes will constrain this to be only one specific value.",
         default=None,
@@ -163,7 +170,7 @@ class DispatchedModelMixin(pydantic.BaseModel, _base_base.CommonModelMethods):
            * - Class Type
              - Behavior
              - Possible Parents
-             - Possible Childen
+             - Possible Children
            * - SUPER_ROOT
              - sits above the family tree. Subclass DispatchedModelMixin
                 of the dispatching for entire trees.
