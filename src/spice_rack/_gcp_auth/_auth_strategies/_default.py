@@ -24,6 +24,16 @@ class DefaultAuthStrategy(_base.AbstractGcpAuthStrategy):
         default="use_anon"
     )
 
+    def default_creds_found(self) -> bool:
+        try:
+            credentials_inst, _ = gcp_default()
+
+        except gcp_exceptions.DefaultCredentialsError:
+            return False
+
+        except Exception as e:
+            raise e
+
     def build_gcp_creds(
             self
     ) -> credentials.Credentials:

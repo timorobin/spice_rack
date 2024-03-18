@@ -32,8 +32,21 @@ class GcsFileSystem(_base.AbstractFileSystem, class_id="gcs"):
 
         if isinstance(creds, _gcp_auth.auth_strategies.AnonAuthStrategy):
             return "anon"
+
         elif isinstance(creds, _gcp_auth.auth_strategies.DefaultAuthStrategy):
-            return "google_default"
+            if creds.default_creds_found():
+                return "google_default"
+            else:
+                if creds.on_no_default == "use_anon":
+                    return "anon"
+                elif creds.on_no_default == "raise":
+                    raise ValueError(
+                        "no default gcp credentials found in the environment"
+                    )
+                else:
+                    raise ValueError(
+                        f"'{creds.on_no_default}' is unexpected value for 'on_no_default'"
+                    )
         elif isinstance(creds, _gcp_auth.auth_strategies.ServiceAcctKeyFileAuthStrategy):
             return creds.file_path
         elif isinstance(creds, _gcp_auth.auth_strategies.ServiceAcctKeyAuthStrategy):
