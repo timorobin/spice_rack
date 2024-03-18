@@ -37,7 +37,7 @@ class _AbstractFileSystemObj(
     @pydantic.model_validator(mode="before")
     def _model_setup(cls, data: t.Any) -> t.Any:
         if isinstance(data, str):
-            return cls.init_from_str(data)
+            data = cls.init_from_str(data).model_dump()
 
         file_system_key = "file_system"
         path_key = "path"
@@ -239,6 +239,21 @@ class FilePath(_AbstractFileSystemObj):
         #         }
         #     )
 
+    def write(self, data: t.Union[str, bytes], mode: t.Literal["wb", "ab"] = "wb") -> None:
+        byte_data: bytes
+        if isinstance(data, bytes):
+            byte_data = data
+        else:
+            byte_data = data.encode()
+
+        with self.open(mode) as f:
+            f.write(byte_data)
+
+    def read_as_str(self, encoding: str = "utf-8") -> str:
+        with self.open("rb") as f:
+            byte_data = f.read()
+        return byte_data.decode(encoding)
+
     def get_name(self, include_suffixes: bool = False) -> str:
         return self.path.get_name(include_suffixes=include_suffixes)
 
@@ -344,7 +359,7 @@ class DirPath(_AbstractFileSystemObj):
             self,
             relative_path: t.Union[str, _path_strs.FileOrDirRelPathT]
     ) -> t.Union[FilePath, DirPath]:
-        rel_path_obj = _path_strs.FileOrDirAbsPathTypeAdapter.validate_python(
+        rel_path_obj = _path_strs.FileOrDirRelPathTypeAdapter.validate_python(
             relative_path
         )
         new_path_any = self.path.joinpath(rel_path_obj)

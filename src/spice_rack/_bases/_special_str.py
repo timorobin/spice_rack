@@ -79,3 +79,6 @@ class SpecialStrBase(str):
 
         except Exception:
             return False
+
+    def __hash__(self) -> int:
+        return hash(str(self))
