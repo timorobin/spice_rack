@@ -18,6 +18,6 @@ VALUE_MODEL_CONFIG: pydantic.ConfigDict = {
 }
 
 
-class ValueModelBase(pydantic.BaseModel, _base_base.CommonModelMethods):
+class ValueModelBase(_base_base.CommonModelMethods):
     """a frozen model"""
     model_config = VALUE_MODEL_CONFIG
