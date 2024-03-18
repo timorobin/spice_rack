@@ -6,6 +6,9 @@ Welcome to spice_rack's documentation!
    :maxdepth: 4
    :caption: Contents:
 
+   bases
+
+
 Indices and tables
 ==================
 
