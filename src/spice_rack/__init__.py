@@ -5,5 +5,9 @@ from spice_rack import (
     _gcp_auth as gcp_auth,
     _timestamp as timestamp,
     _misc as misc,
-    _utils as utils
+    _utils as utils,
+    _version_getter
 )
+
+__version__ = _version_getter.get_version(__name__)
+VERSION = __version__

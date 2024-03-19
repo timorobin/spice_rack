@@ -15,7 +15,7 @@ BASE_MODEL_CONFIG = pydantic.ConfigDict(
 )
 
 
-SelfTV = t.TypeVar("SelfTV", bound=pydantic.BaseModel)
+SelfTV = t.TypeVar("SelfTV", bound="PydanticBase")
 
 
 class PydanticBase(pydantic.BaseModel):
@@ -48,7 +48,7 @@ class PydanticBase(pydantic.BaseModel):
         return
 
     @pydantic.model_validator(mode="after")
-    def _pydantic_post_init_val_hook(self) -> None:
+    def _pydantic_post_init_val_hook(self: SelfTV) -> SelfTV:
         """
         Pydantic's hook that gets executed after we initialize an instance.
         rather than overwrite this, overwrite the '_post_init_setup' and '_post_init_validation'
@@ -56,7 +56,7 @@ class PydanticBase(pydantic.BaseModel):
         """
         self._post_init_setup()
         self._post_init_validation()
-        return
+        return self
 
     def json_dict(
             self,

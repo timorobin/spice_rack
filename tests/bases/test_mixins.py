@@ -26,6 +26,9 @@ def test_guid():
 
     assert x == x2
 
+    with pytest.raises(AssertionError):
+        assert X() == X()
+
 
 def test_created_at():
     class X(Parent, bases.mixins.CreatedAtMixin):
