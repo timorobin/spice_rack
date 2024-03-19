@@ -2,6 +2,7 @@ from __future__ import annotations
 import typing as t
 import pydantic
 
+from spice_rack import _bases
 
 __all__ = (
     "LogLevel",
@@ -34,7 +35,7 @@ _int_to_str: t.Dict[_LogLevelIntLiteralT, _LogLevelStrLiteralT] = dict(
 )
 
 
-class LogLevel(pydantic.RootModel[_LogLevelLiteralT]):
+class LogLevel(_bases.root.RootModel[_LogLevelLiteralT]):
     """
     a root model holding enum values.
     """
