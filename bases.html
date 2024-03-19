@@ -47,15 +47,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Bases</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#base-base">Base Base</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#spice_rack._bases._base_base.CommonModelMethods"><code class="docutils literal notranslate"><span class="pre">CommonModelMethods</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._base_base.CommonModelMethods._import_forward_refs"><code class="docutils literal notranslate"><span class="pre">CommonModelMethods._import_forward_refs()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._base_base.CommonModelMethods.json_dict"><code class="docutils literal notranslate"><span class="pre">CommonModelMethods.json_dict()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._base_base.CommonModelMethods.update_forward_refs"><code class="docutils literal notranslate"><span class="pre">CommonModelMethods.update_forward_refs()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#base-base">Base Base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dispatchable-bases">Dispatchable Bases</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#spice_rack._bases._dispatchable.DispatchedModelMixin"><code class="docutils literal notranslate"><span class="pre">DispatchedModelMixin</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._dispatchable.DispatchedModelMixin.class_id"><code class="docutils literal notranslate"><span class="pre">DispatchedModelMixin.class_id</span></code></a></li>
@@ -168,102 +160,6 @@
 <section id="base-base">
 <h2>Base Base<a class="headerlink" href="#base-base" title="Link to this heading"></a></h2>
 <p>Common bases used by other base classes</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="spice_rack._bases._base_base.CommonModelMethods">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CommonModelMethods</span></span><a class="headerlink" href="#spice_rack._bases._base_base.CommonModelMethods" title="Link to this definition"></a></dt>
-<dd><p>a base model we use for all pydantic models, even the other bases</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="spice_rack._bases._base_base.CommonModelMethods._import_forward_refs">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_import_forward_refs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#spice_rack._bases._base_base.CommonModelMethods._import_forward_refs" title="Link to this definition"></a></dt>
-<dd><p>hook provided for convenience when you define a subclass with forward refs,
-to avoid circular import issue. Overwrite this method to do the imports and
-add the newly imported objects to a dict.</p>
-<p class="rubric">Notes</p>
-<ul class="simple">
-<li><p>If you’re not sure what to import and what keys to use, look at the stuff
-in the <cite>if TYPE_CHECKING:</cite> block, paste those exact imports in here and
-set them equal to their variable name within your current module’s context.</p></li>
-</ul>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a dict of references to update</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spice_rack._bases._base_base.CommonModelMethods.json_dict">
-<span class="sig-name descname"><span class="pre">json_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">use_str_fallback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">pydantic_kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#spice_rack._bases._base_base.CommonModelMethods.json_dict" title="Link to this definition"></a></dt>
-<dd><p>Converts a pydantic instance to a dict, going through json first.
-This is a convenience function for when you want a dict, but want to use the json
-encoders connected to the pydantic object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>use_str_fallback</strong> – if true, we cast anything we cannot encode to a string</p></li>
-<li><p><strong>**pydantic_kwargs</strong> – any kwargs available for pydantic’s json method. see their docs</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a natively json-encodable dict</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<p>If the obj is a RootModel, calling <cite>obj.json</cite> would not necessarily return a dict,
-so we convert it to the form, <cite>{“__root__”: data}</cite> to align with how pydantic
-would return <cite>obj.dict()</cite> in this scenario.</p>
-<p class="rubric">Examples</p>
-<p>simple class with custom date encoder:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Data</span><span class="p">(</span><span class="n">PydanticBase</span><span class="p">):</span>
-    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
-        <span class="n">json_encoders</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">dt</span><span class="o">.</span><span class="n">date</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">date_obj</span><span class="p">:</span> <span class="n">date_obj</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y&quot;</span><span class="p">)</span>
-        <span class="p">}</span>
-    <span class="n">x</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">date</span><span class="p">:</span> <span class="n">dt</span><span class="o">.</span><span class="n">date</span>
-
-<span class="n">inst</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">dt</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2023</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-
-<span class="c1"># regular dict</span>
-<span class="n">inst</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span> <span class="o">==</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="n">dt</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2023</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">1</span><span class="p">)}</span>
-
-<span class="c1"># this method</span>
-<span class="n">inst</span><span class="o">.</span><span class="n">json_dict</span><span class="p">()</span> <span class="o">==</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="s2">&quot;01/01/2023&quot;</span><span class="p">}</span>
-<span class="c1"># note that the date is the json encoding tied to the encoder for this pydantic</span>
-<span class="c1"># class. I just used a familiar string format, it could be whatever is specified</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spice_rack._bases._base_base.CommonModelMethods.update_forward_refs">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update_forward_refs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#spice_rack._bases._base_base.CommonModelMethods.update_forward_refs" title="Link to this definition"></a></dt>
-<dd><p>This extends pydantic’s builtin hook for updating forward refs.
-We call our special ‘_import_forward_refs’ hook to automatically bring in the things
-imported there, but also if you want to use it like pydantic, i.e. call it directly and
-provide your refs to update via kwargs, that is still supported.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>doesn’t return anything, mutates the class calling this method</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>NameError</strong> – pydantic raises a NameError if a forward ref is not accounted for
-    in the kwargs</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
 </section>
 <section id="dispatchable-bases">
 <h2>Dispatchable Bases<a class="headerlink" href="#dispatchable-bases" title="Link to this heading"></a></h2>
