@@ -20,34 +20,40 @@ SelfTV = t.TypeVar("SelfTV", bound=pydantic.BaseModel)
 
 class PydanticBase(pydantic.BaseModel):
     """a base model we use for all pydantic models, even the other bases"""
-    def __iter__(self) -> t.Any:
-        raise NotImplementedError(
-            f"'{self.__class__.__name__}' doesn't have iteration implemented"
-        )
+    def __iter__(self):
+        """
+        We block attempts to iterate by default bc more often than not, if you end up iterating
+        over an instance of one of our objects directly, without having implemented an
+        iter dunder, it is unintentional and a mistake.
 
-    def _post_init_setup(self, __context: t.Any = None) -> None:
+        If you do want a subclass to support iteration, overwrite this dunder.
+        """
+        raise ValueError(f"iteration not implemented for the '{self.get_cls_name()}' class")
+
+    def _post_init_setup(self) -> None:
         """
         Overwrite this hook to set perform misc. logic before calling _post_init_validation.
         Common use case for this is initializing private attributes.
-
-        Args:
-            __context: positional only arg containing any sort of context. This
-                is passed in by the 'model_post_init' method
-
-        Returns: None, mutate the instance in-place
+        Notes: Make sure to call super()._post_init_setup
         """
         return
 
     def _post_init_validation(self) -> None:
+        """
+        Overwrite this hook to set perform misc. validation logic on the instance, after
+        all other validators have been executed.
+        This is also called after the '_post_init_setup' hook is called
+        Notes: Make sure to call super()._post_init_validation
+        """
         return
 
-    @t.final
-    def model_post_init(self, __context: t.Any) -> None:
+    @pydantic.model_validator(mode="after")
+    def _pydantic_post_init_val_hook(self) -> None:
         """
-        pydantic's hook that gets executed after we initialize an instance.
-        We do not overwrite this, we always
+        Pydantic's hook that gets executed after we initialize an instance.
+        rather than overwrite this, overwrite the '_post_init_setup' and '_post_init_validation'
+        hooks
         """
-        super().model_post_init(__context)
         self._post_init_setup()
         self._post_init_validation()
         return
