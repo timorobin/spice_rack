@@ -26,7 +26,9 @@ class SettingsBase(pydantic_settings.BaseSettings):
     """
     _singleton_source: t.ClassVar[t.Optional[_sources.SingletonSource]] = None
 
-    model_config = pydantic_settings.SettingsConfigDict()
+    model_config = pydantic_settings.SettingsConfigDict(
+        extra="ignore"
+    )
 
     def __init_subclass__(cls, singleton_mode: bool = True, **kwargs):
         if singleton_mode:

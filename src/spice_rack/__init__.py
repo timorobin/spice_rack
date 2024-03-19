@@ -6,6 +6,7 @@ from spice_rack import (
     _timestamp as timestamp,
     _misc as misc,
     _utils as utils,
+    _guid as guid,
     _version_getter
 )
 
