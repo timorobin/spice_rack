@@ -89,7 +89,7 @@ _model_config = _base_base.BASE_MODEL_CONFIG
 _model_config["schema_generator"] = _PydanticSchemaGenerator
 
 
-class DispatchedModelMixin(_base_base.CommonModelMethods):
+class DispatchedModelMixin(_base_base.PydanticBase):
     """
     the entrypoint for creating dispatchable family trees using pydantic's internal
     engine for schema generation. Be careful not to inherit from two different

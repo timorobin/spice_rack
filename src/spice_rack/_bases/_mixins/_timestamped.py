@@ -2,6 +2,8 @@ from __future__ import annotations
 import datetime as dt
 import pydantic
 
+from spice_rack._bases._mixins._mixin_base import PydanticMixinBase
+
 
 __all__ = ("CreatedAtMixin", "UpdatedAtMixin", "CreatedAtUpdatedAtMixin")
 
@@ -10,7 +12,7 @@ def _get_current_utc_datetime() -> dt.datetime:
     return dt.datetime.utcnow()
 
 
-class CreatedAtMixin(pydantic.BaseModel):
+class CreatedAtMixin(PydanticMixinBase):
     """
     adds a datetime field, 'created_at' that can be timezone aware or naive
     """
@@ -28,7 +30,7 @@ class CreatedAtMixin(pydantic.BaseModel):
         return self.created_at.isoformat()
 
 
-class UpdatedAtMixin(pydantic.BaseModel):
+class UpdatedAtMixin(PydanticMixinBase):
     """
     adds a datetime field, 'updated_at' that can be timezone aware or naive
     """

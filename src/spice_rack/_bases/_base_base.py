@@ -7,7 +7,7 @@ import pydantic
 
 __all__ = (
     "BASE_MODEL_CONFIG",
-    "CommonModelMethods"
+    "PydanticBase"
 )
 
 BASE_MODEL_CONFIG = pydantic.ConfigDict(
@@ -18,20 +18,36 @@ BASE_MODEL_CONFIG = pydantic.ConfigDict(
 SelfTV = t.TypeVar("SelfTV", bound=pydantic.BaseModel)
 
 
-class CommonModelMethods(pydantic.BaseModel):
+class PydanticBase(pydantic.BaseModel):
     """a base model we use for all pydantic models, even the other bases"""
     def __iter__(self) -> t.Any:
         raise NotImplementedError(
             f"'{self.__class__.__name__}' doesn't have iteration implemented"
         )
 
-    def _post_init_setup(self) -> None:
+    def _post_init_setup(self, __context: t.Any = None) -> None:
+        """
+        Overwrite this hook to set perform misc. logic before calling _post_init_validation.
+        Common use case for this is initializing private attributes.
+
+        Args:
+            __context: positional only arg containing any sort of context. This
+                is passed in by the 'model_post_init' method
+
+        Returns: None, mutate the instance in-place
+        """
         return
 
     def _post_init_validation(self) -> None:
         return
 
+    @t.final
     def model_post_init(self, __context: t.Any) -> None:
+        """
+        pydantic's hook that gets executed after we initialize an instance.
+        We do not overwrite this, we always
+        """
+        super().model_post_init(__context)
         self._post_init_setup()
         self._post_init_validation()
         return
