@@ -5,6 +5,9 @@ from devtools import pformat
 
 from spice_rack._bases._exception import _error_info, _exception_exception
 
+if t.TYPE_CHECKING:
+    from spice_rack._bases._exception import _http
+
 
 __all__ = (
     "CustomExceptionBase",
@@ -162,3 +165,28 @@ class CustomExceptionBase(Exception, t.Generic[ErrorInfoTV]):
 
     def _get_formatted_str_terse(self) -> str:
         return self.detail
+
+    def as_http_error_resp(
+            self,
+            status_code: int
+    ) -> _http.HttpErrorResponse[ErrorInfoTV]:
+        from spice_rack._bases._exception import _http
+        return _http.HttpErrorResponse(
+            status_code=status_code,
+            error_payload=self.get_error_payload_inst()
+        )
+
+    @classmethod
+    @t.final
+    def get_http_response_info_inst(
+            cls,
+            status_code: int,
+            custom_desc: t.Optional[str] = None
+    ) -> _http.HttpErrorResponseInfo:
+        """build a HttpErrorResponseInfo inst for this exception class"""
+        from spice_rack._bases._exception import _http
+        return _http.HttpErrorResponseInfo(
+            status_code=status_code,
+            exception_type=cls,
+            custom_desc=custom_desc
+        )

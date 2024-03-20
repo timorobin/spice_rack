@@ -134,7 +134,10 @@ class DispatchedModelMixin(_base_base.PydanticBase):
 
         # if root parent, we assume concrete
         elif parent_class_type == ClassType.ROOT:
-            class_type_actual = ClassType.CONCRETE
+            if cls.__name__.startswith("Abstract"):
+                class_type_actual = ClassType.ROOT
+            else:
+                class_type_actual = ClassType.CONCRETE
 
         # if concrete parent, we raise ValueError
         elif parent_class_type == ClassType.CONCRETE:

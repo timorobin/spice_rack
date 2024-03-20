@@ -6,3 +6,4 @@ from spice_rack._logging import (
     _sinks as sinks,
     _log_aug as log_extra
 )
+LoggableObjMixin = log_extra.LoggableObjMixin

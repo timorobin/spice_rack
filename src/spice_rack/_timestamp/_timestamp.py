@@ -97,6 +97,9 @@ class Timestamp(pydantic.RootModel[int], _logging.log_extra.LoggableObjMixin):
     def special_repr(self, with_tz: t.Optional[_TzKeyT] = None) -> str:
         return f"{self.__class__.__name__}['{self.to_iso_str(with_tz=with_tz)}']"
 
+    def to_file_path_fmat(self) -> str:
+        return self.to_dt_obj().strftime("%Y_%m_%dT%H_%M_%S_%f")
+
     @classmethod
     def _from_datetime_obj(
             cls,

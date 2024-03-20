@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+import os
 from abc import abstractmethod
 from devtools import pformat
 import typing as t
@@ -16,7 +18,9 @@ from spice_rack._fs_ops import (
 
 __all__ = (
     "FilePath", "DirPath",
-    "FileOrDirPathT", "FileOrDirPathTypeAdapter"
+    "FileOrDirPathT", "FileOrDirPathTypeAdapter",
+    "DeferredFilePath", "DeferredDirPath",
+    "FileOrDirDeferredPathT", "FileOrDirDeferredPathTypeAdapter"
 )
 
 
@@ -286,8 +290,11 @@ class FilePath(_AbstractFileSystemObj):
 
     @classmethod
     def init_from_str(cls, raw_str: str) -> FilePath:
-        file_path = _path_strs.AbsoluteFilePathStr(raw_str)
-        return FilePath(path=file_path)
+        if raw_str.startswith("$"):
+            return DeferredFilePath.model_validate(raw_str).evaluate()
+        else:
+            file_path = _path_strs.AbsoluteFilePathStr(raw_str)
+            return FilePath(path=file_path)
 
 
 class DirPath(_AbstractFileSystemObj):
@@ -417,8 +424,11 @@ class DirPath(_AbstractFileSystemObj):
 
     @classmethod
     def init_from_str(cls, raw_str: str) -> DirPath:
-        dir_path = _path_strs.AbsoluteDirPathStr(raw_str)
-        return DirPath(path=dir_path)
+        if raw_str.startswith("$"):
+            return DeferredDirPath.model_validate(raw_str).evaluate()
+        else:
+            file_path = _path_strs.AbsoluteDirPathStr(raw_str)
+            return DirPath(path=file_path)
 
 
 def _str_parser(data: t.Any) -> t.Any:
@@ -443,4 +453,68 @@ FileOrDirPathT = t.Annotated[
 
 
 FileOrDirPathTypeAdapter = pydantic.TypeAdapter(FileOrDirPathT)
+"""gives us pydantic parsing logic outside a pydantic class"""
+
+
+class _DeferredPath(_bases.DispatchableValueModelBase):
+    env_var_key: str
+    rel_path: _path_strs.FileOrDirRelPathT
+
+    @pydantic.model_validator(mode="before")
+    def _model_setup(cls, data: t.Any) -> t.Any:
+        if isinstance(data, str):
+            split = data.split("/")
+            env_var_key = split[0].replace("$", "")
+            rel_path = "/".join(split[1:])
+            data = {"env_var_key": env_var_key, "rel_path": rel_path}
+        return data
+
+    def _get_env_var_val(self) -> str:
+        env_val_maybe = os.environ.get(self.env_var_key)
+        if env_val_maybe is None:
+            raise ValueError(
+                f"'{self.env_var_key}' not found in the environment"
+            )
+        return env_val_maybe
+
+    @abstractmethod
+    def evaluate(self) -> _AbstractFileSystemObj:
+        ...
+
+
+class DeferredFilePath(_DeferredPath):
+    def evaluate(self) -> FilePath:
+        env_val = self._get_env_var_val()
+        return FilePath.model_validate(env_val)
+
+
+class DeferredDirPath(_DeferredPath):
+    def evaluate(self) -> DirPath:
+        env_val = self._get_env_var_val()
+        return DirPath.model_validate(env_val)
+
+
+def _deferred_str_parser(data: t.Any) -> t.Any:
+    if isinstance(data, str):
+        if data.startswith("$"):
+            if data.endswith("/"):
+                return DeferredDirPath.model_validate(data)
+            else:
+                return DeferredFilePath.model_validate(data)
+        else:
+            raise ValueError(
+                f"a deferred path str must start with '$', '{data}' does not"
+            )
+    else:
+        return data
+
+
+FileOrDirDeferredPathT = t.Annotated[
+    t.Union[DeferredFilePath, DeferredDirPath],
+    pydantic.BeforeValidator(_deferred_str_parser)
+]
+"""extends standard dispatched type to support raw strings"""
+
+
+FileOrDirDeferredPathTypeAdapter = pydantic.TypeAdapter(FileOrDirDeferredPathT)
 """gives us pydantic parsing logic outside a pydantic class"""

@@ -7,8 +7,10 @@ from spice_rack import (
     _misc as misc,
     _utils as utils,
     _guid as guid,
+    _frozen_registry as frozen_registry,
     _version_getter
 )
+GuidT = guid.GuidT
 
 __version__ = _version_getter.get_version(__name__)
 VERSION = __version__

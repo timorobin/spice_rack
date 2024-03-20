@@ -11,8 +11,10 @@ from spice_rack._bases import (
 
 
 # common ones here
+PydanticBase = base_base.PydanticBase
 ValueModelBase = value_model.ValueModelBase
 DispatchableValueModelBase = dispatchable.DispatchableValueModelBase
 RootModel = root.RootModel
 SpecialStrBase = special_str.SpecialStrBase
 SettingsBase = settings.SettingsBase
+ClassId = dispatchable.ClassId
