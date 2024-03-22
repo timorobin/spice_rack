@@ -439,6 +439,6 @@ def _validate_item_cls(_registry_cls: t.Type[FrozenRegistryBase]) -> None:
         return None
 
 
-class FrozenRegistryOutBase(list[_RegistryItemTV], t.Generic[_RegistryItemTV]):
+class FrozenRegistryOutBase(_bases.RootModel[t.List[_RegistryItemTV]], t.Generic[_RegistryItemTV]):
     """base class for an api response model for a frozen registry"""
     ...
