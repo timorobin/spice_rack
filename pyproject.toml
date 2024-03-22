@@ -40,7 +40,6 @@ tabulate = { version = "*", extras = [] }
 # gcp
 gcsfs = { version = "==2024.2.0", optional = true}
 
-
 # s3
 s3fs = { version = "*", optional = true }
 jmespath = { version = "*", optional = true }  # dep of s3fs that isn't picked up for some reason
@@ -49,10 +48,14 @@ urllib3 = { version = "<2", optional = true }  # https://stackoverflow.com/quest
 # sftp
 paramiko = { version = "*", optional = true }
 
+# dataframe stuff
+polars = { version = "*", optional = true }
+
 [tool.poetry.extras]
 gcp = ["gcsfs"]
 aws = ["s3fs", "jmespath", "urrlib3"]
 sftp = ["paramiko", ]
+polars = ["polars", ]
 
 [tool.poetry.dev-dependencies]
 

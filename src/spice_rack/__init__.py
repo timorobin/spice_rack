@@ -8,6 +8,7 @@ from spice_rack import (
     _utils as utils,
     _guid_service as guid_service,
     _frozen_registry as frozen_registry,
+    _polars_service as polars_service,
     _version_getter
 )
 GuidT = guid_service.GuidT
