@@ -91,7 +91,7 @@ class _PolarsDfPydanticAnnotation:
         Returns:
             pydantic_core.core_schema.CoreSchema
         """
-        from spice_rack._polars_service import _helpers
+        from spice_rack._polars_service import _services
 
         choices = _discrim_helper.build_choices(
             df_schema=cls._get_df_schema(),
@@ -105,7 +105,7 @@ class _PolarsDfPydanticAnnotation:
               choices=choices, discriminator=_discrim_helper.discrim_func
             ),
             serialization=pydantic_core.core_schema.plain_serializer_function_ser_schema(
-                lambda _df: _helpers.get_json_safe_row_dicts(_df),
+                lambda _df: _services.get_json_safe_row_dicts(_df),
                 when_used="json-unless-none"
             ),
             json_schema=cls._get_core_json_schema(),

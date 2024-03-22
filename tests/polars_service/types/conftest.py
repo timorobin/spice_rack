@@ -19,4 +19,4 @@ def sample_df() -> pl.DataFrame:
 
 @pytest.fixture(scope="package")
 def sample_df_json_dumped(sample_df) -> polars_service.types.RowDictsJsonDumpedT:
-    return polars_service.helpers.get_json_safe_row_dicts(sample_df)
+    return polars_service.services.get_json_safe_row_dicts(sample_df)

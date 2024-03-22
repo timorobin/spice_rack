@@ -1,4 +1,3 @@
-import pytest
 import polars as pl
 
 from spice_rack import polars_service, bases

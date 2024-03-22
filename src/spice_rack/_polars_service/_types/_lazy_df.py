@@ -91,7 +91,7 @@ class _PolarsLazyDfPydanticAnnotation:
         Returns:
             pydantic_core.core_schema.CoreSchema
         """
-        from spice_rack._polars_service import _helpers
+        from spice_rack._polars_service import _services
 
         choices = _discrim_helper.build_choices(
             df_schema=cls._get_df_schema(),
@@ -107,7 +107,7 @@ class _PolarsLazyDfPydanticAnnotation:
             serialization=pydantic_core.core_schema.plain_serializer_function_ser_schema(
 
                 # todo: how could we make num_rows variable?
-                lambda _df: _helpers.get_json_safe_row_dicts_lazy_peek(_df, num_rows=3),
+                lambda _df: _services.get_json_safe_row_dicts_lazy_peek(_df, num_rows=3),
 
                 when_used="json-unless-none"
             ),

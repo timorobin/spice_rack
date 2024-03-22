@@ -3,8 +3,7 @@ import json
 import typing as t
 import polars as pl
 
-if t.TYPE_CHECKING:
-    from spice_rack._polars_service import _types
+from spice_rack._polars_service import _types
 
 
 __all__ = (
