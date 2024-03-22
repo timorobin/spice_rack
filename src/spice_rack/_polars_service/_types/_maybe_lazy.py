@@ -8,7 +8,8 @@ from spice_rack._polars_service._types import _collected_df, _lazy_df
 
 __all__ = (
     "PolarsMaybeLazyDfT",
-    "PolarsMaybeLazyDfTypeAdapter"
+    "PolarsMaybeLazyDfTypeAdapter",
+    "PolarsDfTV"
 )
 
 
@@ -44,3 +45,6 @@ Notes: this is not safe for roundtrip serialization, i.e. the a serialized insta
     of this type will not necessarily deserialize to be equal to the original instance
 """
 PolarsMaybeLazyDfTypeAdapter = pydantic.TypeAdapter(PolarsMaybeLazyDfT)
+
+
+PolarsDfTV = t.TypeVar("PolarsDfTV", _collected_df.PolarsDfT, _lazy_df.PolarsLazyDfT)

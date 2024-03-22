@@ -4,11 +4,13 @@ import pydantic
 
 
 __all__ = (
-    "GuidT", "gen_guid", "gen_str_guid"
+    "GuidT", "GuidTypeAdapter", "gen_guid", "gen_str_guid"
 )
 
 
 GuidT = pydantic.UUID4
+
+GuidTypeAdapter = pydantic.TypeAdapter(GuidT)
 
 
 def gen_guid() -> GuidT:

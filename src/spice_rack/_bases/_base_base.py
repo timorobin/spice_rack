@@ -77,7 +77,7 @@ class PydanticBase(pydantic.BaseModel):
 
         Notes:
             If the obj is a RootModel, calling `obj.json` would not necessarily return a dict,
-            so we convert it to the form, `{"__root__": data}` to align with how pydantic
+            so we convert it to the form, `{"root": data}` to align with how pydantic
             would return `obj.dict()` in this scenario.
 
         Examples:

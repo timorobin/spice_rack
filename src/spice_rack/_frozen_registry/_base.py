@@ -33,17 +33,7 @@ class FrozenRegistryBase(
           otherwise performed in '__init_subclass__'
 
     """
-    _item_cls: t.ClassVar[t.Type[_bases.ValueModelBase]]
     _distinct_keys: set[_RegistryItemKeyTV] = PrivateAttr(default=None)
-
-    def __class_getitem__(
-            cls: t.Type[Self],
-            item_cls: t.Type[_RegistryItemTV],
-            key_cls: t.Type[_RegistryItemKeyTV]
-    ) -> t.Type[Self]:
-        res = super().__class_getitem__((item_cls, key_cls))
-        res._item_cls = item_cls
-        return res
 
     def __init_subclass__(
             cls,
@@ -96,11 +86,15 @@ class FrozenRegistryBase(
 
     @classmethod
     def init_empty(cls: t.Type[Self]) -> Self:
-        return cls(__root__=())
+        return cls(root=())
 
     @classmethod
     def get_item_cls(cls) -> t.Type[_RegistryItemTV]:
-        return cls._item_cls
+        item_ann = t.get_args(cls.model_fields["root"].annotation)[0]
+        if isinstance(item_ann, t.TypeVar):
+            raise ValueError(f"'{cls.__name__}' hasn't set their item type var yet")
+        else:
+            return item_ann
 
     @classmethod
     def get_key_cls(cls) -> t.Type[_RegistryItemKeyTV]:
@@ -120,19 +114,19 @@ class FrozenRegistryBase(
         return item1 == item2
 
     def size(self) -> int:
-        return len(self.__root__)
+        return len(self.root)
 
     def iter_items(self: Self) -> t.Iterator[_RegistryItemTV]:
         """iterator over all items"""
-        for obj in self.__root__:
+        for obj in self.root:
             yield obj
 
     def __len__(self) -> int:
-        return len(self.__root__)
+        return len(self.root)
 
     def __getitem__(self, ix: int) -> _RegistryItemTV:
         try:
-            return self.__root__[ix]
+            return self.root[ix]
         except Exception as e:
             raise _exceptions.ItemIndexInvalidException(
                 invalid_ix=ix,
