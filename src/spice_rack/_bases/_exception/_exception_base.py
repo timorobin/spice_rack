@@ -176,6 +176,16 @@ class CustomExceptionBase(Exception, t.Generic[ErrorInfoTV]):
             error_payload=self.get_error_payload_inst()
         )
 
+    def as_http_error_exc(
+            self,
+            status_code: int
+    ) -> _http.HttpException[ErrorInfoTV]:
+        from spice_rack._bases._exception import _http
+        return _http.HttpException(
+            status_code=status_code,
+            error_payload=self.get_error_payload_inst()
+        )
+
     @classmethod
     @t.final
     def get_http_response_info_inst(

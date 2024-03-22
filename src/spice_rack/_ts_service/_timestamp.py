@@ -4,7 +4,7 @@ import datetime as dt
 import dateparser
 import pydantic
 
-from spice_rack._timestamp._tz_key import TimeZoneKey
+from spice_rack._ts_service._tz_key import TimeZoneKey
 from spice_rack import _logging
 
 

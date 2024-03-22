@@ -1,7 +1,7 @@
 from __future__ import annotations
 import typing as t
 from pydantic import PrivateAttr
-from pydantic.generics import DeferredType
+from pydantic.v1.fields import DeferredType
 
 from spice_rack import _bases, _utils
 from spice_rack._frozen_registry import _exceptions
