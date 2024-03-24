@@ -469,13 +469,13 @@ class _DeferredPath(_bases.DispatchableValueModelBase):
             data = {"env_var_key": env_var_key, "rel_path": rel_path}
         return data
 
-    def _get_env_var_val(self) -> str:
+    def _get_env_var_val(self) -> DirPath:
         env_val_maybe = os.environ.get(self.env_var_key)
         if env_val_maybe is None:
             raise ValueError(
                 f"'{self.env_var_key}' not found in the environment"
             )
-        return env_val_maybe
+        return DirPath.model_validate(env_val_maybe)
 
     @abstractmethod
     def evaluate(self) -> _AbstractFileSystemObj:
@@ -485,13 +485,13 @@ class _DeferredPath(_bases.DispatchableValueModelBase):
 class DeferredFilePath(_DeferredPath):
     def evaluate(self) -> FilePath:
         env_val = self._get_env_var_val()
-        return FilePath.model_validate(env_val)
+        return env_val.joinpath(self.rel_path)
 
 
 class DeferredDirPath(_DeferredPath):
     def evaluate(self) -> DirPath:
         env_val = self._get_env_var_val()
-        return DirPath.model_validate(env_val)
+        return env_val.joinpath(self.rel_path)
 
 
 def _deferred_str_parser(data: t.Any) -> t.Any:
