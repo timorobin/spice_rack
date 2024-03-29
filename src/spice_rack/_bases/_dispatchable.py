@@ -53,8 +53,10 @@ class ClassType(enum.Enum):
 # looks like we could remove this and just use ClassId, but we have to use this
 # or the typing won't dispatch. I'm not sure why.
 
-class _ClassIdStr(str):
-    ...
+# class _ClassIdStr(_special_str.SpecialStrBase):
+#     ...
+
+_ClassIdStr = str
 
 
 class _PydanticSchemaGenerator(pydantic.GenerateSchema):

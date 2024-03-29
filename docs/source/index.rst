@@ -18,6 +18,8 @@ Installation
    :caption: Contents:
 
    bases
+   fs_ops
+
 
 
 Indices and tables

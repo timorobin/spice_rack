@@ -39,7 +39,7 @@ class _AbstractFileSystemObj(
     )
 
     @pydantic.model_validator(mode="before")
-    def _model_setup(cls, data: t.Any) -> t.Any:
+    def _handle_str(cls, data: t.Any) -> t.Any:
         if isinstance(data, str):
             data = cls.init_from_str(data).model_dump()
 
@@ -75,7 +75,8 @@ class _AbstractFileSystemObj(
 
     @property
     def file_system_type(self) -> _bases.dispatchable.ClassId:
-        return self.file_system.class_id
+        """get the class id of the file system tied to this path object"""
+        return self.file_system.get_class_id()
 
     @t.final
     def exists(self) -> bool:
@@ -139,6 +140,9 @@ class _AbstractFileSystemObj(
     def build_like(
             self, path: t.Union[str, _path_strs.AbsoluteFilePathStr, _path_strs.AbsoluteDirPathStr]
     ) -> FileOrDirPathT:
+        """build a new file or dir path instance using the specified file path and the file
+        system tied to this instance
+        """
         parsed_path = _path_strs.FileOrDirAbsPathTypeAdapter.validate_python(
             path
         )
@@ -158,6 +162,8 @@ class _AbstractFileSystemObj(
             )
 
     def get_parent(self) -> DirPath:
+        """return the dir path instance of the parent
+        of the current dir or file path instance"""
         parent_path = self.path.get_parent()
         return self.build_dir_like(path=parent_path)
 
@@ -167,9 +173,18 @@ class _AbstractFileSystemObj(
         ...
 
     def ensure_exists(self) -> None:
+        """raise error if the path doesn't exist"""
         self.file_system.ensure_exists(self.path)
 
+    def ensure_nonexistent(self) -> None:
+        """raise an error if the path does exist"""
+        self.file_system.ensure_nonexistent(self.path)
+
     def as_str(self) -> str:
+        """
+        return a contextualized str representation of the path,
+        meaning the file system-specific prefix is used.
+        """
         return self.file_system.contextualize_abs_path(self.path)
 
     def __get_logger_data__(self) -> t.Dict:
@@ -209,18 +224,6 @@ class FilePath(_AbstractFileSystemObj):
             )
         except Exception as e:
             raise e
-        #
-        # except _exceptions.FileSystemException as e:
-        #     raise e
-        # except Exception as e:
-        #     raise _exceptions.FileSystemException(
-        #         file_system=self.file_system,
-        #         extra_info={
-        #             "path": self.path,
-        #             "error_type": type(e).__name__,
-        #             "error_detail": str(e)
-        #         }
-        #     )
 
     def open(
             self,
@@ -233,20 +236,11 @@ class FilePath(_AbstractFileSystemObj):
             )
         except Exception as e:
             raise e
-        #
-        # except _exceptions.FileSystemException as e:
-        #     raise e
-        # except Exception as e:
-        #     raise _exceptions.FileSystemException(
-        #         file_system=self.file_system,
-        #         extra_info={
-        #             "path": self.path,
-        #             "error_type": type(e).__name__,
-        #             "error_detail": str(e)
-        #         }
-        #     )
 
     def write(self, data: t.Union[str, bytes], mode: t.Literal["wb", "ab"] = "wb") -> None:
+        """
+        convenience method to write bytes or str data to a file
+        """
         byte_data: bytes
         if isinstance(data, bytes):
             byte_data = data
@@ -257,42 +251,76 @@ class FilePath(_AbstractFileSystemObj):
             f.write(byte_data)
 
     def read_as_str(self, encoding: str = "utf-8") -> str:
+        """convenience method to read str data from a file"""
         with self.open("rb") as f:
             byte_data = f.read()
         return byte_data.decode(encoding)
 
     def get_name(self, include_suffixes: bool = False) -> str:
+        """get the name of the file, optionally stripping the name of the suffixes"""
         return self.path.get_name(include_suffixes=include_suffixes)
 
     def download_locally(
             self,
             dest_dir: _path_strs.AbsoluteDirPathStr
     ) -> _path_strs.AbsoluteFilePathStr:
+        """download the file to the local dir specified"""
         return self.file_system.download_file_locally(
             self.path,
             dest_dir
         )
 
     def ensure_correct_file_ext(self, choices: list[str]) -> None:
+        """
+        ensure the file path has one of the specified extensions
+        Args:
+            choices: the valid extensions
+
+        Returns: Nothing
+
+        Raises:
+            FilePathInvalidException: if the file path has no extension of it isn't
+                one of the choices
+        """
         choices = [
             _file_info.FileExt(choice) for choice in choices
         ]
         self.file_system.ensure_correct_file_ext(self.path, choices=choices)
 
-    def ensure_correct_mime_type(self, choices: list[str]) -> None:
-        choices = [
-            _file_info.MimeType(choice) for choice in choices
-        ]
-        self.file_system.ensure_correct_mime_type(self.path, choices=choices)
+    def ensure_correct_mime_type(self, choices: t.List[_file_info.MimeType]) -> None:
+        """
+        ensure the file path is one of the specified mime types
+        Args:
+            choices: the valid mime types
+
+        Returns: Nothing
+
+        Raises:
+            InvalidFileMimeTypeException: if we cannot determine the mime type, or it is not one
+                of the specified choices
+        """
+        return self.file_system.ensure_correct_mime_type(
+            self.path,
+            choices
+        )
 
     def get_file_ext(self) -> t.Optional[_file_info.FileExt]:
+        """get the file extension from the file path if there is one"""
         return self.path.get_file_ext()
 
     def get_mime_type(self) -> t.Optional[_file_info.MimeType]:
+        """get the mime type of the file from its file extension, if we have it"""
         return self.path.get_mime_type()
 
     @classmethod
     def init_from_str(cls, raw_str: str) -> FilePath:
+        """
+        parse a string into a FilePath instance, inferring the file system from the
+        prefix of the string path.
+
+        If the str starts with a '$' we will parse it as a DeferredFilePath instance and
+        evaluate it right way into a FilePath inst.
+        """
         if raw_str.startswith("$"):
             return DeferredFilePath.model_validate(raw_str).evaluate()
         else:
@@ -318,26 +346,14 @@ class DirPath(_AbstractFileSystemObj):
             if_non_existent: t.Literal["raise", "return"] = "return",
             recursive: bool = True,
     ) -> None:
-        try:
-            return self.file_system.delete_dir(
-                self.path,
-                recursive=recursive,
-                if_non_existent=if_non_existent
-            )
-        except Exception as e:
-            raise e
-        #
-        # except _exceptions.FileSystemException as e:
-        #     raise e
-        # except Exception as e:
-        #     raise _exceptions.FileSystemException(
-        #         file_system=self.file_system,
-        #         extra_info={
-        #             "path": self.path,
-        #             "error_type": type(e).__name__,
-        #             "error_detail": str(e)
-        #         }
-        #     )
+        """
+        delete the directory. recursively deleting all contents if recursive is true.
+        """
+        return self.file_system.delete_dir(
+            self.path,
+            recursive=recursive,
+            if_non_existent=if_non_existent
+        )
 
     def iter_dir(self) -> t.Iterator[t.Union[FilePath, DirPath]]:
         for path_i in self.file_system.iter_dir_contents(path=self.path):
@@ -369,6 +385,9 @@ class DirPath(_AbstractFileSystemObj):
             self,
             relative_path: t.Union[str, _path_strs.FileOrDirRelPathT]
     ) -> t.Union[FilePath, DirPath]:
+        """get a new FilePath or DirPath by combining this DirPath instance with a provided
+        relative path.
+        """
         rel_path_obj = _path_strs.FileOrDirRelPathTypeAdapter.validate_python(
             relative_path
         )
@@ -399,22 +418,8 @@ class DirPath(_AbstractFileSystemObj):
             self,
             if_exists: t.Literal["raise", "return"] = "return",
     ) -> None:
-        try:
-            self.file_system.make_dir(self.path, if_exists=if_exists)
-        except Exception as e:
-            raise e
-        #
-        # except _exceptions.FileSystemException as e:
-        #     raise e
-        # except Exception as e:
-        #     raise _exceptions.FileSystemException(
-        #         file_system=self.file_system,
-        #         extra_info={
-        #             "path": self.path,
-        #             "error_type": type(e).__name__,
-        #             "error_detail": str(e)
-        #         }
-        #     )
+        """equivalent of mkdir"""
+        self.file_system.make_dir(self.path, if_exists=if_exists)
 
     def download_locally(
             self,
@@ -476,8 +481,11 @@ class _DeferredPath(_bases.DispatchableValueModelBase):
 
 
 class DeferredFilePath(_DeferredPath):
+    """
+    a file path, where part of the path is contained in an environment variable, that is
+    looked up when we call 'evaluate' method to convert this instance to a FilePath instance.
+    """
     rel_path: _path_strs.RelFilePathStr
-    rel_path: t.Optional[_path_strs.FileOrDirRelPathT]
 
     @pydantic.model_validator(mode="before")
     def _handle_str(cls, data: t.Any) -> t.Any:
@@ -502,6 +510,10 @@ class DeferredFilePath(_DeferredPath):
 
 
 class DeferredDirPath(_DeferredPath):
+    """
+    a dir path, where part or all of the path is contained in an environment variable, that is
+    looked up when we call 'evaluate' method to convert this instance to a DirPath instance.
+    """
     rel_path: t.Optional[_path_strs.RelDirPathStr]
 
     @pydantic.model_validator(mode="before")
