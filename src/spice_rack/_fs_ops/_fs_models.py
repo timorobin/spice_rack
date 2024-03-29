@@ -201,7 +201,7 @@ class FilePath(_AbstractFileSystemObj):
     ) -> None:
         try:
             return self.file_system.delete_file(
-                path=self.path,
+                self.path,
                 if_non_existent=if_non_existent
             )
         except Exception as e:
@@ -225,7 +225,7 @@ class FilePath(_AbstractFileSystemObj):
     ) -> _open_modes.OpenFileT:
         try:
             return self.file_system.open_file(
-                path=self.path,
+                self.path,
                 mode=mode
             )
         except Exception as e:
@@ -266,8 +266,8 @@ class FilePath(_AbstractFileSystemObj):
             dest_dir: _path_strs.AbsoluteDirPathStr
     ) -> _path_strs.AbsoluteFilePathStr:
         return self.file_system.download_file_locally(
-            path=self.path,
-            dest_dir=dest_dir
+            self.path,
+            dest_dir
         )
 
     def ensure_correct_file_ext(self, choices: list[str]) -> None:
@@ -317,7 +317,7 @@ class DirPath(_AbstractFileSystemObj):
     ) -> None:
         try:
             return self.file_system.delete_dir(
-                path=self.path,
+                self.path,
                 recursive=recursive,
                 if_non_existent=if_non_existent
             )
@@ -338,14 +338,14 @@ class DirPath(_AbstractFileSystemObj):
 
     def iter_dir(self) -> t.Iterator[t.Union[FilePath, DirPath]]:
         for path_i in self.file_system.iter_dir_contents(path=self.path):
-            yield self.build_like(path=path_i)
+            yield self.build_like(path_i)
 
     def iter_dir_contents_files_only(
             self,
             recursive: bool = True
     ) -> list[FilePath]:
         for path_i in self.file_system.iter_dir_contents_files_only(
-            path=self.path,
+            self.path,
             recursive=recursive
         ):
             yield self.build_like(path=path_i)
@@ -397,7 +397,7 @@ class DirPath(_AbstractFileSystemObj):
             if_exists: t.Literal["raise", "return"] = "return",
     ) -> None:
         try:
-            self.file_system.make_dir(path=self.path, if_exists=if_exists)
+            self.file_system.make_dir(self.path, if_exists=if_exists)
         except Exception as e:
             raise e
         #
@@ -418,8 +418,8 @@ class DirPath(_AbstractFileSystemObj):
             dest_dir: _path_strs.AbsoluteDirPathStr
     ) -> _path_strs.AbsoluteDirPathStr:
         return self.file_system.download_dir_locally(
-            path=self.path,
-            dest_dir=dest_dir
+            self.path,
+            dest_dir
         )
 
     @classmethod

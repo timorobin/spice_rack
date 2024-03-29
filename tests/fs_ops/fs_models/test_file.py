@@ -15,7 +15,7 @@ def file_system() -> fs_ops.file_systems.LocalFileSystem:
 def work_dir(file_system) -> fs_ops.path_strs.AbsoluteDirPathStr:
     p = Path(__file__).parent.joinpath("test_dir/")
     dir_path = fs_ops.path_strs.AbsoluteDirPathStr(str(p))
-    file_system.make_dir(path=dir_path, if_exists="raise")
+    file_system.make_dir(dir_path, if_exists="raise")
     yield dir_path
     file_system.delete_dir(dir_path, recursive=True, if_non_existent="raise")
 
