@@ -124,34 +124,37 @@ class _AbstractFileSystemObj(
     ) -> None:
         ...
 
-    def build_file_like(
-            self,
-            path: _path_strs.AbsoluteFilePathStr
-    ) -> FilePath:
-        return FilePath(
-            path=path, file_system=self.file_system
-        )
+    @t.overload
+    def build_like(self, path: _path_strs.AbsoluteFilePathStr) -> FilePath:
+        ...
 
-    def build_dir_like(
-            self,
-            path: _path_strs.AbsoluteDirPathStr
-    ) -> DirPath:
-        return DirPath(
-            path=path, file_system=self.file_system
-        )
+    @t.overload
+    def build_like(self, path: _path_strs.AbsoluteDirPathStr) -> DirPath:
+        ...
+
+    @t.overload
+    def build_like(self, path: str) -> FileOrDirPathT:
+        ...
 
     def build_like(
-            self,
-            path: t.Union[str, _path_strs.FileOrDirAbsPathT]
-    ) -> t.Union[FilePath, DirPath]:
-        path = _path_strs.FileOrDirAbsPathTypeAdapter.validate_python(path)
-        if isinstance(path, _path_strs.AbsoluteDirPathStr):
-            return self.build_dir_like(path=path)
-        elif isinstance(path, _path_strs.AbsoluteFilePathStr):
-            return self.build_file_like(path=path)
+            self, path: t.Union[str, _path_strs.AbsoluteFilePathStr, _path_strs.AbsoluteDirPathStr]
+    ) -> FileOrDirPathT:
+        parsed_path = _path_strs.FileOrDirAbsPathTypeAdapter.validate_python(
+            path
+        )
+        if isinstance(parsed_path, _path_strs.AbsoluteFilePathStr):
+            return FilePath(
+                path=parsed_path,
+                file_system=self.file_system
+            )
+        elif isinstance(parsed_path, _path_strs.AbsoluteDirPathStr):
+            return DirPath(
+                path=parsed_path,
+                file_system=self.file_system
+            )
         else:
             raise ValueError(
-                f"unexpected path type. {type(path)}, path: '{path}'"
+                f"'{parsed_path}' is type {type(parsed_path)} which is unexpected"
             )
 
     def get_parent(self) -> DirPath:
@@ -542,5 +545,7 @@ FileOrDirDeferredPathT = t.Annotated[
 """extends standard dispatched type to support raw strings"""
 
 
-FileOrDirDeferredPathTypeAdapter = pydantic.TypeAdapter(FileOrDirDeferredPathT)
+FileOrDirDeferredPathTypeAdapter: pydantic.TypeAdapter[FileOrDirDeferredPathT] = (
+    pydantic.TypeAdapter(FileOrDirDeferredPathT)
+)
 """gives us pydantic parsing logic outside a pydantic class"""

@@ -23,7 +23,9 @@ RelOrAbsFilePathT = t.Annotated[
     ],
     pydantic.Discriminator(_discrim)
 ]
-RelOrAbsFilePathTypeAdapter = pydantic.TypeAdapter(RelOrAbsFilePathT)
+RelOrAbsFilePathTypeAdapter: pydantic.TypeAdapter[RelOrAbsFilePathT] = pydantic.TypeAdapter(
+    RelOrAbsFilePathT
+)
 
 
 RelOrAbsDirPathT = t.Annotated[
@@ -35,4 +37,6 @@ RelOrAbsDirPathT = t.Annotated[
 ]
 
 
-RelOrAbsDirPathTypeAdapter = pydantic.TypeAdapter(RelOrAbsDirPathT)
+RelOrAbsDirPathTypeAdapter: pydantic.TypeAdapter[RelOrAbsDirPathT] = pydantic.TypeAdapter(
+    RelOrAbsDirPathT
+)

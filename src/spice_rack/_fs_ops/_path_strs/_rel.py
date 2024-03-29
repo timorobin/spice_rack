@@ -150,4 +150,6 @@ FileOrDirRelPathT = t.Annotated[
 ]
 
 
-FileOrDirRelPathTypeAdapter = pydantic.TypeAdapter(FileOrDirRelPathT)
+FileOrDirRelPathTypeAdapter: pydantic.TypeAdapter[FileOrDirRelPathT] = pydantic.TypeAdapter(
+    FileOrDirRelPathT
+)
