@@ -458,16 +458,6 @@ FileOrDirPathTypeAdapter = pydantic.TypeAdapter(FileOrDirPathT)
 
 class _DeferredPath(_bases.DispatchableValueModelBase):
     env_var_key: str
-    rel_path: _path_strs.FileOrDirRelPathT
-
-    @pydantic.model_validator(mode="before")
-    def _model_setup(cls, data: t.Any) -> t.Any:
-        if isinstance(data, str):
-            split = data.split("/")
-            env_var_key = split[0].replace("$", "")
-            rel_path = "/".join(split[1:])
-            data = {"env_var_key": env_var_key, "rel_path": rel_path}
-        return data
 
     def _get_env_var_val(self) -> DirPath:
         env_val_maybe = os.environ.get(self.env_var_key)
@@ -483,15 +473,51 @@ class _DeferredPath(_bases.DispatchableValueModelBase):
 
 
 class DeferredFilePath(_DeferredPath):
+    rel_path: _path_strs.RelFilePathStr
+    rel_path: t.Optional[_path_strs.FileOrDirRelPathT]
+
+    @pydantic.model_validator(mode="before")
+    def _handle_str(cls, data: t.Any) -> t.Any:
+        if isinstance(data, str):
+            if "/" not in data:
+                raise ValueError(
+                    f"'{data}' cannot be parsed as "
+                    f"'{cls.get_class_id()}' bc it has not relative file path beyond"
+                    f"the deferred environment key"
+                )
+
+            split = data.split("/")
+            env_var_key = split[0].replace("$", "")
+            rel_path = "/".join(split[1:])
+
+            data = {"env_var_key": env_var_key, "rel_path": rel_path}
+        return data
+
     def evaluate(self) -> FilePath:
         env_val = self._get_env_var_val()
         return env_val.joinpath(self.rel_path)
 
 
 class DeferredDirPath(_DeferredPath):
+    rel_path: t.Optional[_path_strs.RelDirPathStr]
+
+    @pydantic.model_validator(mode="before")
+    def _handle_str(cls, data: t.Any) -> t.Any:
+        if isinstance(data, str):
+            split = data.split("/")
+            env_var_key = split[0].replace("$", "")
+            rel_path = "/".join(split[1:])
+            if not rel_path or rel_path == "/":
+                rel_path = None
+            data = {"env_var_key": env_var_key, "rel_path": rel_path}
+        return data
+
     def evaluate(self) -> DirPath:
         env_val = self._get_env_var_val()
-        return env_val.joinpath(self.rel_path)
+        if self.rel_path:
+            return env_val.joinpath(self.rel_path)
+        else:
+            return env_val
 
 
 def _deferred_str_parser(data: t.Any) -> t.Any:

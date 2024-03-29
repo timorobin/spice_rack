@@ -28,7 +28,7 @@ def test_deferred_dir_parse(deferred_path_maker, sample_dir):
 
     deferred_dir_obj = fs_ops.DeferredDirPath.model_validate(top_level)
     assert deferred_dir_obj.env_var_key == "DEFERRED_TEST"
-    assert deferred_dir_obj.rel_path == ""
+    assert deferred_dir_obj.rel_path is None
 
     dir_obj = deferred_dir_obj.evaluate()
     assert dir_obj.as_str() == str(sample_dir) + "/"
