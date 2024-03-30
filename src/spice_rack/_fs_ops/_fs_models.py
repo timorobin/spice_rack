@@ -165,7 +165,7 @@ class _AbstractFileSystemObj(
         """return the dir path instance of the parent
         of the current dir or file path instance"""
         parent_path = self.path.get_parent()
-        return self.build_dir_like(path=parent_path)
+        return self.build_like(path=parent_path)
 
     @abstractmethod
     def get_name(self) -> str:
