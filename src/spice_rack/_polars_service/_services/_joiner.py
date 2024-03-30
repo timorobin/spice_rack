@@ -6,8 +6,10 @@ from pydantic import validate_call, ConfigDict
 from spice_rack._polars_service import _types
 
 __all__ = (
+    "HowJoinT",
     "join_dfs",
-    "stack_dfs"
+    "stack_dfs",
+
 )
 
 HowJoinT = t.Literal["inner", "outer", "left"]
