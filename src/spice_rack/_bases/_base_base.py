@@ -131,20 +131,26 @@ class PydanticBase(pydantic.BaseModel):
         return {}
 
     @classmethod
-    def update_forward_refs(cls, **kwargs) -> None:
+    def model_rebuild(
+            cls,
+            *,
+            force: bool = False,
+            raise_errors: bool = True,
+            _parent_namespace_depth: int = 2,
+            _types_namespace: dict[str, t.Any] | None = None,
+    ) -> None:
         """
         This extends pydantic's builtin hook for updating forward refs.
         We call our special '_import_forward_refs' hook to automatically bring in the things
         imported there, but also if you want to use it like pydantic, i.e. call it directly and
         provide your refs to update via kwargs, that is still supported.
-
-        Returns:
-            None: doesn't return anything, mutates the class calling this method
-
-        Raises:
-            NameError: pydantic raises a NameError if a forward ref is not accounted for
-             in the kwargs
         """
+        _types_namespace_dict: dict[str, t.Any] = _types_namespace if _types_namespace else {}
         imported_refs = cls._import_forward_refs()
-        kwargs.update(imported_refs)
-        return super().update_forward_refs(**kwargs)  # type: ignore
+        _types_namespace_dict.update(imported_refs)
+        return super().model_rebuild(
+            force=force,
+            raise_errors=raise_errors,
+            _types_namespace=_types_namespace_dict,
+            _parent_namespace_depth=_parent_namespace_depth
+        )  # type: ignore
