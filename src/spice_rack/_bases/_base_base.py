@@ -1,6 +1,5 @@
 from __future__ import annotations
 import typing as t
-import json
 
 import pydantic
 
@@ -60,7 +59,7 @@ class PydanticBase(pydantic.BaseModel):
 
     def json_dict(
             self,
-            use_str_fallback: bool = False,
+            use_str_fallback: bool = True,
             **pydantic_kwargs
     ) -> dict:
         """
@@ -106,18 +105,12 @@ class PydanticBase(pydantic.BaseModel):
             fallback = str
         else:
             fallback = None
-
-        pydantic_model_inst: pydantic.BaseModel = t.cast(
-            pydantic.BaseModel, self
-        )
-
-        pydantic_model_inst.model_dump_json()
-        dumped_json = pydantic_model_inst.__pydantic_serializer__.to_json(
+        return self.__pydantic_serializer__.to_python(
             self,
+            mode="json",
             fallback=fallback,
             **pydantic_kwargs,
         )
-        return json.loads(dumped_json)
 
     @classmethod
     def _import_forward_refs(cls) -> dict:

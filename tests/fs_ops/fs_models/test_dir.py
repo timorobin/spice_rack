@@ -47,3 +47,9 @@ def test_make_dir(dir_obj,):
     assert sub_dir.exists()
     sub_dir.delete(if_non_existent="raise")
     assert not sub_dir.exists()
+
+
+def test_dir_parse_gcs(public_bucket):
+    from_str = fs_ops.DirPath.model_validate(public_bucket)
+    inferred_fs = from_str.file_system  # noqa -- pycharm AI is shitty
+    assert isinstance(inferred_fs, fs_ops.file_systems.GcsFileSystem)

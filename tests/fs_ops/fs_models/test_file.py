@@ -1,7 +1,8 @@
 import pytest
 from pathlib import Path
+import devtools
 
-from spice_rack import fs_ops
+from spice_rack import fs_ops, logging
 
 
 @pytest.fixture(scope="module")
@@ -57,3 +58,10 @@ def test_read_text(file_obj):
     file_obj.write(data, mode="wb")
     data_found = file_obj.read_as_str()
     assert data_found == data
+
+
+def test_file_parse_gcs(public_bucket):
+    public_bucket_file = public_bucket + "file.txt"
+    from_str = fs_ops.FilePath.model_validate(public_bucket_file)
+    inferred_fs = from_str.file_system  # noqa -- pycharm AI is shitty
+    assert isinstance(inferred_fs, fs_ops.file_systems.GcsFileSystem), type(inferred_fs)

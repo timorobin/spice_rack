@@ -324,8 +324,10 @@ class FilePath(_AbstractFileSystemObj):
         if raw_str.startswith("$"):
             return DeferredFilePath.model_validate(raw_str).evaluate()
         else:
-            file_path = _path_strs.AbsoluteFilePathStr(raw_str)
-            return FilePath(path=file_path)
+            inferred_fs = _file_systems.infer_file_system(raw_str)
+            path_str = inferred_fs.clean_raw_path_str(raw_str)
+            file_path = _path_strs.AbsoluteFilePathStr(path_str)
+            return FilePath(path=file_path, file_system=inferred_fs)
 
 
 class DirPath(_AbstractFileSystemObj):
@@ -435,8 +437,10 @@ class DirPath(_AbstractFileSystemObj):
         if raw_str.startswith("$"):
             return DeferredDirPath.model_validate(raw_str).evaluate()
         else:
-            file_path = _path_strs.AbsoluteDirPathStr(raw_str)
-            return DirPath(path=file_path)
+            inferred_fs = _file_systems.infer_file_system(raw_str)
+            path_str = inferred_fs.clean_raw_path_str(raw_str)
+            dir_path = _path_strs.AbsoluteDirPathStr(path_str)
+            return DirPath(path=dir_path, file_system=inferred_fs)
 
 
 def _str_parser(data: t.Any) -> t.Any:

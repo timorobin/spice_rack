@@ -83,6 +83,9 @@ class GcsFileSystem(_base.AbstractFileSystem, class_id="gcs"):
             self,
             __path: _path_strs.AbsoluteDirPathStr,
     ) -> t.Iterator[_path_strs.FileOrDirAbsPathT]:
+        """
+        same iter as base class, except we also skip the file if it is the placeholder file
+        """
         for path_i in super().iter_dir_contents(__path):
             if _helpers.is_placeholder_file_path(path_i):
                 continue
