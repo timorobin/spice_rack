@@ -9,9 +9,8 @@ Installation
 
     pip install spice_rack[all]
 
-.. warning::
-
-    You must install with 'all' option for now as we haven't separated out optional dependencies
+.. note::
+    there are no optional/extra dependencies, so `pip install spice_rack[all]` is the same `pip install spice_rack` at the moment
 
 .. toctree::
    :maxdepth: 2

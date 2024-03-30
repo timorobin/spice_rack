@@ -4,7 +4,7 @@
 name = "aiobotocore"
 version = "2.12.1"
 description = "Async client for aws services using botocore and aiohttp"
-optional = true
+optional = false
 python-versions = ">=3.8"
 files = [
     {file = "aiobotocore-2.12.1-py3-none-any.whl", hash = "sha256:6a9a3d646cf422f45fdc1e4256e78563ebffba64733bc9b8ca9123614e8ba9af"},
@@ -25,7 +25,7 @@ boto3 = ["boto3 (>=1.34.41,<1.34.52)"]
 name = "aiohttp"
 version = "3.9.3"
 description = "Async http client/server framework (asyncio)"
-optional = true
+optional = false
 python-versions = ">=3.8"
 files = [
     {file = "aiohttp-3.9.3-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:939677b61f9d72a4fa2a042a5eee2a99a24001a67c13da113b2e30396567db54"},
@@ -121,7 +121,7 @@ speedups = ["Brotli", "aiodns", "brotlicffi"]
 name = "aioitertools"
 version = "0.11.0"
 description = "itertools and builtins for AsyncIO and mixed iterables"
-optional = true
+optional = false
 python-versions = ">=3.6"
 files = [
     {file = "aioitertools-0.11.0-py3-none-any.whl", hash = "sha256:04b95e3dab25b449def24d7df809411c10e62aab0cbe31a50ca4e68748c43394"},
@@ -135,7 +135,7 @@ typing_extensions = {version = ">=4.0", markers = "python_version < \"3.10\""}
 name = "aiosignal"
 version = "1.3.1"
 description = "aiosignal: a list of registered asynchronous callbacks"
-optional = true
+optional = false
 python-versions = ">=3.7"
 files = [
     {file = "aiosignal-1.3.1-py3-none-any.whl", hash = "sha256:f8376fb07dd1e86a584e4fcdec80b36b7f81aac666ebc724e2c090300dd83b17"},
@@ -312,7 +312,7 @@ typing-extensions = {version = ">=4.0.0", markers = "python_version < \"3.11\""}
 name = "async-timeout"
 version = "4.0.3"
 description = "Timeout context manager for asyncio programs"
-optional = true
+optional = false
 python-versions = ">=3.7"
 files = [
     {file = "async-timeout-4.0.3.tar.gz", hash = "sha256:4640d96be84d82d02ed59ea2b7105a0f7b33abe8703703cd0ab0bf87c427522f"},
@@ -378,7 +378,7 @@ dev = ["freezegun (>=1.0,<2.0)", "pytest (>=6.0)", "pytest-cov"]
 name = "bcrypt"
 version = "4.1.2"
 description = "Modern password hashing for your software and your servers"
-optional = true
+optional = false
 python-versions = ">=3.7"
 files = [
     {file = "bcrypt-4.1.2-cp37-abi3-macosx_10_12_universal2.whl", hash = "sha256:ac621c093edb28200728a9cca214d7e838529e557027ef0581685909acd28b5e"},
@@ -457,7 +457,7 @@ css = ["tinycss2 (>=1.1.0,<1.3)"]
 name = "botocore"
 version = "1.34.51"
 description = "Low-level, data-driven core of boto 3."
-optional = true
+optional = false
 python-versions = ">= 3.8"
 files = [
     {file = "botocore-1.34.51-py3-none-any.whl", hash = "sha256:01d5156247f991b3466a8404e3d7460a9ecbd9b214f9992d6ba797d9ddc6f120"},
@@ -476,7 +476,7 @@ crt = ["awscrt (==0.19.19)"]
 name = "cachetools"
 version = "5.3.3"
 description = "Extensible memoizing collections and decorators"
-optional = true
+optional = false
 python-versions = ">=3.7"
 files = [
     {file = "cachetools-5.3.3-py3-none-any.whl", hash = "sha256:0abad1021d3f8325b2fc1d2e9c8b9c9d57b04c3932657a72465447332c24d945"},
@@ -756,7 +756,7 @@ toml = ["tomli"]
 name = "cryptography"
 version = "42.0.5"
 description = "cryptography is a package which provides cryptographic recipes and primitives to Python developers."
-optional = true
+optional = false
 python-versions = ">=3.7"
 files = [
     {file = "cryptography-42.0.5-cp37-abi3-macosx_10_12_universal2.whl", hash = "sha256:a30596bae9403a342c978fb47d9b0ee277699fa53bbafad14706af51fe543d16"},
@@ -965,7 +965,7 @@ files = [
 name = "frozenlist"
 version = "1.4.1"
 description = "A list-like structure which implements collections.abc.MutableSequence"
-optional = true
+optional = false
 python-versions = ">=3.8"
 files = [
     {file = "frozenlist-1.4.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:f9aa1878d1083b276b0196f2dfbe00c9b7e752475ed3b682025ff20c1c1f51ac"},
@@ -1086,7 +1086,7 @@ tqdm = ["tqdm"]
 name = "gcsfs"
 version = "2024.2.0"
 description = "Convenient Filesystem interface over GCS"
-optional = true
+optional = false
 python-versions = ">=3.8"
 files = [
     {file = "gcsfs-2024.2.0-py2.py3-none-any.whl", hash = "sha256:20bf70cc81d580474dd299d55e1ffcf8b3e81721aeb562e148ca0a3c900d0421"},
@@ -1110,7 +1110,7 @@ gcsfuse = ["fusepy"]
 name = "google-api-core"
 version = "2.18.0"
 description = "Google API client core library"
-optional = true
+optional = false
 python-versions = ">=3.7"
 files = [
     {file = "google-api-core-2.18.0.tar.gz", hash = "sha256:62d97417bfc674d6cef251e5c4d639a9655e00c45528c4364fbfebb478ce72a9"},
@@ -1133,7 +1133,7 @@ grpcio-gcp = ["grpcio-gcp (>=0.2.2,<1.0.dev0)"]
 name = "google-auth"
 version = "2.29.0"
 description = "Google Authentication Library"
-optional = true
+optional = false
 python-versions = ">=3.7"
 files = [
     {file = "google-auth-2.29.0.tar.gz", hash = "sha256:672dff332d073227550ffc7457868ac4218d6c500b155fe6cc17d2b13602c360"},
@@ -1156,7 +1156,7 @@ requests = ["requests (>=2.20.0,<3.0.0.dev0)"]
 name = "google-auth-oauthlib"
 version = "1.2.0"
 description = "Google Authentication Library"
-optional = true
+optional = false
 python-versions = ">=3.6"
 files = [
     {file = "google-auth-oauthlib-1.2.0.tar.gz", hash = "sha256:292d2d3783349f2b0734a0a0207b1e1e322ac193c2c09d8f7c613fb7cc501ea8"},
@@ -1174,7 +1174,7 @@ tool = ["click (>=6.0.0)"]
 name = "google-cloud-core"
 version = "2.4.1"
 description = "Google Cloud API client core library"
-optional = true
+optional = false
 python-versions = ">=3.7"
 files = [
     {file = "google-cloud-core-2.4.1.tar.gz", hash = "sha256:9b7749272a812bde58fff28868d0c5e2f585b82f37e09a1f6ed2d4d10f134073"},
@@ -1192,7 +1192,7 @@ grpc = ["grpcio (>=1.38.0,<2.0dev)", "grpcio-status (>=1.38.0,<2.0.dev0)"]
 name = "google-cloud-storage"
 version = "2.16.0"
 description = "Google Cloud Storage API client library"
-optional = true
+optional = false
 python-versions = ">=3.7"
 files = [
     {file = "google-cloud-storage-2.16.0.tar.gz", hash = "sha256:dda485fa503710a828d01246bd16ce9db0823dc51bbca742ce96a6817d58669f"},
@@ -1214,7 +1214,7 @@ protobuf = ["protobuf (<5.0.0dev)"]
 name = "google-crc32c"
 version = "1.5.0"
 description = "A python wrapper of the C library 'Google CRC32C'"
-optional = true
+optional = false
 python-versions = ">=3.7"
 files = [
     {file = "google-crc32c-1.5.0.tar.gz", hash = "sha256:89284716bc6a5a415d4eaa11b1726d2d60a0cd12aadf5439828353662ede9dd7"},
@@ -1294,7 +1294,7 @@ testing = ["pytest"]
 name = "google-resumable-media"
 version = "2.7.0"
 description = "Utilities for Google Media Downloads and Resumable Uploads"
-optional = true
+optional = false
 python-versions = ">= 3.7"
 files = [
     {file = "google-resumable-media-2.7.0.tar.gz", hash = "sha256:5f18f5fa9836f4b083162064a1c2c98c17239bfda9ca50ad970ccf905f3e625b"},
@@ -1312,7 +1312,7 @@ requests = ["requests (>=2.18.0,<3.0.0dev)"]
 name = "googleapis-common-protos"
 version = "1.63.0"
 description = "Common protobufs used in Google APIs"
-optional = true
+optional = false
 python-versions = ">=3.7"
 files = [
     {file = "googleapis-common-protos-1.63.0.tar.gz", hash = "sha256:17ad01b11d5f1d0171c06d3ba5c04c54474e883b66b949722b4938ee2694ef4e"},
@@ -1589,7 +1589,7 @@ i18n = ["Babel (>=2.7)"]
 name = "jmespath"
 version = "1.0.1"
 description = "JSON Matching Expressions"
-optional = true
+optional = false
 python-versions = ">=3.7"
 files = [
     {file = "jmespath-1.0.1-py3-none-any.whl", hash = "sha256:02e2e4cc71b5bcab88332eebf907519190dd9e6e82107fa7f83b1003a6252980"},
@@ -1996,7 +1996,7 @@ files = [
 name = "multidict"
 version = "6.0.5"
 description = "multidict implementation"
-optional = true
+optional = false
 python-versions = ">=3.7"
 files = [
     {file = "multidict-6.0.5-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:228b644ae063c10e7f324ab1ab6b548bdf6f8b47f3ec234fef1093bc2735e5f9"},
@@ -2262,7 +2262,7 @@ test = ["pytest", "pytest-console-scripts", "pytest-jupyter", "pytest-tornasync"
 name = "oauthlib"
 version = "3.2.2"
 description = "A generic, spec-compliant, thorough implementation of the OAuth request-signing logic"
-optional = true
+optional = false
 python-versions = ">=3.6"
 files = [
     {file = "oauthlib-3.2.2-py3-none-any.whl", hash = "sha256:8139f29aac13e25d502680e9e19963e83f16838d48a0d71c287fe40e7067fbca"},
@@ -2311,7 +2311,7 @@ files = [
 name = "paramiko"
 version = "3.4.0"
 description = "SSH2 protocol library"
-optional = true
+optional = false
 python-versions = ">=3.6"
 files = [
     {file = "paramiko-3.4.0-py3-none-any.whl", hash = "sha256:43f0b51115a896f9c00f59618023484cb3a14b98bbceab43394a39c6739b7ee7"},
@@ -2405,7 +2405,7 @@ six = ">=1.5.2"
 name = "polars"
 version = "0.20.17"
 description = "Blazingly fast DataFrame library"
-optional = true
+optional = false
 python-versions = ">=3.8"
 files = [
     {file = "polars-0.20.17-cp38-abi3-macosx_10_12_x86_64.whl", hash = "sha256:931e22000806209466568c9aadd011087507a841e36543ee593e0eb6aead1198"},
@@ -2472,7 +2472,7 @@ wcwidth = "*"
 name = "proto-plus"
 version = "1.23.0"
 description = "Beautiful, Pythonic protocol buffers."
-optional = true
+optional = false
 python-versions = ">=3.6"
 files = [
     {file = "proto-plus-1.23.0.tar.gz", hash = "sha256:89075171ef11988b3fa157f5dbd8b9cf09d65fffee97e29ce403cd8defba19d2"},
@@ -2489,7 +2489,7 @@ testing = ["google-api-core[grpc] (>=1.31.5)"]
 name = "protobuf"
 version = "4.25.3"
 description = ""
-optional = true
+optional = false
 python-versions = ">=3.8"
 files = [
     {file = "protobuf-4.25.3-cp310-abi3-win32.whl", hash = "sha256:d4198877797a83cbfe9bffa3803602bbe1625dc30d8a097365dbc762e5790faa"},
@@ -2562,7 +2562,7 @@ tests = ["pytest"]
 name = "pyasn1"
 version = "0.6.0"
 description = "Pure-Python implementation of ASN.1 types and DER/BER/CER codecs (X.208)"
-optional = true
+optional = false
 python-versions = ">=3.8"
 files = [
     {file = "pyasn1-0.6.0-py2.py3-none-any.whl", hash = "sha256:cca4bb0f2df5504f02f6f8a775b6e416ff9b0b3b16f7ee80b5a3153d9b804473"},
@@ -2573,7 +2573,7 @@ files = [
 name = "pyasn1-modules"
 version = "0.4.0"
 description = "A collection of ASN.1-based protocols modules"
-optional = true
+optional = false
 python-versions = ">=3.8"
 files = [
     {file = "pyasn1_modules-0.4.0-py3-none-any.whl", hash = "sha256:be04f15b66c206eed667e0bb5ab27e2b1855ea54a842e5037738099e8ca4ae0b"},
@@ -2742,7 +2742,7 @@ windows-terminal = ["colorama (>=0.4.6)"]
 name = "pynacl"
 version = "1.5.0"
 description = "Python binding to the Networking and Cryptography (NaCl) library"
-optional = true
+optional = false
 python-versions = ">=3.6"
 files = [
     {file = "PyNaCl-1.5.0-cp36-abi3-macosx_10_10_universal2.whl", hash = "sha256:401002a4aaa07c9414132aaed7f6836ff98f59277a234704ff66878c2ee4a0d1"},
@@ -3250,7 +3250,7 @@ use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 name = "requests-oauthlib"
 version = "2.0.0"
 description = "OAuthlib authentication support for Requests."
-optional = true
+optional = false
 python-versions = ">=3.4"
 files = [
     {file = "requests-oauthlib-2.0.0.tar.gz", hash = "sha256:b3dffaebd884d8cd778494369603a9e7b58d29111bf6b41bdc2dcd87203af4e9"},
@@ -3401,7 +3401,7 @@ files = [
 name = "rsa"
 version = "4.9"
 description = "Pure-Python RSA implementation"
-optional = true
+optional = false
 python-versions = ">=3.6,<4"
 files = [
     {file = "rsa-4.9-py3-none-any.whl", hash = "sha256:90260d9058e514786967344d0ef75fa8727eed8a7d2e43ce9f4bcf1b536174f7"},
@@ -3441,7 +3441,7 @@ files = [
 name = "s3fs"
 version = "2024.2.0"
 description = "Convenient Filesystem interface over S3"
-optional = true
+optional = false
 python-versions = ">= 3.8"
 files = [
     {file = "s3fs-2024.2.0-py3-none-any.whl", hash = "sha256:c140de37175c157cb662aa6ad7423365df732ac5f10ef5bf7b76078c6333a942"},
@@ -3999,7 +3999,7 @@ dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
 name = "wrapt"
 version = "1.16.0"
 description = "Module for decorators, wrappers and monkey patching."
-optional = true
+optional = false
 python-versions = ">=3.6"
 files = [
     {file = "wrapt-1.16.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:ffa565331890b90056c01db69c0fe634a776f8019c143a5ae265f9c6bc4bd6d4"},
@@ -4078,7 +4078,7 @@ files = [
 name = "yarl"
 version = "1.9.4"
 description = "Yet another URL library"
-optional = true
+optional = false
 python-versions = ">=3.7"
 files = [
     {file = "yarl-1.9.4-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:a8c1df72eb746f4136fe9a2e72b0c9dc1da1cbd23b5372f94b5820ff8ae30e0e"},
@@ -4192,13 +4192,7 @@ files = [
 docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-lint"]
 testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-ignore-flaky", "pytest-mypy", "pytest-ruff (>=0.2.1)"]
 
-[extras]
-aws = ["jmespath", "s3fs"]
-gcp = ["gcsfs"]
-polars = ["polars"]
-sftp = ["paramiko"]
-
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.9"
-content-hash = "9dabe54cc3c07cbc3eafdcf3ed9ee762a1db16963e7768d9c55d31b71e9011a3"
+content-hash = "5e9b44fca81abe75aa918f5e1cd0ce688f041770cc24f7a3b07744cde20b8ac1"
