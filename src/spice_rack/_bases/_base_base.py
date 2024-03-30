@@ -19,15 +19,10 @@ SelfTV = t.TypeVar("SelfTV", bound="PydanticBase")
 
 class PydanticBase(pydantic.BaseModel):
     """a base model we use for all pydantic models, even the other bases"""
-    def __iter__(self):
-        """
-        We block attempts to iterate by default bc more often than not, if you end up iterating
-        over an instance of one of our objects directly, without having implemented an
-        iter dunder, it is unintentional and a mistake.
 
-        If you do want a subclass to support iteration, overwrite this dunder.
-        """
-        raise ValueError(f"iteration not implemented for the '{self.get_cls_name()}' class")
+    @classmethod
+    def get_cls_name(cls) -> str:
+        return cls.__name__
 
     def _post_init_setup(self) -> None:
         """
@@ -72,12 +67,7 @@ class PydanticBase(pydantic.BaseModel):
             **pydantic_kwargs: any kwargs available for pydantic's json method. see their docs
 
         Returns:
-            dict: a natively json-encodable dict
-
-        Notes:
-            If the obj is a RootModel, calling `obj.json` would not necessarily return a dict,
-            so we convert it to the form, `{"root": data}` to align with how pydantic
-            would return `obj.dict()` in this scenario.
+            dict: a natively json-encodeable dict
 
         Examples:
             simple class with custom date encoder::

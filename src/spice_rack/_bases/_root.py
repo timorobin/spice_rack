@@ -29,15 +29,9 @@ class RootModel(pydantic.RootModel[RootTV], t.Generic[RootTV]):
         else:
             return data
 
-    def __iter__(self):
-        """
-        We block attempts to iterate by default bc more often than not, if you end up iterating
-        over an instance of one of our objects directly, without having implemented an
-        iter dunder, it is unintentional and a mistake.
-
-        If you do want a subclass to support iteration, overwrite this dunder.
-        """
-        raise ValueError(f"iteration not implemented for the '{self.get_cls_name()}' class")
+    @classmethod
+    def get_cls_name(cls) -> str:
+        return cls.__name__
 
     def _post_init_setup(self) -> None:
         """
@@ -71,44 +65,11 @@ class RootModel(pydantic.RootModel[RootTV], t.Generic[RootTV]):
             self,
             use_str_fallback: bool = True,
             **pydantic_kwargs
-    ) -> dict:
+    ) -> t.Any:
         """
-        Converts a pydantic instance to a dict, going through json first.
-        This is a convenience function for when you want a dict, but want to use the json
-        encoders connected to the pydantic object.
-
-        Args:
-            use_str_fallback: if true, we cast anything we cannot encode to a string
-            **pydantic_kwargs: any kwargs available for pydantic's json method. see their docs
-
-        Returns:
-            dict: a natively json-encodable dict
-
-        Notes:
-            If the obj is a RootModel, calling `obj.json` would not necessarily return a dict,
-            so we convert it to the form, `{"__root__": data}` to align with how pydantic
-            would return `obj.dict()` in this scenario.
-
-        Examples:
-            simple class with custom date encoder::
-
-                class Data(PydanticBase):
-                    class Config:
-                        json_encoders = {
-                            dt.date: lambda date_obj: date_obj.strftime("%d/%m/%Y")
-                        }
-                    x: int
-                    date: dt.date
-
-                inst = Data(x=1, date=dt.date(year=2023, month=1, day=1))
-
-                # regular dict
-                inst.dict() == {"x": 1, "date": dt.date(year=2023, month=1, day=1)}
-
-                # this method
-                inst.json_dict() == {"x": 1, "date": "01/01/2023"}
-                # note that the date is the json encoding tied to the encoder for this pydantic
-                # class. I just used a familiar string format, it could be whatever is specified
+        convert into a json-encodeable data structure. whatever is encodeable version
+        of RootTV, so if a list[str], this will return list of strings,
+        if a pydantic model, this will return a dict.
         """
         pydantic_kwargs = pydantic_kwargs if pydantic_kwargs is not None else {}
         if use_str_fallback:
