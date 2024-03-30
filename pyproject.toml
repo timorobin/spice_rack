@@ -59,7 +59,8 @@ paramiko = { version = "*" }
 #polars = { version = "*", optional = true }
 polars = { version = "*" }
 
-#[tool.poetry.extras]
+[tool.poetry.extras]
+all = []
 #gcp = ["gcsfs"]
 #aws = ["s3fs", "jmespath", "urrlib3"]
 #sftp = ["paramiko", ]
