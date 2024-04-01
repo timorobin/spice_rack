@@ -1,11 +1,13 @@
 from __future__ import annotations
 import typing as t
+from copy import copy
 
 import pydantic
 import pydantic_core
 
 __all__ = (
     "SpecialStrBase",
+    "StrKeyBase"
 )
 
 
@@ -82,3 +84,64 @@ class SpecialStrBase(str):
 
     def __hash__(self) -> int:
         return hash(str(self))
+
+
+class StrKeyBase(SpecialStrBase):
+    """
+    extension on 'AbstractSpecialStr' to easily make a new special str class we intend
+    to use as some sort of key. The main functionality is when you want to standardize a str value
+    as either upper or lower case, and replace common separators with a standard one.
+    """
+    @classmethod
+    def _get_separator(cls) -> str:
+        """the standard separator we want to use for the key. overwrite this to customize it"""
+        return "_"
+
+    @classmethod
+    def _get_separators_to_replace(cls) -> list[str]:
+        """
+        a list of common separators we want to replace with the standard separator.
+        overwrite this to customize the list.
+        """
+        return [" ", "_", ".", "-"]
+
+    @classmethod
+    def _get_case_formatting(cls) -> _CaseFormattingT:
+        """
+        determine how to handle the case of the string.
+
+        Returns:
+            "upper": cast str to all uppercase
+            "lower" cast str to all lowercase
+            "as_is": leave string unchanged
+        """
+        return "as_is"
+
+    @classmethod
+    def _apply_case_formatting(cls, s: str) -> str:
+        option = cls._get_case_formatting()
+        if option == "as_is":
+            return s
+        elif option == "lower":
+            return s.lower()
+        elif option == "upper":
+            return s.upper()
+        else:
+            raise ValueError(
+                f"'{option}' is not a valid choice for the case formatter"
+            )
+
+    @classmethod
+    def _format_str_val(cls, root_data: str) -> str:
+        # replace separators
+        formatted_str = copy(root_data)
+
+        good_sep = cls._get_separator()
+        seps_to_replace = [sep for sep in cls._get_separators_to_replace() if sep != good_sep]
+        for bad_sep in seps_to_replace:
+            formatted_str = formatted_str.replace(bad_sep, good_sep)
+
+        return cls._apply_case_formatting(formatted_str)
+
+
+_CaseFormattingT = t.Literal["upper", "lower", "as_is"]

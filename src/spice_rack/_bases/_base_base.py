@@ -1,6 +1,5 @@
 from __future__ import annotations
 import typing as t
-import json
 
 import pydantic
 
@@ -15,46 +14,47 @@ BASE_MODEL_CONFIG = pydantic.ConfigDict(
 )
 
 
-SelfTV = t.TypeVar("SelfTV", bound=pydantic.BaseModel)
+SelfTV = t.TypeVar("SelfTV", bound="PydanticBase")
 
 
 class PydanticBase(pydantic.BaseModel):
     """a base model we use for all pydantic models, even the other bases"""
-    def __iter__(self) -> t.Any:
-        raise NotImplementedError(
-            f"'{self.__class__.__name__}' doesn't have iteration implemented"
-        )
 
-    def _post_init_setup(self, __context: t.Any = None) -> None:
+    @classmethod
+    def get_cls_name(cls) -> str:
+        return cls.__name__
+
+    def _post_init_setup(self) -> None:
         """
         Overwrite this hook to set perform misc. logic before calling _post_init_validation.
         Common use case for this is initializing private attributes.
-
-        Args:
-            __context: positional only arg containing any sort of context. This
-                is passed in by the 'model_post_init' method
-
-        Returns: None, mutate the instance in-place
+        Notes: Make sure to call super()._post_init_setup
         """
         return
 
     def _post_init_validation(self) -> None:
+        """
+        Overwrite this hook to set perform misc. validation logic on the instance, after
+        all other validators have been executed.
+        This is also called after the '_post_init_setup' hook is called
+        Notes: Make sure to call super()._post_init_validation
+        """
         return
 
-    @t.final
-    def model_post_init(self, __context: t.Any) -> None:
+    @pydantic.model_validator(mode="after")
+    def _pydantic_post_init_val_hook(self: SelfTV) -> SelfTV:
         """
-        pydantic's hook that gets executed after we initialize an instance.
-        We do not overwrite this, we always
+        Pydantic's hook that gets executed after we initialize an instance.
+        rather than overwrite this, overwrite the '_post_init_setup' and '_post_init_validation'
+        hooks
         """
-        super().model_post_init(__context)
         self._post_init_setup()
         self._post_init_validation()
-        return
+        return self
 
     def json_dict(
             self,
-            use_str_fallback: bool = False,
+            use_str_fallback: bool = True,
             **pydantic_kwargs
     ) -> dict:
         """
@@ -67,12 +67,7 @@ class PydanticBase(pydantic.BaseModel):
             **pydantic_kwargs: any kwargs available for pydantic's json method. see their docs
 
         Returns:
-            dict: a natively json-encodable dict
-
-        Notes:
-            If the obj is a RootModel, calling `obj.json` would not necessarily return a dict,
-            so we convert it to the form, `{"__root__": data}` to align with how pydantic
-            would return `obj.dict()` in this scenario.
+            dict: a natively json-encodeable dict
 
         Examples:
             simple class with custom date encoder::
@@ -100,18 +95,12 @@ class PydanticBase(pydantic.BaseModel):
             fallback = str
         else:
             fallback = None
-
-        pydantic_model_inst: pydantic.BaseModel = t.cast(
-            pydantic.BaseModel, self
-        )
-
-        pydantic_model_inst.model_dump_json()
-        dumped_json = pydantic_model_inst.__pydantic_serializer__.to_json(
+        return self.__pydantic_serializer__.to_python(
             self,
+            mode="json",
             fallback=fallback,
             **pydantic_kwargs,
         )
-        return json.loads(dumped_json)
 
     @classmethod
     def _import_forward_refs(cls) -> dict:
@@ -132,20 +121,26 @@ class PydanticBase(pydantic.BaseModel):
         return {}
 
     @classmethod
-    def update_forward_refs(cls, **kwargs) -> None:
+    def model_rebuild(
+            cls,
+            *,
+            force: bool = False,
+            raise_errors: bool = True,
+            _parent_namespace_depth: int = 2,
+            _types_namespace: dict[str, t.Any] | None = None,
+    ) -> None:
         """
         This extends pydantic's builtin hook for updating forward refs.
         We call our special '_import_forward_refs' hook to automatically bring in the things
         imported there, but also if you want to use it like pydantic, i.e. call it directly and
         provide your refs to update via kwargs, that is still supported.
-
-        Returns:
-            None: doesn't return anything, mutates the class calling this method
-
-        Raises:
-            NameError: pydantic raises a NameError if a forward ref is not accounted for
-             in the kwargs
         """
+        _types_namespace_dict: dict[str, t.Any] = _types_namespace if _types_namespace else {}
         imported_refs = cls._import_forward_refs()
-        kwargs.update(imported_refs)
-        return super().update_forward_refs(**kwargs)  # type: ignore
+        _types_namespace_dict.update(imported_refs)
+        return super().model_rebuild(
+            force=force,
+            raise_errors=raise_errors,
+            _types_namespace=_types_namespace_dict,
+            _parent_namespace_depth=_parent_namespace_depth
+        )  # type: ignore

@@ -1,7 +1,7 @@
 from __future__ import annotations
-from typing import final, Union, Literal, Iterator
+import typing as t
 import gcsfs  # noqa
-from pydantic import Field
+import pydantic
 
 from spice_rack._fs_ops import _path_strs, _helpers
 from spice_rack._fs_ops._file_systems import _base
@@ -13,10 +13,10 @@ __all__ = (
 )
 
 
-@final
+@t.final
 class GcsFileSystem(_base.AbstractFileSystem, class_id="gcs"):
     """wrapper for the GCSFileSystem file system"""
-    creds: _gcp_auth.AnyGcpAuthStrat = Field(
+    creds: _gcp_auth.AnyGcpAuthStrat = pydantic.Field(
         description="the credentials we use to authenticate to the gcs bucket",
         default_factory=_gcp_auth.AnyGcpAuthStrat.init_default
     )
@@ -27,7 +27,7 @@ class GcsFileSystem(_base.AbstractFileSystem, class_id="gcs"):
 
     def _get_gcsfs_token(
             self,
-    ) -> Union[str, dict]:
+    ) -> t.Union[str, dict]:
         creds: _gcp_auth.auth_strategies.AbstractGcpAuthStrategy = self.creds.root
 
         if isinstance(creds, _gcp_auth.auth_strategies.AnonAuthStrategy):
@@ -60,27 +60,33 @@ class GcsFileSystem(_base.AbstractFileSystem, class_id="gcs"):
             token=token
         )
 
+    @pydantic.validate_call
     def make_dir(
             self,
-            path: _path_strs.AbsoluteDirPathStr,
-            if_exists: Literal["raise", "return"] = "return",
+            __path: _path_strs.AbsoluteDirPathStr,
+            *,
+            if_exists: t.Literal["raise", "return"] = "return",
             create_parents: bool = True
     ) -> None:
 
         # creating cloud dir doesn't work like local bc how
         # they treat directories. We create a placeholder
         # file when making a directory to imitate this.
-        super().make_dir(path=path, if_exists=if_exists, create_parents=create_parents)
-        if not self.exists(path):
-            placeholder_path = path.joinpath(rel_path=_helpers.get_placeholder_rel_path())
+        super().make_dir(__path, if_exists=if_exists, create_parents=create_parents)
+        if not self.exists(__path):
+            placeholder_path = __path.joinpath(rel_path=_helpers.get_placeholder_rel_path())
             with self.open_file(placeholder_path, "wb") as f:
                 f.write("placeholder text".encode())
 
+    @pydantic.validate_call
     def iter_dir_contents(
             self,
-            path: _path_strs.AbsoluteDirPathStr,
-    ) -> Iterator[_path_strs.FileOrDirAbsPathT]:
-        for path_i in super().iter_dir_contents(path=path):
+            __path: _path_strs.AbsoluteDirPathStr,
+    ) -> t.Iterator[_path_strs.FileOrDirAbsPathT]:
+        """
+        same iter as base class, except we also skip the file if it is the placeholder file
+        """
+        for path_i in super().iter_dir_contents(__path):
             if _helpers.is_placeholder_file_path(path_i):
                 continue
             else:

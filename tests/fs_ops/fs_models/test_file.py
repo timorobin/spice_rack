@@ -15,7 +15,7 @@ def file_system() -> fs_ops.file_systems.LocalFileSystem:
 def work_dir(file_system) -> fs_ops.path_strs.AbsoluteDirPathStr:
     p = Path(__file__).parent.joinpath("test_dir/")
     dir_path = fs_ops.path_strs.AbsoluteDirPathStr(str(p))
-    file_system.make_dir(path=dir_path, if_exists="raise")
+    file_system.make_dir(dir_path, if_exists="raise")
     yield dir_path
     file_system.delete_dir(dir_path, recursive=True, if_non_existent="raise")
 
@@ -57,3 +57,10 @@ def test_read_text(file_obj):
     file_obj.write(data, mode="wb")
     data_found = file_obj.read_as_str()
     assert data_found == data
+
+
+def test_file_parse_gcs(public_bucket):
+    public_bucket_file = public_bucket + "file.txt"
+    from_str = fs_ops.FilePath.model_validate(public_bucket_file)
+    inferred_fs = from_str.file_system  # noqa -- pycharm AI is shitty
+    assert isinstance(inferred_fs, fs_ops.file_systems.GcsFileSystem), type(inferred_fs)

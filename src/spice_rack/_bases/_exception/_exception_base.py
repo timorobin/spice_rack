@@ -5,6 +5,9 @@ from devtools import pformat
 
 from spice_rack._bases._exception import _error_info, _exception_exception
 
+if t.TYPE_CHECKING:
+    from spice_rack._bases._exception import _http
+
 
 __all__ = (
     "CustomExceptionBase",
@@ -125,17 +128,6 @@ class CustomExceptionBase(Exception, t.Generic[ErrorInfoTV]):
     def get_error_info_cls(cls: t.Type[Self]) -> t.Type[ErrorInfoTV]:
         return cls._error_info_cls  # type: ignore
 
-    # this should be the generic type, but it isn't working
-    # _error_info.ErrorPayload[ErrorInfoTV]:
-
-    @classmethod
-    def get_error_payload_schema_title(cls) -> t.Optional[str]:
-        """
-        overwrite this to customize the title of schema of the payload class.
-        default is to return None and not customize it
-        """
-        return None
-
     @classmethod
     @t.final
     def get_error_payload_cls(cls: t.Type[Self]) -> t.Type[_error_info.ErrorPayload[ErrorInfoTV]]:
@@ -144,14 +136,11 @@ class CustomExceptionBase(Exception, t.Generic[ErrorInfoTV]):
         concrete subclass of ErrorInfoBase
         """
         payload_cls = _error_info.ErrorPayload[cls.get_error_info_cls()]  # type: ignore
-        custom_schema_title = cls.get_error_payload_schema_title()
-        if custom_schema_title:
-            payload_cls.set_schema_title(custom_schema_title)
         return payload_cls
 
     @t.final
     def get_error_payload_inst(self: Self) -> _error_info.ErrorPayload[ErrorInfoTV]:
-        return _error_info.ErrorPayload(
+        return _error_info.ErrorPayload[self.get_error_info_cls()](
             detail=self.detail,
             error_type=type(self).__name__,
             info=self.error_info,
@@ -162,3 +151,38 @@ class CustomExceptionBase(Exception, t.Generic[ErrorInfoTV]):
 
     def _get_formatted_str_terse(self) -> str:
         return self.detail
+
+    def as_http_error_resp(
+            self,
+            status_code: int
+    ) -> _http.HttpErrorResponse[ErrorInfoTV]:
+        from spice_rack._bases._exception import _http
+        return _http.HttpErrorResponse[self._error_info_cls](
+            status_code=status_code,
+            error_payload=self.get_error_payload_inst()
+        )
+
+    def as_http_error_exc(
+            self,
+            status_code: int
+    ) -> _http.HttpException[ErrorInfoTV]:
+        from spice_rack._bases._exception import _http
+        return _http.HttpException[self._error_info_cls](
+            status_code=status_code,
+            error_payload=self.get_error_payload_inst()
+        )
+
+    @classmethod
+    @t.final
+    def get_http_response_info_inst(
+            cls,
+            status_code: int,
+            custom_desc: t.Optional[str] = None
+    ) -> _http.HttpErrorResponseInfo:
+        """build a HttpErrorResponseInfo inst for this exception class"""
+        from spice_rack._bases._exception import _http
+        return _http.HttpErrorResponseInfo(
+            status_code=status_code,
+            exception_type=cls,
+            custom_desc=custom_desc
+        )

@@ -41,6 +41,3 @@ class ErrorPayload(ValueModelBase, t.Generic[ErrorInfoTV]):
     info: ErrorInfoTV = Field(
         description="object containing more detailed information about the error"
     )
-
-    def json_dict(self, use_str_fallback: bool = True, **pydantic_kwargs) -> dict:
-        return super().json_dict(use_str_fallback=use_str_fallback, **pydantic_kwargs)

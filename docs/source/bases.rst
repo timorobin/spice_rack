@@ -7,8 +7,9 @@ Base Base
 ---------
 Common bases used by other base classes
 
-.. autoclass:: spice_rack._bases._base_base.CommonModelMethods
-   :members: json_dict, _import_forward_refs, update_forward_refs
+.. autoclass:: spice_rack._bases._base_base.PydanticBase
+   :special-members: __iter__
+   :members: _post_init_setup, _post_init_validation, _pydantic_post_init_val_hook, json_dict, _import_forward_refs, update_forward_refs
 
 Dispatchable Bases
 ------------------
@@ -21,7 +22,7 @@ to create pydantic types that build a dispatched union json schema and parse cor
    :model-show-json: False
 
 .. autopydantic_model:: spice_rack._bases._dispatchable.DispatchableValueModelBase
-   :members: __init_subclass__
+   :special-members: __init_subclass__
    :model-show-json: False
 
 .. autopydantic_model:: spice_rack._bases._dispatchable.DispatchedClassContainer

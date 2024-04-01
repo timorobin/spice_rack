@@ -1,6 +1,6 @@
 from __future__ import annotations
 import typing as t
-from pydantic import Field
+from pydantic import Field, validate_call
 from fsspec.implementations import sftp
 from paramiko.sftp_file import SFTPFile as ParamikoSftpFile
 from paramiko.sftp_client import SFTPClient as ParamikoSftpClient
@@ -79,22 +79,25 @@ class SftpFileSystem(_base.AbstractFileSystem, class_id="sftp"):
         )
         return local_path
 
+    @validate_call
     def download_dir_locally(
             self,
-            path: _path_strs.AbsoluteDirPathStr,
-            dest_dir: _path_strs.AbsoluteDirPathStr
+            __source_dir: _path_strs.AbsoluteDirPathStr,
+            __local_dest_dir: _path_strs.AbsoluteDirPathStr
     ) -> _path_strs.AbsoluteDirPathStr:
         from spice_rack._fs_ops._file_systems import _local
         local_fs = _local.LocalFileSystem()
-        local_fs.make_dir(dest_dir, if_exists="return", create_parents=True)
+        local_fs.make_dir(__source_dir, if_exists="return", create_parents=True)
 
-        local_path = dest_dir.joinpath(
-            _path_strs.RelDirPathStr(path.get_name())
+        local_path = __local_dest_dir.joinpath(
+            _path_strs.RelDirPathStr(__source_dir.get_name())
         )
 
-        for source_abs_file_path in self.iter_dir_contents_files_only(path, recursive=True):
+        for source_abs_file_path in self.iter_dir_contents_files_only(
+                __source_dir, recursive=True
+        ):
             rel_file_path = _path_strs.RelFilePathStr(
-                str(source_abs_file_path).replace(str(path), "")
+                str(source_abs_file_path).replace(str(__source_dir), "")
             )
             dest_abs_file_path = local_path.joinpath(rel_file_path)
             self.download_file_locally(

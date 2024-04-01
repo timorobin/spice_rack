@@ -2,7 +2,7 @@ from __future__ import annotations
 import typing as t
 import pydantic
 
-from spice_rack._timestamp._timestamp import Timestamp
+from spice_rack._ts_service._timestamp import Timestamp
 
 
 __all__ = (

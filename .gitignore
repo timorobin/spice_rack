@@ -162,6 +162,6 @@ cython_debug/
 
 *.json
 temp_data/*
-
+*DS_Store
 *.db-shm
 *db-wal

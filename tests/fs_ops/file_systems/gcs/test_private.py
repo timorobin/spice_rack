@@ -1,38 +1,6 @@
 import pytest
-import typing as t
-import json
 
 from spice_rack import fs_ops, gcp_auth
-
-
-@pytest.fixture(scope="session")
-def protected_bucket(session_config) -> str:
-    if session_config.gcp_protected_dir:
-        return session_config.gcp_protected_dir
-    else:
-        return pytest.skip(
-            "session config has no 'gcp_protected_dir' set"
-        )
-
-
-@pytest.fixture(scope="session")
-def public_bucket(session_config) -> str:
-    if session_config.gcp_public_dir:
-        return session_config.gcp_public_dir
-    else:
-        return pytest.skip(
-            "session config has no 'gcp_public_dir' set"
-        )
-
-
-@pytest.fixture(scope="session")
-def service_account_key_data(session_config) -> t.Dict:
-    if session_config.gcp_key_raw:
-        return json.loads(session_config.gcp_key_raw)
-    else:
-        return pytest.skip(
-            "session config has no 'gcp_key_raw' set"
-        )
 
 
 @pytest.fixture(scope="module")
@@ -45,12 +13,16 @@ def file_system(service_account_key_data) -> fs_ops.file_systems.GcsFileSystem:
     )
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="module")
 def work_dir(protected_bucket, file_system) -> fs_ops.path_strs.AbsoluteDirPathStr:
-    p = protected_bucket + "/test_dir/"
+    p = protected_bucket + "test_dir/"
     p = file_system.clean_raw_path_str(p)
     dir_path = fs_ops.path_strs.AbsoluteDirPathStr(p)
-    file_system.make_dir(path=dir_path, if_exists="raise")
+
+    # if something interferes with previous test's cleanup
+    file_system.delete_dir(dir_path, if_non_existent="return", recursive=True)
+
+    file_system.make_dir(dir_path, if_exists="raise")
     yield dir_path
     file_system.delete_dir(dir_path, recursive=True, if_non_existent="raise")
 

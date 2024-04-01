@@ -4,7 +4,7 @@ import datetime as dt
 import dateparser
 import pydantic
 
-from spice_rack._timestamp._tz_key import TimeZoneKey
+from spice_rack._ts_service._tz_key import TimeZoneKey
 from spice_rack import _logging
 
 
@@ -36,10 +36,10 @@ class Timestamp(pydantic.RootModel[int], _logging.log_extra.LoggableObjMixin):
     ) -> dt.datetime:
         res: dt.datetime
 
-        utc_dt_obj = dt.datetime.fromtimestamp(
-            self.to_python_timestamp(), tz=TimeZoneKey("UTC").as_zone_info()
-        )
         if with_tz:
+            utc_dt_obj = dt.datetime.fromtimestamp(
+                self.to_python_timestamp(), tz=TimeZoneKey("UTC").as_zone_info()
+            )
             tz_key: TimeZoneKey
             if with_tz == "local":
                 tz_key = TimeZoneKey.local()
@@ -50,7 +50,9 @@ class Timestamp(pydantic.RootModel[int], _logging.log_extra.LoggableObjMixin):
             obj_new_tz = utc_dt_obj.astimezone(tz=new_tz_info)
             res = obj_new_tz
         else:
-            res = utc_dt_obj
+            res = dt.datetime.fromtimestamp(
+                self.to_python_timestamp(), tz=None
+            )
         return res
 
     def to_iso_str(
@@ -96,6 +98,9 @@ class Timestamp(pydantic.RootModel[int], _logging.log_extra.LoggableObjMixin):
 
     def special_repr(self, with_tz: t.Optional[_TzKeyT] = None) -> str:
         return f"{self.__class__.__name__}['{self.to_iso_str(with_tz=with_tz)}']"
+
+    def to_file_path_fmat(self) -> str:
+        return self.to_dt_obj().strftime("%Y_%m_%dT%H_%M_%S_%f")
 
     @classmethod
     def _from_datetime_obj(

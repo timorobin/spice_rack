@@ -24,6 +24,7 @@ class ClassId(_special_str.SpecialStrBase):
     ...
 
 
+
 ClassIdPathT = t.Tuple[ClassId, ...]
 
 
@@ -50,11 +51,16 @@ class ClassType(enum.Enum):
     """
 
 
-# looks like we could remove this and just use ClassId, but we have to use this
-# or the typing won't dispatch. I'm not sure why.
-
+# this has to be setup exactly as is. Anything overwriting __get_pydantic_core_schema__ will
+# break the way we generate the pydantic core schema. I am not sure exactly why, but for now
+# leave as is. This current setup does cause issues with pydantic_autodoc though.
 class _ClassIdStr(str):
     ...
+    # @classmethod
+    # def __get_pydantic_core_schema__(
+    #         cls, _: t.Any, __: pydantic.GetCoreSchemaHandler
+    # ) -> pydantic_core.CoreSchema:
+    #     return pydantic_core.core_schema.str_schema()
 
 
 class _PydanticSchemaGenerator(pydantic.GenerateSchema):
@@ -134,7 +140,10 @@ class DispatchedModelMixin(_base_base.PydanticBase):
 
         # if root parent, we assume concrete
         elif parent_class_type == ClassType.ROOT:
-            class_type_actual = ClassType.CONCRETE
+            if cls.__name__.startswith("Abstract"):
+                class_type_actual = ClassType.ROOT
+            else:
+                class_type_actual = ClassType.CONCRETE
 
         # if concrete parent, we raise ValueError
         elif parent_class_type == ClassType.CONCRETE:
@@ -302,6 +311,15 @@ class DispatchedModelMixin(_base_base.PydanticBase):
         pydantic class context. see pydantic type adapter docs
         """
         return pydantic.TypeAdapter(cls.build_dispatched_ann())
+
+    @classmethod
+    def get_all_concrete_subclass_ids(cls) -> t.List[ClassId]:
+        res = []
+        for concrete_sub_c in cls.iter_concrete_subclasses():
+            res.append(
+                concrete_sub_c.get_class_id()
+            )
+        return res
 
 
 DispatchedClsTV = t.TypeVar("DispatchedClsTV", bound=DispatchedModelMixin)

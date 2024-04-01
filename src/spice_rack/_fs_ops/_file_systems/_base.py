@@ -2,6 +2,7 @@ from __future__ import annotations
 from abc import abstractmethod
 import typing as t
 from fsspec.spec import AbstractFileSystem as AbstractFsSpecFileSystem
+import pydantic
 
 from spice_rack import _bases, _logging
 from spice_rack._fs_ops import _path_strs, _file_info, _open_modes, _exceptions
@@ -31,13 +32,20 @@ class AbstractFileSystem(
     def get_fs_specific_prefix(cls) -> str:
         ...
 
+    @classmethod
+    @pydantic.validate_call
     def clean_raw_path_str(
-            self,
-            raw_path: str,
+            cls,
+            __raw_path: str,
     ) -> _path_strs.FileOrDirAbsPathT:
-        assert isinstance(raw_path, str), type(raw_path)
-        cleaned_path = raw_path.replace(
-            self.get_fs_specific_prefix(),
+        """
+        strip the raw path of the file system-specific prefix, and cast it to a
+        standardized directory or file path representation.
+
+        This is the inverse of 'contextualize_abs_path'.
+        """
+        cleaned_path = __raw_path.replace(
+            cls.get_fs_specific_prefix(),
             "/",
             1
         )
@@ -45,15 +53,15 @@ class AbstractFileSystem(
             cleaned_path
         )
 
-    def contextualize_abs_path(self, path: _path_strs.FileOrDirAbsPathT) -> str:
+    @pydantic.validate_call
+    def contextualize_abs_path(self, __path: _path_strs.FileOrDirAbsPathT) -> str:
         """
-        take an absolute path, in the general representation
-        and add the file system specific prefix
+        convert a standardized file or directory path representation into a
+        str starting with the file system-specific prefix.
+        This is the inverse of 'clean_raw_path_str'.
         """
-        if not isinstance(path, (_path_strs.AbsoluteFilePathStr, _path_strs.AbsoluteDirPathStr)):
-            raise ValueError(f"should be an absolute path type, encountered type: {type(path)}")
         prefix_val = self.get_fs_specific_prefix()
-        formatted_path_str = prefix_val + str(path)[1:]
+        formatted_path_str = prefix_val + str(__path)[1:]
         return formatted_path_str
 
     @abstractmethod
@@ -80,21 +88,22 @@ class AbstractFileSystem(
             "file_system_home_dir": self.contextualize_abs_path(self.get_home_dir())
         }
 
-    @t.final
-    def exists(self, path: _path_strs.FileOrDirAbsPathT) -> bool:
+    @pydantic.validate_call
+    def exists(self, __path: _path_strs.FileOrDirAbsPathT) -> bool:
         """
         returns True if this file system object exists, false otherwise
         """
 
         # todo: what if perms issue not existence issue?
-        return self.fsspec_obj.exists(self.contextualize_abs_path(path))
+        return self.fsspec_obj.exists(self.contextualize_abs_path(__path))
 
-    def ensure_exists(self, path: _path_strs.FileOrDirAbsPathT) -> None:
+    @pydantic.validate_call
+    def ensure_exists(self, __path: _path_strs.FileOrDirAbsPathT) -> None:
         """
         ensure the file or dir path exists, raising an exception if not
 
         Args:
-            path: the path to the file or directory
+            __path: the path to the file or directory
 
         Returns: Nothing
 
@@ -102,24 +111,48 @@ class AbstractFileSystem(
             NonExistentPathException: if the path doesn't exist, or we cannot access it
 
         """
-        exists = self.exists(path)
+        exists = self.exists(__path)
         if not exists:
             raise _exceptions.NonExistentPathException(
                 file_system=self,
-                path=path,
+                path=__path,
             )
         else:
             return
 
-    @staticmethod
+    @pydantic.validate_call
+    def ensure_nonexistent(self, __path: _path_strs.FileOrDirAbsPathT) -> None:
+        """
+        ensure the file or dir path does exist, raising an exception if it does
+
+        Args:
+            __path: the path to the file or directory
+
+        Returns: Nothing
+
+        Raises:
+            PathAlreadyExistsException: if the path does exist
+        """
+        exists = self.exists(__path)
+        if exists:
+            raise _exceptions.PathAlreadyExistsException(
+                file_system=self,
+                path=__path,
+            )
+        else:
+            return
+
+    @pydantic.validate_call
     def ensure_correct_file_ext(
-            path: _path_strs.RelOrAbsFilePathT,
+            self,
+            __path: _path_strs.RelOrAbsFilePathT,
+            *,
             choices: list[_file_info.FileExt]
     ) -> None:
         """
         ensure the file path has one of the specified extensions
         Args:
-            path: the path we are checking
+            __path: the path we are checking
             choices: the valid extensions
 
         Returns: Nothing
@@ -127,146 +160,115 @@ class AbstractFileSystem(
         Raises:
             FilePathInvalidException: if the file path has no extension of it isn't
                 one of the choices
-
         """
-        file_ext = path.get_file_ext()
-        if file_ext is None:
-            raise ValueError(
-                f"'{path}' has no file extensions"
+        file_ext = __path.get_file_ext()
+        if file_ext is None or file_ext not in choices:
+            raise _exceptions.InvalidFileExtensionException(
+                path=__path,
+                file_ext_found=file_ext,
+                file_ext_choices=choices,
             )
-            # raise _exceptions.FilePathInvalidException(
-            #     file_system=self,
-            #     path=path,
-            #     reason="no file extension found on the file path",
-            #     extra_info={
-            #         "choices": choices,
-            #     }
-            # )
-
-        if file_ext not in choices:
-            raise ValueError(
-                f"'{path}' file extension isn't one of {choices}"
-            )
-            # raise _exceptions.FilePathInvalidException(
-            #     file_system=self,
-            #     path=path,
-            #     reason=f"the file extension, '{file_ext}', not one of the choices",
-            #     extra_info={
-            #         "file_path": path,
-            #         "choices": choices,
-            #     }
-            # )
         return
 
-    # def ensure_correct_mime_type(
-    #         self,
-    #         path: _path_strs.AbsoluteFilePathStr,
-    #         choices: list[_special_types.MimeType]
-    # ) -> None:
-    #     """
-    #     ensure the file path is one of the specified mime types
-    #     Args:
-    #         path: the path we are checking
-    #         choices: the valid mime types
-    #
-    #     Returns: Nothing
-    #
-    #     Raises:
-    #         FilePathInvalidException: if we cannot determine the mime type, or it is not one
-    #             of the specified choices
-    #     """
-    #     mime_type = path.get_file_ext()
-    #     if mime_type is None:
-    #         raise _exceptions.FilePathInvalidException(
-    #             file_system=self,
-    #             path=path,
-    #             reason="unable to infer mime type from the file path",
-    #             extra_info={
-    #                 "choices": choices,
-    #             }
-    #         )
-    #     if mime_type not in choices:
-    #         raise _exceptions.FilePathInvalidException(
-    #             file_system=self,
-    #             path=path,
-    #             reason=f"the inferred mime type, '{mime_type}', not one of the choices",
-    #             extra_info={
-    #                 "choices": choices,
-    #             }
-    #         )
-    #     return
+    @pydantic.validate_call
+    def ensure_correct_mime_type(
+            self,
+            __path: _path_strs.AbsoluteFilePathStr,
+            *,
+            choices: list[_file_info.MimeType]
+    ) -> None:
+        """
+        ensure the file path is one of the specified mime types
+        Args:
+            __path: the path we are checking
+            choices: the valid mime types
 
+        Returns: Nothing
+
+        Raises:
+            InvalidFileMimeTypeException: if we cannot determine the mime type, or it is not one
+                of the specified choices
+        """
+        mime_type_found = __path.get_mime_type()
+        if not mime_type_found or mime_type_found not in choices:
+            raise _exceptions.InvalidFileMimeTypeException(
+                path=__path,
+                mime_type_found=mime_type_found,
+                mime_type_choices=choices,
+                verbose=True
+            )
+
+    @pydantic.validate_call
     def open_file(
             self,
-            path: _path_strs.AbsoluteFilePathStr,
+            __path: _path_strs.AbsoluteFilePathStr,
             mode: _open_modes.SupportedOpenModesT
     ) -> _open_modes.OpenFileT:
         """
         return a readable open file object. todo: revisit type annotations of the return type here
 
         Args:
-            path: the file path str
+            __path: the file path str
             mode: the mode we are opening in
 
         Returns:
             the readable open file object
         """
         if mode != "wb":
-            self.ensure_exists(path=path)
-        return self.fsspec_obj.open(path=self.contextualize_abs_path(path), mode=mode)
+            self.ensure_exists(__path)
+        return self.fsspec_obj.open(
+            path=self.contextualize_abs_path(__path), mode=mode
+        )
 
+    @pydantic.validate_call
     def delete_file(
             self,
-            path: _path_strs.AbsoluteFilePathStr,
+            __path: _path_strs.AbsoluteFilePathStr,
+            *,
             if_non_existent: t.Literal["raise", "return"] = "return"
     ) -> None:
         """
         delete the file
         """
-
-        exists = self.exists(path)
+        exists = self.exists(__path)
         if not exists:
             if if_non_existent == "raise":
-                self.ensure_exists(path)
+                self.ensure_exists(__path)
 
         else:
             # what if perms issue not existence issue?
-            self.fsspec_obj.delete(path=self.contextualize_abs_path(path), recursive=True)
+            self.fsspec_obj.delete(path=self.contextualize_abs_path(__path), recursive=True)
         return
 
+    @pydantic.validate_call
     def delete_dir(
             self,
-            path: _path_strs.AbsoluteDirPathStr,
+            __path: _path_strs.AbsoluteDirPathStr,
+            *,
             recursive: bool = True,
             if_non_existent: t.Literal["raise", "return"] = "return"
     ) -> None:
         """
-        delete the directory
+        delete the directory, if recursive is true, we delete all files and subdirectories
         """
-
-        from devtools import debug
-        debug(path)
-
-        exists = self.exists(path)
-
-        debug(path)
-
+        exists = self.exists(__path)
         if not exists:
             if if_non_existent == "raise":
-                self.ensure_exists(path)
+                self.ensure_exists(__path)
 
         else:
             # what if perms issue not existence issue?
-            self.fsspec_obj.delete(path=self.contextualize_abs_path(path), recursive=recursive)
+            self.fsspec_obj.delete(path=self.contextualize_abs_path(__path), recursive=recursive)
         return
 
+    @pydantic.validate_call
     def iter_dir_contents(
             self,
-            path: _path_strs.AbsoluteDirPathStr,
+            __path: _path_strs.AbsoluteDirPathStr,
     ) -> t.Iterator[_path_strs.FileOrDirAbsPathT]:
         """iterate over the top level dir contents"""
         for raw_info_rec_i in self.fsspec_obj.listdir(
-            self.contextualize_abs_path(path)
+            self.contextualize_abs_path(__path)
         ):
             raw_path_i = raw_info_rec_i.get("name")
             if raw_path_i is None:
@@ -299,18 +301,25 @@ class AbstractFileSystem(
 
             yield path_i
 
+    @pydantic.validate_call
     def list_dir_contents(
             self,
-            path: _path_strs.AbsoluteDirPathStr
+            __path: _path_strs.AbsoluteDirPathStr
     ) -> list[_path_strs.FileOrDirAbsPathT]:
-        return list(self.iter_dir_contents(path=path))
+        """exhaust the iterator built from 'iter_dir_contents' returning
+        the items in a list"""
+        return list(self.iter_dir_contents(__path))
 
+    @pydantic.validate_call
     def iter_dir_contents_files_only(
             self,
-            path: _path_strs.AbsoluteDirPathStr,
+            __path: _path_strs.AbsoluteDirPathStr,
+            *,
             recursive: bool = True
     ) -> t.Iterator[_path_strs.AbsoluteFilePathStr]:
-        for path_i in self.iter_dir_contents(path=path):
+        """iterate over every file in a directory, recursing into subdirectories if
+        recursive is True"""
+        for path_i in self.iter_dir_contents(__path):
             if isinstance(path_i, _path_strs.AbsoluteFilePathStr):
                 yield path_i
             elif isinstance(path_i, _path_strs.AbsoluteDirPathStr):
@@ -325,67 +334,81 @@ class AbstractFileSystem(
             else:
                 raise ValueError(type(path_i))
 
+    @pydantic.validate_call
     def make_dir(
             self,
-            path: _path_strs.AbsoluteDirPathStr,
+            __path: _path_strs.AbsoluteDirPathStr,
+            *,
             if_exists: t.Literal["raise", "return"] = "return",
             create_parents: bool = True
     ) -> None:
-        if self.exists(path=path):
+        """create a new directory, and parents if the parent directory doesn't exist"""
+        if self.exists(__path):
             if if_exists == "raise":
-                raise ValueError(
-                    f"'{path}'already exists, cannot make it."
+                raise _exceptions.PathAlreadyExistsException(
+                    file_system=self,
+                    path=__path,
+                    extra_info={
+                        "action_attempted": "make_dir"
+                    }
                 )
-                # raise _exceptions.PathAlreadyExistsException(
-                #     file_system=self,
-                #     path=path,
-                #     extra_info={
-                #         "action_attempted": "make_dir"
-                #     }
-                # )
             else:
                 return
 
         else:
             self.fsspec_obj.mkdir(
-                path=self.contextualize_abs_path(path),
+                path=self.contextualize_abs_path(__path),
                 create_parents=create_parents
             )
 
+    @pydantic.validate_call
     def download_file_locally(
             self,
-            path: _path_strs.AbsoluteFilePathStr,
-            dest_dir: _path_strs.AbsoluteDirPathStr
+            __source_path: _path_strs.AbsoluteFilePathStr,
+            __local_dest_dir: _path_strs.AbsoluteDirPathStr
     ) -> _path_strs.AbsoluteFilePathStr:
+        """
+        download file from current file system into the local file system.
+
+        the downloaded file will have the same name as the source file, inside the
+        specified local directory.
+        """
         from spice_rack._fs_ops._file_systems import _local
         local_fs = _local.LocalFileSystem()
-        local_fs.make_dir(dest_dir, if_exists="return", create_parents=True)
+        local_fs.make_dir(__local_dest_dir, if_exists="return", create_parents=True)
 
-        local_path = dest_dir.joinpath(
-            _path_strs.RelFilePathStr(path.get_name(include_suffixes=True))
+        local_path = __local_dest_dir.joinpath(
+            _path_strs.RelFilePathStr(__source_path.get_name(include_suffixes=True))
         )
         self.fsspec_obj.download(
             lpath=local_fs.contextualize_abs_path(local_path),
-            rpath=self.contextualize_abs_path(path)
+            rpath=self.contextualize_abs_path(__source_path)
         )
         return local_path
 
+    @pydantic.validate_call
     def download_dir_locally(
             self,
-            path: _path_strs.AbsoluteDirPathStr,
-            dest_dir: _path_strs.AbsoluteDirPathStr
+            __source_dir: _path_strs.AbsoluteDirPathStr,
+            __local_dest_dir: _path_strs.AbsoluteDirPathStr
     ) -> _path_strs.AbsoluteDirPathStr:
+        """
+        download directory from current file system into the local file system.
+
+        the downloaded directory will have the same name as the source directory, inside the
+        specified local directory.
+        """
         from spice_rack._fs_ops._file_systems import _local
         from spice_rack._fs_ops._helpers import is_placeholder_file_path
         local_fs = _local.LocalFileSystem()
-        local_fs.make_dir(dest_dir, if_exists="return", create_parents=True)
+        local_fs.make_dir(__local_dest_dir, if_exists="return", create_parents=True)
 
-        local_path = dest_dir.joinpath(
-            _path_strs.RelDirPathStr(path.get_name())
+        local_path = __local_dest_dir.joinpath(
+            _path_strs.RelDirPathStr(__source_dir.get_name())
         )
         self.fsspec_obj.download(
             lpath=local_fs.contextualize_abs_path(local_path),
-            rpath=self.contextualize_abs_path(path),
+            rpath=self.contextualize_abs_path(__source_dir),
             recursive=True
         )
 
