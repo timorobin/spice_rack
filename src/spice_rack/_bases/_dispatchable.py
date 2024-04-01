@@ -312,6 +312,15 @@ class DispatchedModelMixin(_base_base.PydanticBase):
         """
         return pydantic.TypeAdapter(cls.build_dispatched_ann())
 
+    @classmethod
+    def get_all_concrete_subclass_ids(cls) -> t.List[ClassId]:
+        res = []
+        for concrete_sub_c in cls.iter_concrete_subclasses():
+            res.append(
+                concrete_sub_c.get_class_id()
+            )
+        return res
+
 
 DispatchedClsTV = t.TypeVar("DispatchedClsTV", bound=DispatchedModelMixin)
 

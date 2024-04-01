@@ -18,7 +18,7 @@ def test_from_str():
 
     assert obj.to_python_timestamp() == expected_dt_obj.timestamp() * 1000 // 1000
 
-    assert obj.to_dt_obj() == expected_dt_obj
+    assert obj.to_dt_obj(with_tz="UTC") == expected_dt_obj
 
     assert obj.to_iso_str(with_tz="EST") != obj.to_iso_str()
 

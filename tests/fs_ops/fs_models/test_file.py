@@ -1,8 +1,7 @@
 import pytest
 from pathlib import Path
-import devtools
 
-from spice_rack import fs_ops, logging
+from spice_rack import fs_ops
 
 
 @pytest.fixture(scope="module")

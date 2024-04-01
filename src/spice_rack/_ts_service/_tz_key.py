@@ -26,7 +26,7 @@ class TimeZoneKey(_bases.special_str.SpecialStrBase):
         return list(zoneinfo.available_timezones())
 
     @classmethod
-    def _format_str(cls, root_data: str) -> str:
+    def _format_str_val(cls, root_data: str) -> str:
         # ensure it is a valid zone info
         choices = zoneinfo.available_timezones()
         if root_data not in choices:
