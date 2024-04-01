@@ -60,7 +60,7 @@ class FrozenRegistryBase(
         # validate the item class post init, rather than init subclass
         _validate_item_cls(self.__class__)
         assert self._distinct_keys is not None, \
-            f"{self.__class__.__name__} didn't set _distinct_keys private attr"
+            f"'{self.get_cls_name()}' didn't set _distinct_keys private attr"
 
         # ensure no dupe keys
         key_set: set[_RegistryItemKeyTV] = set()
@@ -92,13 +92,13 @@ class FrozenRegistryBase(
     def get_item_cls(cls) -> t.Type[_RegistryItemTV]:
         item_ann = t.get_args(cls.model_fields["root"].annotation)[0]
         if isinstance(item_ann, t.TypeVar):
-            raise ValueError(f"'{cls.__name__}' hasn't set their item type var yet")
+            raise ValueError(f"'{cls.get_cls_name()}' hasn't set their item type var yet")
         else:
             return item_ann
 
     @classmethod
     def get_key_cls(cls) -> t.Type[_RegistryItemKeyTV]:
-        """default behavior is str, but we can customize this by overwriting this classmethod"""
+        """default behavior is str, but we can customize this by overwriting this class-method"""
         return str
 
     def _get_item_key_val(self, item: _RegistryItemTV) -> _RegistryItemKeyTV:
@@ -389,51 +389,90 @@ class FrozenRegistryBase(
 
 def _validate_item_cls(_registry_cls: t.Type[FrozenRegistryBase]) -> None:
     """
-    Executes some manual checks that the registry's item class meets the requirements
+    Executes some manual checks that the registry's item class meets the requirements expected by
+    the frozen registry container
     """
-    # skip whole thing in this scenario
-    if _registry_cls.__name__.startswith("FrozenRegistryBase["):
+    # this means it is the intermediate/passthrough type made when we set up a class with a
+    # parameterized base. We skip this validation in this case
+    if _registry_cls.get_cls_name().startswith("FrozenRegistryBase["):
         return
 
-    # ensure we have a valid item type specified
+    # this is a concrete frozen registry class, i.e. one we plan to instantiate and use.
+
+    # Check the item type isn't a generic, i.e. the type var has been replaced with a proper class.
     item_cls = _registry_cls.get_item_cls()
+
+    # todo: this DeferredType check might be unnecessary in pydantic v2.
     if isinstance(item_cls, DeferredType):
         raise ValueError(
-            f"'{_registry_cls.__name__}' has a deferred type for the item class still"
+            f"'{_registry_cls.get_cls_name()}' has a deferred type for the item class still"
         )
 
     elif isinstance(item_cls, t.TypeVar):
         raise ValueError(
-            f"'{_registry_cls.__name__}' has a type var as the item type still, {item_cls}"
+            f"'{_registry_cls.get_cls_name()}' has a type var as the item type still, {item_cls}"
         )
     else:
 
         # make sure the object has a 'key' attribute with the correct annotation
+        # this must be either a pydantic field or a property-decorated method
         item_cls = _utils.check_subclass(item_cls, _bases.ValueModelBase)
         key_attr_name = _registry_cls.get_key_attr_name()
+        key_field_cls = _registry_cls.get_key_cls()
+
+    # check if pydantic field
         if key_attr_name in item_cls.model_fields:
             key_field = item_cls.model_fields[key_attr_name]
             key_field_type_ann = key_field.annotation
-            key_field_cls = _registry_cls.get_key_cls()
             if key_field_type_ann != key_field_cls:
                 raise ValueError(
                     f"the key field type ann must equal the key field class"
                     f"specified in this registry. "
                     f"We encountered {key_field_type_ann} and {key_field_cls}"
                 )
-        elif key_attr_name in item_cls.model_computed_fields:
-            key_field = item_cls.model_computed_fields[key_attr_name]
-            key_field_type_ann = key_field.return_type
-            key_field_cls = _registry_cls.get_key_cls()
-            if key_field_type_ann != key_field_cls:
+
+        # check if defined as a property
+        elif hasattr(item_cls, key_attr_name):
+
+            # could be any type of class attribute
+            key_method = getattr(item_cls, key_attr_name)
+
+            # todo: could also add support for a no-arg method, but for now just tell user to make it a property
+            # make sure a property-decorated function, with the correct return annotation
+            if isinstance(key_method, property):
+                getter_func: t.Callable = key_method.fget
+                _getter_anns: t.Optional[t.Dict] = getattr(getter_func, "__annotations__", None)
+                if _getter_anns is None:
+                    raise ValueError(
+                        f"'{key_attr_name}' on the '{item_cls.get_cls_name()}' maps to a property with no annotations."
+                        f" You must specify a return annotation for this property to use it as a key"
+                    )
+                if "return" not in _getter_anns:
+                    raise ValueError(
+                        f"You must specify a return annotation for the '{key_attr_name}' "
+                        f"property on the '{item_cls.get_cls_name()}'to use it as a key"
+                    )
+
+                return_ann = _getter_anns["return"]
+                if return_ann != key_field_cls:
+                    raise ValueError(
+                        f"'{key_attr_name}' on the '{item_cls.get_cls_name()}' maps to a property "
+                        f"with a return annotation of '{return_ann}', and the '' registry class expects the key field "
+                        f"to be type {key_field_cls}."
+                    )
+
+            # not a property
+            else:
                 raise ValueError(
-                    f"the key field type ann must equal the key field class"
-                    f"specified in this registry. "
-                    f"We encountered {key_field_type_ann} and {key_field_cls}"
+                    f"the specified key attribute, '{key_attr_name}', must be either a pydantic field or a property,"
+                    f" and the '{item_cls.get_cls_name()}' class defined the '{key_attr_name}' "
+                    f"attribute as type {type(key_method)}"
                 )
+
+        # not found at all
         else:
             raise ValueError(
-                f"'{item_cls.__name__}' doesn't have a '{key_attr_name}' field or computed field"
+                f"'{item_cls.get_cls_name()}' doesn't have a '{key_attr_name}' field or property specified"
             )
 
         return None
