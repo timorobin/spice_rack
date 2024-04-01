@@ -36,10 +36,10 @@ class Timestamp(pydantic.RootModel[int], _logging.log_extra.LoggableObjMixin):
     ) -> dt.datetime:
         res: dt.datetime
 
-        utc_dt_obj = dt.datetime.fromtimestamp(
-            self.to_python_timestamp(), tz=TimeZoneKey("UTC").as_zone_info()
-        )
         if with_tz:
+            utc_dt_obj = dt.datetime.fromtimestamp(
+                self.to_python_timestamp(), tz=TimeZoneKey("UTC").as_zone_info()
+            )
             tz_key: TimeZoneKey
             if with_tz == "local":
                 tz_key = TimeZoneKey.local()
@@ -50,7 +50,9 @@ class Timestamp(pydantic.RootModel[int], _logging.log_extra.LoggableObjMixin):
             obj_new_tz = utc_dt_obj.astimezone(tz=new_tz_info)
             res = obj_new_tz
         else:
-            res = utc_dt_obj
+            res = dt.datetime.fromtimestamp(
+                self.to_python_timestamp(), tz=None
+            )
         return res
 
     def to_iso_str(
