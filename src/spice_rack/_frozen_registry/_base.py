@@ -441,12 +441,7 @@ def _validate_item_cls(_registry_cls: t.Type[FrozenRegistryBase]) -> None:
             # make sure a property-decorated function, with the correct return annotation
             if isinstance(key_method, property):
                 getter_func: t.Callable = key_method.fget
-                _getter_anns: t.Optional[t.Dict] = getattr(getter_func, "__annotations__", None)
-                if _getter_anns is None:
-                    raise ValueError(
-                        f"'{key_attr_name}' on the '{item_cls.get_cls_name()}' maps to a property with no annotations."
-                        f" You must specify a return annotation for this property to use it as a key"
-                    )
+                _getter_anns: t.Dict = t.get_type_hints(getter_func)
                 if "return" not in _getter_anns:
                     raise ValueError(
                         f"You must specify a return annotation for the '{key_attr_name}' "
@@ -457,8 +452,8 @@ def _validate_item_cls(_registry_cls: t.Type[FrozenRegistryBase]) -> None:
                 if return_ann != key_field_cls:
                     raise ValueError(
                         f"'{key_attr_name}' on the '{item_cls.get_cls_name()}' maps to a property "
-                        f"with a return annotation of '{return_ann}', and the '' registry class expects the key field "
-                        f"to be type {key_field_cls}."
+                        f"with a return annotation of '{return_ann}', and the '{_registry_cls.get_cls_name()}' "
+                        f"registry class expects the key field to be type {key_field_cls}."
                     )
 
             # not a property
