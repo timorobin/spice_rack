@@ -445,14 +445,10 @@ class DirPath(_AbstractFileSystemObj):
 
 def _str_parser(data: t.Any) -> t.Any:
     if isinstance(data, str):
-        path_str = _path_strs.FileOrDirAbsPathTypeAdapter.validate_python(data)
-        if isinstance(path_str, _path_strs.AbsoluteFilePathStr):
-            return FilePath(path=path_str)
-        elif isinstance(path_str, _path_strs.AbsoluteDirPathStr):
-            return DirPath(path=path_str)
+        if data.endswith("/"):
+            return DirPath.init_from_str(data)
         else:
-            raise ValueError(f"'{path_str}' unexpected type: {type(path_str)}")
-
+            return FilePath.init_from_str(data)
     else:
         return data
 
