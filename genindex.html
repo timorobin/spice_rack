@@ -45,6 +45,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="bases.html">Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fs_ops.html">fs_ops</a></li>
 </ul>
 
         </div>
@@ -79,14 +80,18 @@
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
+ | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#J"><strong>J</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
+ | <a href="#O"><strong>O</strong></a>
+ | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
+ | <a href="#W"><strong>W</strong></a>
  
 </div>
 <h2 id="_">_</h2>
@@ -94,11 +99,21 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="bases.html#spice_rack._bases._dispatchable.DispatchedModelMixin.__init_subclass__">__init_subclass__() (DispatchedModelMixin class method)</a>
 </li>
+      <li><a href="bases.html#spice_rack._bases._base_base.PydanticBase.__iter__">__iter__() (PydanticBase method)</a>
+</li>
       <li><a href="bases.html#spice_rack._bases._special_str.SpecialStrBase._format_str_val">_format_str_val() (SpecialStrBase class method)</a>
+</li>
+      <li><a href="bases.html#spice_rack._bases._base_base.PydanticBase._import_forward_refs">_import_forward_refs() (PydanticBase class method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="bases.html#spice_rack._bases._special_str.SpecialStrBase._parse_non_str">_parse_non_str() (SpecialStrBase class method)</a>
+</li>
+      <li><a href="bases.html#spice_rack._bases._base_base.PydanticBase._post_init_setup">_post_init_setup() (PydanticBase method)</a>
+</li>
+      <li><a href="bases.html#spice_rack._bases._base_base.PydanticBase._post_init_validation">_post_init_validation() (PydanticBase method)</a>
+</li>
+      <li><a href="bases.html#spice_rack._bases._base_base.PydanticBase._pydantic_post_init_val_hook">_pydantic_post_init_val_hook() (PydanticBase method)</a>
 </li>
       <li><a href="bases.html#spice_rack._bases._special_str.SpecialStrBase._validate_str_val">_validate_str_val() (SpecialStrBase class method)</a>
 </li>
@@ -138,10 +153,24 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.DirPath.delete">delete() (DirPath method)</a>
+
+      <ul>
+        <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.FilePath.delete">(FilePath method)</a>
+</li>
+      </ul></li>
       <li><a href="bases.html#spice_rack._bases._exception._error_info.ErrorPayload.detail">detail (ErrorPayload attribute)</a>
 
       <ul>
         <li><a href="bases.html#spice_rack._bases._exception._external_wrapper.WrappedExternalException.detail">(WrappedExternalException attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.DirPath.download_locally">download_locally() (DirPath method)</a>
+
+      <ul>
+        <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.FilePath.download_locally">(FilePath method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -150,11 +179,37 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.FilePath.ensure_correct_file_ext">ensure_correct_file_ext() (FilePath method)</a>
+</li>
+      <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.FilePath.ensure_correct_mime_type">ensure_correct_mime_type() (FilePath method)</a>
+</li>
       <li><a href="bases.html#spice_rack._bases._exception._error_info.ErrorPayload.error_type">error_type (ErrorPayload attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.DeferredDirPath.evaluate">evaluate() (DeferredDirPath method)</a>
+
+      <ul>
+        <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.DeferredFilePath.evaluate">(DeferredFilePath method)</a>
+</li>
+      </ul></li>
       <li><a href="bases.html#spice_rack._bases._exception._error_info.ErrorInfoBase.extra">extra (ErrorInfoBase attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="F">F</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.FileOrDirDeferredPathT">FileOrDirDeferredPathT (in module spice_rack._fs_ops._fs_models)</a>
+</li>
+      <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.FileOrDirDeferredPathTypeAdapter">FileOrDirDeferredPathTypeAdapter (in module spice_rack._fs_ops._fs_models)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.FileOrDirPathT">FileOrDirPathT (in module spice_rack._fs_ops._fs_models)</a>
+</li>
+      <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.FileOrDirPathTypeAdapter">FileOrDirPathTypeAdapter (in module spice_rack._fs_ops._fs_models)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -162,20 +217,32 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="bases.html#spice_rack._bases._dispatchable.DispatchedModelMixin.get_all_concrete_subclass_ids">get_all_concrete_subclass_ids() (DispatchedModelMixin class method)</a>
+</li>
       <li><a href="bases.html#spice_rack._bases._dispatchable.DispatchedModelMixin.get_class_id">get_class_id() (DispatchedModelMixin class method)</a>
 </li>
       <li><a href="bases.html#spice_rack._bases._dispatchable.DispatchedModelMixin.get_class_id_path">get_class_id_path() (DispatchedModelMixin class method)</a>
 </li>
       <li><a href="bases.html#spice_rack._bases._dispatchable.DispatchedModelMixin.get_class_type">get_class_type() (DispatchedModelMixin class method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="bases.html#spice_rack._bases._exception._exception_base.CustomExceptionBase.get_error_payload_cls">get_error_payload_cls() (CustomExceptionBase class method)</a>
 </li>
-      <li><a href="bases.html#spice_rack._bases._exception._exception_base.CustomExceptionBase.get_error_payload_schema_title">get_error_payload_schema_title() (CustomExceptionBase class method)</a>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.FilePath.get_file_ext">get_file_ext() (FilePath method)</a>
+</li>
+      <li><a href="bases.html#spice_rack._bases._exception._exception_base.CustomExceptionBase.get_http_response_info_inst">get_http_response_info_inst() (CustomExceptionBase class method)</a>
 </li>
       <li><a href="bases.html#spice_rack._bases._exception._error_info.ErrorInfoBase.get_json_data">get_json_data() (ErrorInfoBase method)</a>
 </li>
+      <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.FilePath.get_mime_type">get_mime_type() (FilePath method)</a>
+</li>
+      <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.DirPath.get_name">get_name() (DirPath method)</a>
+
+      <ul>
+        <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.FilePath.get_name">(FilePath method)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -184,11 +251,21 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="bases.html#spice_rack._bases._exception._error_info.ErrorPayload.info">info (ErrorPayload attribute)</a>
 </li>
+      <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.DirPath.init_from_str">init_from_str() (DirPath class method)</a>
+
+      <ul>
+        <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.FilePath.init_from_str">(FilePath class method)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="bases.html#spice_rack._bases._dispatchable.DispatchedModelMixin.is_concrete">is_concrete() (DispatchedModelMixin class method)</a>
 </li>
       <li><a href="bases.html#spice_rack._bases._dispatchable.DispatchedModelMixin.iter_concrete_subclasses">iter_concrete_subclasses() (DispatchedModelMixin class method)</a>
+</li>
+      <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.DirPath.iter_dir">iter_dir() (DirPath method)</a>
+</li>
+      <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.DirPath.iter_dir_contents_files_only">iter_dir_contents_files_only() (DirPath method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -196,7 +273,11 @@
 <h2 id="J">J</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="bases.html#spice_rack._bases._exception._error_info.ErrorPayload.json_dict">json_dict() (ErrorPayload method)</a>
+      <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.DirPath.joinpath">joinpath() (DirPath method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="bases.html#spice_rack._bases._base_base.PydanticBase.json_dict">json_dict() (PydanticBase method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -212,22 +293,8 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="bases.html#spice_rack._bases._dispatchable.DispatchableValueModelBase.model_computed_fields">model_computed_fields (DispatchableValueModelBase attribute)</a>
-
-      <ul>
-        <li><a href="bases.html#spice_rack._bases._dispatchable.DispatchedClassContainer.model_computed_fields">(DispatchedClassContainer attribute)</a>
+      <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.DirPath.make_self">make_self() (DirPath method)</a>
 </li>
-        <li><a href="bases.html#spice_rack._bases._dispatchable.DispatchedModelMixin.model_computed_fields">(DispatchedModelMixin attribute)</a>
-</li>
-        <li><a href="bases.html#spice_rack._bases._exception._error_info.ErrorInfoBase.model_computed_fields">(ErrorInfoBase attribute)</a>
-</li>
-        <li><a href="bases.html#spice_rack._bases._exception._error_info.ErrorPayload.model_computed_fields">(ErrorPayload attribute)</a>
-</li>
-        <li><a href="bases.html#spice_rack._bases._settings.SettingsBase.model_computed_fields">(SettingsBase attribute)</a>
-</li>
-        <li><a href="bases.html#spice_rack._bases._exception._external_wrapper.WrappedExternalException.model_computed_fields">(WrappedExternalException attribute)</a>
-</li>
-      </ul></li>
       <li><a href="bases.html#spice_rack._bases._dispatchable.DispatchedModelMixin.model_post_init">model_post_init() (DispatchedModelMixin method)</a>
 
       <ul>
@@ -236,10 +303,10 @@
         <li><a href="bases.html#spice_rack._bases._settings.SettingsBase.model_post_init">(SettingsBase method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="bases.html#spice_rack._bases._dispatchable.DispatchedModelMixin.model_validate">model_validate() (DispatchedModelMixin class method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     module
 
@@ -256,8 +323,42 @@
   </ul></td>
 </tr></table>
 
+<h2 id="O">O</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.FilePath.open">open() (FilePath method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="P">P</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.DirPath.path">path (DirPath attribute)</a>
+
+      <ul>
+        <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.FilePath.path">(FilePath attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="bases.html#spice_rack._bases._base_base.PydanticBase">PydanticBase (class in spice_rack._bases._base_base)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.FilePath.read_as_str">read_as_str() (FilePath method)</a>
+</li>
+      <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.DeferredDirPath.rel_path">rel_path (DeferredDirPath attribute)</a>
+
+      <ul>
+        <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.DeferredFilePath.rel_path">(DeferredFilePath attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="bases.html#spice_rack._bases._dispatchable.DispatchedClassContainer.root">root (DispatchedClassContainer attribute)</a>
 </li>
@@ -267,8 +368,6 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="bases.html#spice_rack._bases._settings.SettingsBase.settings_customise_sources">settings_customise_sources() (SettingsBase class method)</a>
-</li>
       <li><a href="bases.html#spice_rack._bases._special_str.SpecialStrBase.special_repr">special_repr() (SpecialStrBase method)</a>
 </li>
       <li><a href="bases.html#spice_rack._bases._special_str.SpecialStrBase">SpecialStrBase (class in spice_rack._bases._special_str)</a>
@@ -280,8 +379,6 @@
         <li><a href="bases.html#module-spice_rack._bases._exception._error_info">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     spice_rack._bases._exception._exception_base
 
@@ -289,6 +386,8 @@
         <li><a href="bases.html#module-spice_rack._bases._exception._exception_base">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     spice_rack._bases._exception._exception_exception
 
@@ -310,6 +409,14 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="bases.html#spice_rack._bases._exception._external_wrapper.WrappedExternalException.type">type (WrappedExternalException attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.FilePath.write">write() (FilePath method)</a>
 </li>
   </ul></td>
 </tr></table>
