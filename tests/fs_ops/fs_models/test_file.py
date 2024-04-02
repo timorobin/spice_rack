@@ -64,3 +64,17 @@ def test_file_parse_gcs(public_bucket):
     from_str = fs_ops.FilePath.model_validate(public_bucket_file)
     inferred_fs = from_str.file_system  # noqa -- pycharm AI is shitty
     assert isinstance(inferred_fs, fs_ops.file_systems.GcsFileSystem), type(inferred_fs)
+
+
+def test_dir_path_kwarg_only(work_dir):
+    p = str(work_dir)
+    fs_obj = fs_ops.DirPath.model_validate({"path": p})
+    assert fs_obj.path == work_dir
+    assert fs_obj.file_system_type == fs_ops.file_systems.LocalFileSystem.get_class_id()
+
+
+def test_file_path_kwarg_only(work_dir):
+    p = str(work_dir.joinpath("file.txt"))
+    fs_obj = fs_ops.FilePath.model_validate({"path": p})
+    assert fs_obj.path == p
+    assert fs_obj.file_system_type == fs_ops.file_systems.LocalFileSystem.get_class_id()
