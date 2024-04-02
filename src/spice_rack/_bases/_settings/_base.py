@@ -1,6 +1,8 @@
 from __future__ import annotations
+import json
 import typing as t
 from pathlib import Path
+import pydantic
 import pydantic_settings
 
 from spice_rack._bases._settings import _sources
@@ -43,10 +45,11 @@ class SettingsBase(pydantic_settings.BaseSettings):
         cls,
         settings_cls: type[pydantic_settings.BaseSettings],
         init_settings: pydantic_settings.PydanticBaseSettingsSource,
-        env_settings: pydantic_settings.PydanticBaseSettingsSource,
+        env_settings: pydantic_settings.DotEnvSettingsSource,
         dotenv_settings: pydantic_settings.PydanticBaseSettingsSource,
         file_secret_settings: pydantic_settings.PydanticBaseSettingsSource,
     ) -> tuple[pydantic_settings.PydanticBaseSettingsSource, ...]:
+
         sources: list[pydantic_settings.PydanticBaseSettingsSource] = [
             init_settings,
             env_settings,
@@ -55,6 +58,11 @@ class SettingsBase(pydantic_settings.BaseSettings):
         ]
         if cls._singleton_source:
             sources.insert(1, cls._singleton_source)
+
+        # replace with our extended func
+        for src in sources:
+            src.decode_complex_value = _decode_complex_value
+
         return tuple(sources)
 
     @classmethod
@@ -87,3 +95,24 @@ class SettingsBase(pydantic_settings.BaseSettings):
             kwargs["_env_nested_delimiter"] = cls._get_env_nested_delimiter()
 
         return cls(**kwargs)
+
+
+# noinspection PyUnusedLocal
+def _decode_complex_value(
+        field_name: str,
+        field: pydantic.fields.FieldInfo,
+        value: t.Any
+) -> t.Any:
+    """
+    overwrite pydantic's 'PydanticBaseSettingsSource' method to allow us to parse complex
+    fields that have simple values. pydantic always tries to decode the data as json, even if it isn't.
+    """
+    try:
+        return json.loads(value)
+
+    # if it fails, we just return value directly
+    except json.decoder.JSONDecodeError as e:
+        return value
+
+    except Exception as e:
+        raise e
