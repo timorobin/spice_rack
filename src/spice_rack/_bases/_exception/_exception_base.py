@@ -1,7 +1,9 @@
 from __future__ import annotations
 import types
 import typing as t
+from typing_extensions import LiteralString
 from devtools import pformat
+from pydantic_core import PydanticCustomError
 
 from spice_rack._bases._exception import _error_info, _exception_exception
 
@@ -90,6 +92,8 @@ class CustomExceptionBase(Exception, t.Generic[ErrorInfoTV]):
             verbose: bool = True,
             extra_info: t.Optional[dict] = None
     ):
+        self.get_error_info_cls().model_rebuild()
+
         self._detail = detail
         self._verbose = verbose
 
@@ -146,11 +150,11 @@ class CustomExceptionBase(Exception, t.Generic[ErrorInfoTV]):
             info=self.error_info,
         )
 
-    def _get_formatted_str_verbose(self) -> str:
+    def _get_formatted_str_verbose(self) -> LiteralString:
         return pformat(self.get_error_payload_inst().json_dict(use_str_fallback=True))
 
-    def _get_formatted_str_terse(self) -> str:
-        return self.detail
+    def _get_formatted_str_terse(self) -> LiteralString:
+        return t.cast(LiteralString, self.detail)
 
     def as_http_error_resp(
             self,
@@ -186,3 +190,19 @@ class CustomExceptionBase(Exception, t.Generic[ErrorInfoTV]):
             exception_type=cls,
             custom_desc=custom_desc
         )
+
+    def as_pydantic_error(self, manual_verbose: t.Optional[bool] = None) -> PydanticCustomError:
+        verbose: bool
+        if manual_verbose is not None:
+            verbose = manual_verbose
+        else:
+            verbose = self.verbose
+
+        if verbose:
+            msg = self._get_formatted_str_verbose()
+        else:
+            msg = self._get_formatted_str_terse()
+
+        error_type = t.cast(LiteralString, self.__class__.__name__)
+
+        return PydanticCustomError(error_type, msg)

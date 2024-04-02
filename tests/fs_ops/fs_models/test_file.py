@@ -113,7 +113,7 @@ def text_setup_func(work_dir) -> t.Callable[[str], fs_ops.FilePath]:
 def test_file_ext_constrained(json_setup_func, text_setup_func):
     @pydantic.validate_call
     def _json_only(
-            fp: t.Annotated[fs_ops.FilePath, pydantic.Field(file_exts=["json"])]
+            fp: t.Annotated[fs_ops.FilePath, fs_ops.constraints.FileExtConstraint("json")]
     ) -> t.Dict:
         with fp.open("rb") as _f:
             data = json.load(_f)
@@ -133,6 +133,5 @@ def test_file_ext_constrained(json_setup_func, text_setup_func):
     assert found_data == expected_data
 
     # todo: should raise Validation Error but will raise json decoder error for now
-    # with pytest.raises(pydantic.ValidationError):
-    with pytest.raises(json.decoder.JSONDecodeError):
+    with pytest.raises(pydantic.ValidationError):
         _json_only(text_path)

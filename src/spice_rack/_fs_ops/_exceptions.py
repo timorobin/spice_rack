@@ -109,16 +109,16 @@ class PathAlreadyExistsException(CustomExceptionBase[_PathAlreadyExistsErrorInfo
 
 class _InvalidFileExtensionErrorInfo(ErrorInfoBase):
     full_path: str
-    file_ext_found: t.Optional[_file_info.FileExt]
-    file_ext_choices: t.List[_file_info.FileExt]
+    file_ext_found: t.Optional[str]
+    file_ext_choices: t.List[str]
 
 
 class InvalidFileExtensionException(CustomExceptionBase[_InvalidFileExtensionErrorInfo]):
     def __init__(
             self,
             path: _path_strs.FileOrDirAbsPathT,
-            file_ext_found: t.Optional[str],
-            file_ext_choices: t.List[str],
+            file_ext_found: t.Optional[_file_info.FileExt],
+            file_ext_choices: t.List[_file_info.FileExt],
             verbose: bool = True,
             extra_info: t.Dict = None,
     ):
@@ -143,8 +143,8 @@ class InvalidFileExtensionException(CustomExceptionBase[_InvalidFileExtensionErr
 
 class _InvalidFileMimeTypeErrorInfo(ErrorInfoBase):
     full_path: str
-    mime_type_found: t.Optional[_file_info.MimeType]
-    mime_type_choices: t.List[_file_info.MimeType]
+    mime_type_found: t.Optional[str]
+    mime_type_choices: t.List[str]
 
 
 class InvalidFileMimeTypeException(CustomExceptionBase[_InvalidFileMimeTypeErrorInfo]):
