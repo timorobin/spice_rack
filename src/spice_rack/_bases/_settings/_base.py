@@ -111,7 +111,7 @@ def _decode_complex_value(
         return json.loads(value)
 
     # if it fails, we just return value directly
-    except json.decoder.JSONDecodeError as e:
+    except json.decoder.JSONDecodeError:
         return value
 
     except Exception as e:

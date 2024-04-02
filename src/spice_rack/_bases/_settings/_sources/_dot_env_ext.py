@@ -3,7 +3,7 @@ import typing as t
 
 from pydantic import PrivateAttr
 from pydantic.fields import FieldInfo
-from pydantic_settings import BaseSettings, DotEnvSettingsSource
+from pydantic_settings import BaseSettings
 from spice_rack._bases._settings._sources import _base
 
 if t.TYPE_CHECKING:
