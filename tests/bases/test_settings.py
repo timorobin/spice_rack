@@ -59,3 +59,17 @@ def test_file_path(dot_env_file_builder, dot_env_file_path):
     fp_obj = fs_ops.FilePath.model_validate("$HOME/file.txt")
     c1 = Config.load()
     assert c1.fp == fp_obj
+
+
+def test_optional_file_path(dot_env_file_builder, dot_env_file_path):
+    class Config(bases.SettingsBase):
+        fp: t.Optional[fs_ops.FilePath] = None
+
+        @classmethod
+        def _get_dot_env_files(cls) -> t.List[Path]:
+            return [dot_env_file_path]
+
+    dot_env_file_builder({})
+
+    c1 = Config.load()
+    assert c1.fp is None
