@@ -1,5 +1,5 @@
 from __future__ import annotations
-
+import pathlib
 import os
 from abc import abstractmethod
 from devtools import pformat
@@ -39,8 +39,8 @@ class _AbstractFileSystemObj(
 
     @pydantic.model_validator(mode="before")
     def _handle_str(cls, data: t.Any) -> t.Any:
-        if isinstance(data, str):
-            data = cls.init_from_str(data).model_dump()
+        if isinstance(data, (pathlib.Path, str)):
+            data = cls.init_from_str(str(data)).model_dump()
 
         file_system_key = "file_system"
         path_key = "path"

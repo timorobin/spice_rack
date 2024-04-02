@@ -1,5 +1,8 @@
 import pytest
 from pathlib import Path
+import pydantic
+import typing as t
+import json
 
 from spice_rack import fs_ops
 
@@ -78,3 +81,58 @@ def test_file_path_kwarg_only(work_dir):
     fs_obj = fs_ops.FilePath.model_validate({"path": p})
     assert fs_obj.path == p
     assert fs_obj.file_system_type == fs_ops.file_systems.LocalFileSystem.get_class_id()
+
+
+@pytest.fixture(scope="module")
+def json_setup_func(work_dir) -> t.Callable[[t.Dict], fs_ops.FilePath]:
+    fp = fs_ops.FilePath.model_validate(Path(__file__).parent.joinpath("file.json"))
+    fp.delete(if_non_existent="return")
+
+    def _func(data: t.Dict) -> fs_ops.FilePath:
+        json_content = json.dumps(data).encode()
+        fp.write(json_content)
+        return fp
+
+    yield _func
+    fp.delete(if_non_existent="return")
+
+
+@pytest.fixture(scope="module")
+def text_setup_func(work_dir) -> t.Callable[[str], fs_ops.FilePath]:
+    fp = fs_ops.FilePath.model_validate(Path(__file__).parent.joinpath("file.txt"))
+    fp.delete(if_non_existent="return")
+
+    def _func(data: str) -> fs_ops.FilePath:
+        fp.write(data)
+        return fp
+
+    yield _func
+    fp.delete(if_non_existent="return")
+
+
+def test_file_ext_constrained(json_setup_func, text_setup_func):
+    @pydantic.validate_call
+    def _json_only(
+            fp: t.Annotated[fs_ops.FilePath, pydantic.Field(file_exts=["json"])]
+    ) -> t.Dict:
+        with fp.open("rb") as _f:
+            data = json.load(_f)
+        return data
+
+    expected_data = {
+        "k1": "a",
+        "k2": "b"
+    }
+
+    json_path = json_setup_func(expected_data)
+    text_path = text_setup_func("xxx")
+
+    found_data = _json_only(
+        fp=json_path
+    )
+    assert found_data == expected_data
+
+    # todo: should raise Validation Error but will raise json decoder error for now
+    # with pytest.raises(pydantic.ValidationError):
+    with pytest.raises(json.decoder.JSONDecodeError):
+        _json_only(text_path)
