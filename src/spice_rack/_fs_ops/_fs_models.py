@@ -11,7 +11,6 @@ from spice_rack._fs_ops import (
     _path_strs,
     # _exceptions,
     _file_systems,
-    _helpers,
     _open_modes,
     _file_info
 )
@@ -58,7 +57,7 @@ class _AbstractFileSystemObj(
             file_system: _file_systems.AnyFileSystemT
 
             if raw_file_system is None:
-                file_system = _helpers.infer_file_system(raw_path)
+                file_system = _file_systems.infer_file_system(raw_path)
             else:
                 file_system = _file_systems.AnyFileSystemTypeAdapter.validate_python(
                     raw_file_system
