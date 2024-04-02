@@ -69,7 +69,7 @@ html_static_path = ['_static']
 # changes the display from "path._to._class.MyClass" to "MyClass"
 add_module_names = False
 
-# pydantic autodoc config settings:
+# pydantic autodoc config settings_base:
 # https://autodoc-pydantic.readthedocs.io/en/stable/index.html
 autodoc_pydantic_model_show_json = True
 autodoc_pydantic_settings_show_json = False
