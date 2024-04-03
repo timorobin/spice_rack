@@ -23,7 +23,7 @@ __all__ = (
 
 
 class AbstractFileSystemObj(
-    _bases.dispatchable.DispatchableValueModelBase,
+    _bases.DispatchableValueModelBase,
     _logging.log_extra.LoggableObjMixin
 ):
     """

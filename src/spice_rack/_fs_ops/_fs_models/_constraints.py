@@ -13,8 +13,6 @@ if t.TYPE_CHECKING:
 __all__ = (
     "ExistsConstraint",
     "FileExtConstraint",
-    "JsonFileConstraint",
-    "YamlFileConstraint"
 )
 
 
@@ -152,13 +150,3 @@ class FileExtConstraint(_FileExtConstraintBase):
             )
 
         super().__init__(choices)
-
-
-class JsonFileConstraint(_FileExtConstraintBase):
-    def __init__(self):
-        super().__init__([_file_info.FileExt("json")])
-
-
-class YamlFileConstraint(_FileExtConstraintBase):
-    def __init__(self):
-        super().__init__([_file_info.FileExt("yaml"), _file_info.FileExt("yml")])

@@ -1,30 +1,36 @@
 from __future__ import annotations
 import typing as t
+import yaml
+import pydantic
 
 from spice_rack._fs_ops import (
     _path_strs,
-    # _exceptions,
+    _exceptions,
     _file_systems,
     _open_modes,
-    _file_info
+    _file_info,
 )
 
 from spice_rack._fs_ops._fs_models._base import AbstractFileSystemObj
 
-if t.TYPE_CHECKING:
-    from spice_rack._fs_ops._fs_models._deferred import DeferredFilePath
-
 
 __all__ = (
     "FilePath",
+    "TextFilePath",
+    "JsonFilePath",
+    "YamlFilePath",
 )
 
 
-class FilePath(AbstractFileSystemObj):
+SelfTV = t.TypeVar("SelfTV", bound="_FilePathBase")
+
+
+class _FilePathBase(AbstractFileSystemObj, class_type="root"):
     """
-    this class represents a file on a file system,
-    with the absolute full path string, and the file system instance
+    implements standard file functionality. This is implemented as a 'root' to allow us to continue subclassing
+    this for special file types.
     """
+
     path: _path_strs.AbsoluteFilePathStr
 
     def _special_repr_short(self) -> str:
@@ -133,7 +139,7 @@ class FilePath(AbstractFileSystemObj):
         return self.path.get_mime_type()
 
     @classmethod
-    def init_from_str(cls, raw_str: str) -> FilePath:
+    def init_from_str(cls: t.Type[SelfTV], raw_str: str) -> SelfTV:
         """
         parse a string into a FilePath instance, inferring the file system from the
         prefix of the string path.
@@ -148,4 +154,129 @@ class FilePath(AbstractFileSystemObj):
             inferred_fs = _file_systems.infer_file_system(raw_str)
             path_str = inferred_fs.clean_raw_path_str(raw_str)
             file_path = _path_strs.AbsoluteFilePathStr(path_str)
-            return FilePath(path=file_path, file_system=inferred_fs)
+            return cls(path=file_path, file_system=inferred_fs)
+
+
+class FilePath(_FilePathBase):
+    """
+    general file path, can have any file extension.
+    """
+    ...
+
+
+class TextFilePath(_FilePathBase):
+    """
+    extension of the standard FilePath object that has json-specific methods.
+    """
+    @pydantic.model_validator(mode="before")
+    def _handle_general_file_path(cls, data: t.Any) -> t.Any:
+        if isinstance(data, FilePath):
+            data = data.model_dump(exclude={"class_id"})
+        return data
+
+    def _post_init_validation(self) -> None:
+        try:
+            self.ensure_correct_file_ext(["txt"])
+
+        except _exceptions.InvalidFileExtensionException as e:
+            raise e.as_pydantic_error()
+
+        except Exception as e:
+            raise e
+
+    def read_lines(self) -> t.List[str]:
+        """read lines of the text file"""
+        return self.read_as_str().splitlines()
+
+
+_json_type_adapter = pydantic.TypeAdapter(pydantic.JsonValue)
+"""use this to dump json data into data for writing"""
+
+
+class JsonFilePath(_FilePathBase):
+    """
+    extension of the standard FilePath object that has json-specific methods.
+    """
+    @pydantic.model_validator(mode="before")
+    def _handle_general_file_path(cls, data: t.Any) -> t.Any:
+        if isinstance(data, FilePath):
+            data = data.model_dump(exclude={"class_id"})
+        return data
+
+    def _post_init_validation(self) -> None:
+        try:
+            self.ensure_correct_file_ext(["json"])
+
+        except _exceptions.InvalidFileExtensionException as e:
+            raise e.as_pydantic_error()
+
+        except Exception as e:
+            raise e
+
+    def json_write(self, obj: t.Any) -> None:
+        """
+        write the json-encodeable object. If a pydantic BaseModel, we'll use that to serialize
+
+        Args:
+            obj: any type of data we want to write, must be json-encodeable
+
+        Returns:
+            nothing
+
+        Raises:
+            PydanticValidationError: if the obj is not json-encodeable
+        """
+        byte_data: bytes
+        if isinstance(obj, pydantic.BaseModel):
+            byte_data = obj.model_dump_json().encode()
+
+        else:
+            # already bytes
+            byte_data = _json_type_adapter.dump_json(
+                _json_type_adapter.validate_python(obj)
+            )
+        self.write(byte_data, "wb")
+
+    def json_read(self) -> pydantic.JsonValue:
+        data = self.read_as_str()
+        return _json_type_adapter.validate_json(data)
+
+
+class YamlFilePath(_FilePathBase):
+    """
+    extension of the standard FilePath object that has yaml-specific methods.
+    """
+    @pydantic.model_validator(mode="before")
+    def _handle_general_file_path(cls, data: t.Any) -> t.Any:
+        if isinstance(data, FilePath):
+            data = data.model_dump(exclude={"class_id"})
+        return data
+
+    def _post_init_validation(self) -> None:
+        try:
+            self.ensure_correct_file_ext(["yaml", "yml"])
+
+        except _exceptions.InvalidFileExtensionException as e:
+            raise e.as_pydantic_error()
+
+        except Exception as e:
+            raise e
+
+    def yaml_write(self, obj: t.Any) -> None:
+        encodeable_data: pydantic.JsonValue
+        if isinstance(obj, pydantic.BaseModel):
+            encodeable_data = obj.model_dump(mode="json")
+        else:
+            # already bytes
+            encodeable_data = _json_type_adapter.dump_python(
+                _json_type_adapter.validate_python(obj),
+                mode="json"
+            )
+        with self.open("wb") as f:
+            yaml.dump(encodeable_data, f, encoding="utf-8")
+
+    def yaml_read(self) -> pydantic.JsonValue:
+        with self.open("rb") as f:
+            data = yaml.unsafe_load(f)
+
+        return _json_type_adapter.validate_python(data)

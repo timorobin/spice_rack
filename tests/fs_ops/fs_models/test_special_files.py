@@ -63,7 +63,7 @@ def text_setup_func(work_dir) -> t.Callable[[str], fs_ops.FilePath]:
     fp.delete(if_non_existent="return")
 
 
-def test_json_file(json_setup_func, text_setup_func):
+def test_json_file_read(json_setup_func, text_setup_func):
     @pydantic.validate_call
     def _json_only(
             fp: fs_ops.JsonFilePath
@@ -83,31 +83,42 @@ def test_json_file(json_setup_func, text_setup_func):
     )
     assert found_data == expected_data
 
-    # todo: should raise Validation Error but will raise json decoder error for now
     with pytest.raises(pydantic.ValidationError):
         _json_only(text_path)
 
 
-def test_yaml_file(yaml_setup_func, text_setup_func):
-    @pydantic.validate_call
-    def _yaml_only(
-            fp: fs_ops.YamlFilePath
-    ) -> t.Dict:
-        return fp.yaml_read()
+def test_json_file_write(work_dir):
+    class SimpleData(pydantic.BaseModel):
+        p: t.Tuple[int, int]
+        s: str
 
-    expected_data = {
-        "k1": "a",
-        "k2": "b"
-    }
+    fp = fs_ops.JsonFilePath.model_validate(work_dir.joinpath("file.json"))
+    fp.delete(if_non_existent="return")
 
-    yaml_path = yaml_setup_func(expected_data)
-    text_path = text_setup_func("xxx")
+    inst = SimpleData(p=(1, 2), s="xxx")
+    fp.json_write(inst)
 
-    found_data = _yaml_only(
-        fp=yaml_path  # noqa should be coerced
-    )
-    assert found_data == expected_data
+    found_data = SimpleData.model_validate(fp.json_read())
+    assert found_data == inst
 
-    # todo: should raise Validation Error but will raise json decoder error for now
-    with pytest.raises(pydantic.ValidationError):
-        _yaml_only(text_path)
+
+def test_yaml_file_read(work_dir):
+    class SimpleData(pydantic.BaseModel):
+        p: t.Tuple[int, int]
+        s: str
+
+    fp = fs_ops.YamlFilePath.model_validate(work_dir.joinpath("file.yaml"))
+    fp.delete(if_non_existent="return")
+
+    inst = SimpleData(p=(1, 2), s="xxx")
+    fp.yaml_write(inst)
+
+    found_data = SimpleData.model_validate(fp.yaml_read())
+    assert found_data == inst
+
+
+def test_text_file(work_dir):
+    text_file = fs_ops.TextFilePath.model_validate(work_dir.joinpath("file.txt"))
+    text_data = "a\nb\nc"
+    text_file.write(text_data)
+    assert text_file.read_lines() == ["a", "b", "c"]

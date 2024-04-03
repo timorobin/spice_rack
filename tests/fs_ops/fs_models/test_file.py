@@ -1,6 +1,5 @@
 import pytest
 from pathlib import Path
-import pydantic
 import typing as t
 import json
 
@@ -108,30 +107,3 @@ def text_setup_func(work_dir) -> t.Callable[[str], fs_ops.FilePath]:
 
     yield _func
     fp.delete(if_non_existent="return")
-
-
-def test_file_ext_constrained(json_setup_func, text_setup_func):
-    @pydantic.validate_call
-    def _json_only(
-            fp: t.Annotated[fs_ops.FilePath, fs_ops.constraints.FileExtConstraint("json")]
-    ) -> t.Dict:
-        with fp.open("rb") as _f:
-            data = json.load(_f)
-        return data
-
-    expected_data = {
-        "k1": "a",
-        "k2": "b"
-    }
-
-    json_path = json_setup_func(expected_data)
-    text_path = text_setup_func("xxx")
-
-    found_data = _json_only(
-        fp=json_path
-    )
-    assert found_data == expected_data
-
-    # todo: should raise Validation Error but will raise json decoder error for now
-    with pytest.raises(pydantic.ValidationError):
-        _json_only(text_path)

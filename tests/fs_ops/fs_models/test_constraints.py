@@ -57,8 +57,6 @@ def text_setup_func(work_dir) -> t.Callable[[str], fs_ops.FilePath]:
     fp.delete(if_non_existent="return")
 
 
-
-
 def test_file_ext_constraint_val(json_setup_func, text_setup_func):
     @pydantic.validate_call
     def _json_only(

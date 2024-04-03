@@ -24,7 +24,6 @@ class ClassId(_special_str.SpecialStrBase):
     ...
 
 
-
 ClassIdPathT = t.Tuple[ClassId, ...]
 
 

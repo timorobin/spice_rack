@@ -6,7 +6,7 @@ from spice_rack._fs_ops._fs_models._base import AbstractFileSystemObj
 
 if t.TYPE_CHECKING:
     from spice_rack._fs_ops._fs_models._file import FilePath
-    from spice_rack._fs_ops._fs_models._deferred import DeferredDirPath
+
 
 __all__ = (
     "DirPath",

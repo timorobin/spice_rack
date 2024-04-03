@@ -2,10 +2,12 @@ from __future__ import annotations
 import typing as t
 import pydantic
 
-from spice_rack._fs_ops._fs_models._base import AbstractFileSystemObj
-from spice_rack._fs_ops._fs_models._file import FilePath
-from spice_rack._fs_ops._fs_models._dir import DirPath
-from spice_rack._fs_ops._fs_models._deferred import DeferredDirPath, DeferredFilePath
+from spice_rack._fs_ops._fs_models import (
+    _base,
+    _file,
+    _dir,
+    _deferred
+)
 
 
 __all__ = (
@@ -17,15 +19,16 @@ __all__ = (
 def _str_parser(data: t.Any) -> t.Any:
     if isinstance(data, str):
         if data.endswith("/"):
-            return DirPath.init_from_str(data)
+            return _dir.DirPath.init_from_str(data)
         else:
-            return FilePath.init_from_str(data)
+            return _file.FilePath.init_from_str(data)
+
     else:
         return data
 
 
 FileOrDirPathT = t.Annotated[
-    AbstractFileSystemObj.build_dispatched_ann(),
+    _base.AbstractFileSystemObj.build_dispatched_ann(),
     pydantic.BeforeValidator(_str_parser)
 ]
 """extends standard dispatched type to support raw strings"""
@@ -39,9 +42,9 @@ def _deferred_str_parser(data: t.Any) -> t.Any:
     if isinstance(data, str):
         if data.startswith("$"):
             if data.endswith("/"):
-                return DeferredDirPath.model_validate(data)
+                return _deferred.DeferredDirPath.model_validate(data)
             else:
-                return DeferredFilePath.model_validate(data)
+                return _deferred.DeferredFilePath.model_validate(data)
         else:
             raise ValueError(
                 f"a deferred path str must start with '$', '{data}' does not"
@@ -51,7 +54,7 @@ def _deferred_str_parser(data: t.Any) -> t.Any:
 
 
 FileOrDirDeferredPathT = t.Annotated[
-    t.Union[DeferredFilePath, DeferredDirPath],
+    t.Union[_deferred.DeferredFilePath, _deferred.DeferredDirPath],
     pydantic.BeforeValidator(_deferred_str_parser)
 ]
 """extends standard dispatched type to support raw strings"""
