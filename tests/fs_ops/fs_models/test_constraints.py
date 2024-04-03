@@ -60,7 +60,7 @@ def text_setup_func(work_dir) -> t.Callable[[str], fs_ops.FilePath]:
 def test_file_ext_constraint_val(json_setup_func, text_setup_func):
     @pydantic.validate_call
     def _json_only(
-            fp: t.Annotated[fs_ops.FilePath, fs_ops.constraints.FileExtConstraint("json")]
+            fp: t.Annotated[fs_ops.FilePath, fs_ops.fs_models.FileExtConstraint("json")]
     ) -> t.Dict:
         with fp.open("rb") as _f:
             data = json.load(_f)
