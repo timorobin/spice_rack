@@ -57,7 +57,7 @@ class FileExtConstraint:
     def __init__(self, __options: t.Union[str, t.Iterable[str]]):
         if not __options:
             raise ValueError(
-                f"must specify a list of valid file extensions"
+                "must specify a list of valid file extensions"
             )
 
         choices: t.List[_file_info.FileExt]
