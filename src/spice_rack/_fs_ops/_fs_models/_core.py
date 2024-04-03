@@ -365,8 +365,8 @@ class DirPath(_AbstractFileSystemObj):
             recursive: bool = True
     ) -> list[FilePath]:
         for path_i in self.file_system.iter_dir_contents_files_only(
-            self.path,
-            recursive=recursive
+                self.path,
+                recursive=recursive
         ):
             yield self.build_like(path=path_i)
 
