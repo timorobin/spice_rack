@@ -14,7 +14,7 @@ __all__ = (
 
 _ExtraLogDataT = t.Optional[list[t.Any]]
 _LogLevelOrStrT = t.Union[str, _log_level.LogLevel]
-LOGGER_WRAPPER_DEPTH = 3
+LOGGER_WRAPPER_DEPTH = 4
 
 
 class Logger(_bases.value_model.ValueModelBase):
