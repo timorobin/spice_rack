@@ -2,7 +2,7 @@
 name = "spice_rack"
 version = "0.0.0"   # keep as 0.0.0 placeholder for poetry-dynamic-versioning
 description = "group of common things we use across different python packages"
-license = "Proprietary"
+license = "Apache-2.0"
 authors = ["Tim Robin <timo.a.robin@gmail.com>",]
 readme = "README.md"
 

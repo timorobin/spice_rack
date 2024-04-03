@@ -1,5 +1,7 @@
 import pytest
 from pathlib import Path
+import typing as t
+import json
 
 from spice_rack import fs_ops
 
@@ -78,3 +80,30 @@ def test_file_path_kwarg_only(work_dir):
     fs_obj = fs_ops.FilePath.model_validate({"path": p})
     assert fs_obj.path == p
     assert fs_obj.file_system_type == fs_ops.file_systems.LocalFileSystem.get_class_id()
+
+
+@pytest.fixture(scope="module")
+def json_setup_func(work_dir) -> t.Callable[[t.Dict], fs_ops.FilePath]:
+    fp = fs_ops.FilePath.model_validate(Path(__file__).parent.joinpath("file.json"))
+    fp.delete(if_non_existent="return")
+
+    def _func(data: t.Dict) -> fs_ops.FilePath:
+        json_content = json.dumps(data).encode()
+        fp.write(json_content)
+        return fp
+
+    yield _func
+    fp.delete(if_non_existent="return")
+
+
+@pytest.fixture(scope="module")
+def text_setup_func(work_dir) -> t.Callable[[str], fs_ops.FilePath]:
+    fp = fs_ops.FilePath.model_validate(Path(__file__).parent.joinpath("file.txt"))
+    fp.delete(if_non_existent="return")
+
+    def _func(data: str) -> fs_ops.FilePath:
+        fp.write(data)
+        return fp
+
+    yield _func
+    fp.delete(if_non_existent="return")
