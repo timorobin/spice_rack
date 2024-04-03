@@ -4,7 +4,10 @@ import pydantic
 import pydantic_core
 
 from spice_rack._fs_ops import _file_info, _exceptions
-from spice_rack._fs_ops._fs_models._core import FilePath, FileOrDirPathT
+
+if t.TYPE_CHECKING:
+    from spice_rack._fs_ops._fs_models._file import FilePath
+    from spice_rack._fs_ops._fs_models._types import FileOrDirPathT
 
 
 __all__ = (
