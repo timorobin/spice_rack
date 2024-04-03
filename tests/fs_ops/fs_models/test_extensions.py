@@ -43,7 +43,7 @@ def yaml_setup_func(work_dir) -> t.Callable[[t.Dict], fs_ops.FilePath]:
 
     def _func(data: t.Dict) -> fs_ops.FilePath:
         with fp.open("wb") as f:
-            yaml.dump(data, f)
+            yaml.dump(data, f, encoding="utf-8")
         return fp
 
     yield _func
@@ -104,7 +104,7 @@ def test_yaml_file(yaml_setup_func, text_setup_func):
     text_path = text_setup_func("xxx")
 
     found_data = _yaml_only(
-        fp=json_path  # noqa should be coerced
+        fp=yaml_path  # noqa should be coerced
     )
     assert found_data == expected_data
 
