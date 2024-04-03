@@ -51,17 +51,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#file-system-models">File System Models</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#spice_rack._fs_ops._fs_models.FilePath"><code class="docutils literal notranslate"><span class="pre">FilePath</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#spice_rack._fs_ops._fs_models.FilePath.path"><code class="docutils literal notranslate"><span class="pre">FilePath.path</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#spice_rack._fs_ops._fs_models.FilePath.delete"><code class="docutils literal notranslate"><span class="pre">FilePath.delete()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#spice_rack._fs_ops._fs_models.FilePath.download_locally"><code class="docutils literal notranslate"><span class="pre">FilePath.download_locally()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#spice_rack._fs_ops._fs_models.FilePath.ensure_correct_file_ext"><code class="docutils literal notranslate"><span class="pre">FilePath.ensure_correct_file_ext()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#spice_rack._fs_ops._fs_models.FilePath.ensure_correct_mime_type"><code class="docutils literal notranslate"><span class="pre">FilePath.ensure_correct_mime_type()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#spice_rack._fs_ops._fs_models.FilePath.get_file_ext"><code class="docutils literal notranslate"><span class="pre">FilePath.get_file_ext()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#spice_rack._fs_ops._fs_models.FilePath.get_mime_type"><code class="docutils literal notranslate"><span class="pre">FilePath.get_mime_type()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#spice_rack._fs_ops._fs_models.FilePath.get_name"><code class="docutils literal notranslate"><span class="pre">FilePath.get_name()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#spice_rack._fs_ops._fs_models.FilePath.init_from_str"><code class="docutils literal notranslate"><span class="pre">FilePath.init_from_str()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#spice_rack._fs_ops._fs_models.FilePath.open"><code class="docutils literal notranslate"><span class="pre">FilePath.open()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#spice_rack._fs_ops._fs_models.FilePath.read_as_str"><code class="docutils literal notranslate"><span class="pre">FilePath.read_as_str()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#spice_rack._fs_ops._fs_models.FilePath.write"><code class="docutils literal notranslate"><span class="pre">FilePath.write()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#spice_rack._fs_ops._fs_models.DirPath"><code class="docutils literal notranslate"><span class="pre">DirPath</span></code></a><ul>
@@ -131,12 +120,11 @@ with file systems, regardless of if it is local, s3, gcs, or sftp etc.</p>
 <dl class="py class pydantic_model">
 <dt class="sig sig-object py" id="spice_rack._fs_ops._fs_models.FilePath">
 <em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">FilePath</span></span><a class="headerlink" href="#spice_rack._fs_ops._fs_models.FilePath" title="Link to this definition"></a></dt>
-<dd><p>this class represents a file on a file system,
-with the absolute full path string, and the file system instance</p>
+<dd><p>general file path, can have any file extension.</p>
 <p><details  class="autodoc_pydantic_collapsable_json">
 <summary>Show JSON schema</summary><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">   </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FilePath&quot;</span><span class="p">,</span>
-<span class="w">   </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;this class represents a file on a file system,\nwith the absolute full path string, and the file system instance&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;general file path, can have any file extension.&quot;</span><span class="p">,</span>
 <span class="w">   </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span>
 <span class="w">   </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;class_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -500,89 +488,6 @@ with the absolute full path string, and the file system instance</p>
 </ul>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spice_rack._fs_ops._fs_models.FilePath.delete">
-<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">if_non_existent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'raise'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'return'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'return'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#spice_rack._fs_ops._fs_models.FilePath.delete" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spice_rack._fs_ops._fs_models.FilePath.download_locally">
-<span class="sig-name descname"><span class="pre">download_locally</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dest_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AbsoluteDirPathStr</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AbsoluteFilePathStr</span></span></span><a class="headerlink" href="#spice_rack._fs_ops._fs_models.FilePath.download_locally" title="Link to this definition"></a></dt>
-<dd><p>download the file to the local dir specified</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spice_rack._fs_ops._fs_models.FilePath.ensure_correct_file_ext">
-<span class="sig-name descname"><span class="pre">ensure_correct_file_ext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#spice_rack._fs_ops._fs_models.FilePath.ensure_correct_file_ext" title="Link to this definition"></a></dt>
-<dd><p>ensure the file path has one of the specified extensions
-:param choices: the valid extensions</p>
-<p>Returns: Nothing</p>
-<dl class="field-list simple">
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>FilePathInvalidException</strong> – if the file path has no extension of it isn’t
-    one of the choices</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spice_rack._fs_ops._fs_models.FilePath.ensure_correct_mime_type">
-<span class="sig-name descname"><span class="pre">ensure_correct_mime_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">MimeType</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#spice_rack._fs_ops._fs_models.FilePath.ensure_correct_mime_type" title="Link to this definition"></a></dt>
-<dd><p>ensure the file path is one of the specified mime types
-:param choices: the valid mime types</p>
-<p>Returns: Nothing</p>
-<dl class="field-list simple">
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>InvalidFileMimeTypeException</strong> – if we cannot determine the mime type, or it is not one
-    of the specified choices</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spice_rack._fs_ops._fs_models.FilePath.get_file_ext">
-<span class="sig-name descname"><span class="pre">get_file_ext</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">FileExt</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#spice_rack._fs_ops._fs_models.FilePath.get_file_ext" title="Link to this definition"></a></dt>
-<dd><p>get the file extension from the file path if there is one</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spice_rack._fs_ops._fs_models.FilePath.get_mime_type">
-<span class="sig-name descname"><span class="pre">get_mime_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">MimeType</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#spice_rack._fs_ops._fs_models.FilePath.get_mime_type" title="Link to this definition"></a></dt>
-<dd><p>get the mime type of the file from its file extension, if we have it</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spice_rack._fs_ops._fs_models.FilePath.get_name">
-<span class="sig-name descname"><span class="pre">get_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_suffixes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#spice_rack._fs_ops._fs_models.FilePath.get_name" title="Link to this definition"></a></dt>
-<dd><p>get the name of the file, optionally stripping the name of the suffixes</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spice_rack._fs_ops._fs_models.FilePath.init_from_str">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">init_from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#spice_rack._fs_ops._fs_models.FilePath" title="spice_rack._fs_ops._fs_models.FilePath"><span class="pre">FilePath</span></a></span></span><a class="headerlink" href="#spice_rack._fs_ops._fs_models.FilePath.init_from_str" title="Link to this definition"></a></dt>
-<dd><p>parse a string into a FilePath instance, inferring the file system from the
-prefix of the string path.</p>
-<p>If the str starts with a ‘$’ we will parse it as a DeferredFilePath instance and
-evaluate it right way into a FilePath inst.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spice_rack._fs_ops._fs_models.FilePath.open">
-<span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'ab'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'wb'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'rb'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'rb'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AbstractBufferedFile</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">TextIOWrapper</span></span></span><a class="headerlink" href="#spice_rack._fs_ops._fs_models.FilePath.open" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spice_rack._fs_ops._fs_models.FilePath.read_as_str">
-<span class="sig-name descname"><span class="pre">read_as_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#spice_rack._fs_ops._fs_models.FilePath.read_as_str" title="Link to this definition"></a></dt>
-<dd><p>convenience method to read str data from a file</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spice_rack._fs_ops._fs_models.FilePath.write">
-<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'wb'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'ab'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'wb'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#spice_rack._fs_ops._fs_models.FilePath.write" title="Link to this definition"></a></dt>
-<dd><p>convenience method to write bytes or str data to a file</p>
 </dd></dl>
 
 </dd></dl>
@@ -980,12 +885,12 @@ with the absolute full path string, and the file system instance</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="spice_rack._fs_ops._fs_models.DirPath.init_from_str">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">init_from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#spice_rack._fs_ops._fs_models.DirPath" title="spice_rack._fs_ops._fs_models.DirPath"><span class="pre">DirPath</span></a></span></span><a class="headerlink" href="#spice_rack._fs_ops._fs_models.DirPath.init_from_str" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">init_from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#spice_rack._fs_ops._fs_models.DirPath" title="spice_rack._fs_ops._fs_models._dir.DirPath"><span class="pre">DirPath</span></a></span></span><a class="headerlink" href="#spice_rack._fs_ops._fs_models.DirPath.init_from_str" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="spice_rack._fs_ops._fs_models.DirPath.iter_dir">
-<span class="sig-name descname"><span class="pre">iter_dir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#spice_rack._fs_ops._fs_models.FilePath" title="spice_rack._fs_ops._fs_models.FilePath"><span class="pre">FilePath</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#spice_rack._fs_ops._fs_models.DirPath" title="spice_rack._fs_ops._fs_models.DirPath"><span class="pre">DirPath</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#spice_rack._fs_ops._fs_models.DirPath.iter_dir" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">iter_dir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">t.Iterator</span><span class="p"><span class="pre">[</span></span><span class="pre">t.Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#spice_rack._fs_ops._fs_models.FilePath" title="spice_rack._fs_ops._fs_models.FilePath"><span class="pre">FilePath</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#spice_rack._fs_ops._fs_models.DirPath" title="spice_rack._fs_ops._fs_models.DirPath"><span class="pre">DirPath</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#spice_rack._fs_ops._fs_models.DirPath.iter_dir" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -997,9 +902,9 @@ with the absolute full path string, and the file system instance</p>
 <dt class="sig sig-object py" id="spice_rack._fs_ops._fs_models.DirPath.joinpath">
 <span class="sig-name descname"><span class="pre">joinpath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">relative_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">RelFilePathStr</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#spice_rack._fs_ops._fs_models.FilePath" title="spice_rack._fs_ops._fs_models.FilePath"><span class="pre">FilePath</span></a></span></span><a class="headerlink" href="#spice_rack._fs_ops._fs_models.DirPath.joinpath" title="Link to this definition"></a></dt>
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">joinpath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">relative_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">RelDirPathStr</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#spice_rack._fs_ops._fs_models.DirPath" title="spice_rack._fs_ops._fs_models.DirPath"><span class="pre">DirPath</span></a></span></span></dt>
+<span class="sig-name descname"><span class="pre">joinpath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">relative_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">RelDirPathStr</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#spice_rack._fs_ops._fs_models.DirPath" title="spice_rack._fs_ops._fs_models._dir.DirPath"><span class="pre">DirPath</span></a></span></span></dt>
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">joinpath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">relative_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#spice_rack._fs_ops._fs_models.FilePath" title="spice_rack._fs_ops._fs_models.FilePath"><span class="pre">FilePath</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#spice_rack._fs_ops._fs_models.DirPath" title="spice_rack._fs_ops._fs_models.DirPath"><span class="pre">DirPath</span></a></span></span></dt>
+<span class="sig-name descname"><span class="pre">joinpath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">relative_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">t.Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#spice_rack._fs_ops._fs_models.FilePath" title="spice_rack._fs_ops._fs_models.FilePath"><span class="pre">FilePath</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#spice_rack._fs_ops._fs_models.DirPath" title="spice_rack._fs_ops._fs_models.DirPath"><span class="pre">DirPath</span></a><span class="p"><span class="pre">]</span></span></span></span></dt>
 <dd><p>get a new FilePath or DirPath by combining this DirPath instance with a provided
 relative path.</p>
 </dd></dl>
@@ -1015,13 +920,13 @@ relative path.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spice_rack._fs_ops._fs_models.FileOrDirPathT">
 <span class="sig-name descname"><span class="pre">FileOrDirPathT</span></span><a class="headerlink" href="#spice_rack._fs_ops._fs_models.FileOrDirPathT" title="Link to this definition"></a></dt>
-<dd><p>extends standard dispatched type to support raw strings</p>
+<dd><p>alias of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="#spice_rack._fs_ops._fs_models.FilePath" title="spice_rack._fs_ops._fs_models._file.FilePath"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilePath</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TextFilePath</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">JsonFilePath</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">YamlFilePath</span></code>, <a class="reference internal" href="#spice_rack._fs_ops._fs_models.DirPath" title="spice_rack._fs_ops._fs_models._dir.DirPath"><code class="xref py py-class docutils literal notranslate"><span class="pre">DirPath</span></code></a>][<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="#spice_rack._fs_ops._fs_models.FilePath" title="spice_rack._fs_ops._fs_models._file.FilePath"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilePath</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TextFilePath</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">JsonFilePath</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">YamlFilePath</span></code>, <a class="reference internal" href="#spice_rack._fs_ops._fs_models.DirPath" title="spice_rack._fs_ops._fs_models._dir.DirPath"><code class="xref py py-class docutils literal notranslate"><span class="pre">DirPath</span></code></a>]]</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spice_rack._fs_ops._fs_models.FileOrDirPathTypeAdapter">
 <span class="sig-name descname"><span class="pre">FileOrDirPathTypeAdapter</span></span><a class="headerlink" href="#spice_rack._fs_ops._fs_models.FileOrDirPathTypeAdapter" title="Link to this definition"></a></dt>
-<dd><p>gives us pydantic parsing logic outside a pydantic class</p>
+<dd><p>alias of &lt;pydantic.type_adapter.TypeAdapter object&gt;</p>
 </dd></dl>
 
 <dl class="py class pydantic_model">
@@ -1144,13 +1049,13 @@ looked up when we call ‘evaluate’ method to convert this instance to a DirPa
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spice_rack._fs_ops._fs_models.FileOrDirDeferredPathT">
 <span class="sig-name descname"><span class="pre">FileOrDirDeferredPathT</span></span><a class="headerlink" href="#spice_rack._fs_ops._fs_models.FileOrDirDeferredPathT" title="Link to this definition"></a></dt>
-<dd><p>extends standard dispatched type to support raw strings</p>
+<dd><p>alias of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="#spice_rack._fs_ops._fs_models.DeferredFilePath" title="spice_rack._fs_ops._fs_models._deferred.DeferredFilePath"><code class="xref py py-class docutils literal notranslate"><span class="pre">DeferredFilePath</span></code></a>, <a class="reference internal" href="#spice_rack._fs_ops._fs_models.DeferredDirPath" title="spice_rack._fs_ops._fs_models._deferred.DeferredDirPath"><code class="xref py py-class docutils literal notranslate"><span class="pre">DeferredDirPath</span></code></a>][<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="#spice_rack._fs_ops._fs_models.DeferredFilePath" title="spice_rack._fs_ops._fs_models._deferred.DeferredFilePath"><code class="xref py py-class docutils literal notranslate"><span class="pre">DeferredFilePath</span></code></a>, <a class="reference internal" href="#spice_rack._fs_ops._fs_models.DeferredDirPath" title="spice_rack._fs_ops._fs_models._deferred.DeferredDirPath"><code class="xref py py-class docutils literal notranslate"><span class="pre">DeferredDirPath</span></code></a>]]</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="spice_rack._fs_ops._fs_models.FileOrDirDeferredPathTypeAdapter">
 <span class="sig-name descname"><span class="pre">FileOrDirDeferredPathTypeAdapter</span></span><a class="headerlink" href="#spice_rack._fs_ops._fs_models.FileOrDirDeferredPathTypeAdapter" title="Link to this definition"></a></dt>
-<dd><p>gives us pydantic parsing logic outside a pydantic class</p>
+<dd><p>alias of &lt;pydantic.type_adapter.TypeAdapter object&gt;</p>
 </dd></dl>
 
 </section>
