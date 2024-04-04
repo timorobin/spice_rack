@@ -80,6 +80,8 @@ pytest-sugar = { version = "*", extras = [] }
 pytest-cov = { version = "*", extras = [] }
 pytest-parametrization = { version = "*", extras = [] }
 pytest-asyncio = { version = "*", extras = [] }
+pytest-loguru = { version = "*", extras = [] }
+testfixtures = { version = "*" }
 
 # docs
 sphinx = { version = "*", extras = [] }

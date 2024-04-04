@@ -1,10 +1,11 @@
 from __future__ import annotations
 import typing as t
 import logging
-from loguru import logger, _logger  # noqa
+from loguru import logger as loguru_logger
 import warnings
 
 from spice_rack._logging import _sinks
+from spice_rack._logging._logger import Logger
 
 
 __all__ = (
@@ -20,7 +21,7 @@ def configure_sink_for_service(
 ) -> None:
     custom_loguru_kwargs = {} if not custom_loguru_kwargs else custom_loguru_kwargs
     try:
-        sink.setup(logger=logger, **custom_loguru_kwargs)
+        sink.setup(logger=loguru_logger, **custom_loguru_kwargs)
 
     # if the setup method raised a SinkSetupError on its own, we just directly raise that
     # except SinkSetupError as e:
@@ -55,9 +56,9 @@ class _UvicornInterceptHandler(logging.Handler):
 def configure_logging_for_uvicorn_server(
         sinks: list[_sinks.AbstractLogSink],
         service_name: str
-) -> type[logger]:
+) -> Logger:
     try:
-        logger.remove(0)
+        loguru_logger.remove(0)
 
     except ValueError as e:
         warnings.warn(str(e))
@@ -91,9 +92,9 @@ def configure_logging_for_uvicorn_server(
 def configure_logging_for_python_worker(
         sinks: list[_sinks.AbstractLogSink],
         service_name: str
-) -> type[logger]:
+) -> Logger:
     try:
-        logger.remove(0)
+        loguru_logger.remove(0)
 
     except ValueError as e:
         warnings.warn(str(e))
