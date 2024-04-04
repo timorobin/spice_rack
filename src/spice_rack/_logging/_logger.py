@@ -33,6 +33,9 @@ class Logger(_bases.value_model.ValueModelBase):
             data["service_name"] = service_name
         return data
 
+    def _post_init_setup(self) -> None:
+        self.loguru_logger.configure(extra={"service_name": self.service_name, "extra_data": ""})
+
     def cache_service_name(self) -> None:
         """save service name as the cached class attribute"""
         type(self)._cached_service_name = self.service_name
