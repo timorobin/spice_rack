@@ -19,12 +19,9 @@ LOGGER_WRAPPER_DEPTH = 4
 
 class Logger(_bases.value_model.ValueModelBase):
     _cached_service_name: t.ClassVar[str] = "unknown"
+    _logger_wrapper_depth: t.ClassVar[int] = 4
     service_name: str
-    
-    @property
-    def logger_wrapper_depth(self) -> int:
-        return 3
-        
+
     @pydantic.model_validator(mode="before", )
     def _use_cached_service_name_if_not_specified(cls, data: t.Any) -> t.Any:
         if isinstance(data, dict):
@@ -56,61 +53,17 @@ class Logger(_bases.value_model.ValueModelBase):
                 res.append(formatted_aug)
         return _log_aug.ExtraLogDataContainer.model_validate(res)
 
-    def _call_loguru(
-            self,
-            level: _log_level.LogLevel,
-            msg: str,
-            depth: int,
-            loguru_func_name: t.Literal["log", "exception"],
-            extra_data: _ExtraLogDataT,
-    ) -> None:
-        # catch errors and logs them, without blowing
-        try:
-            extra_data = self._format_log_extra_data(extra_data).get_logger_repr()
+    def _get_depth(self, depth_adj: t.Optional[int]) -> int:
+        """gets the adjusted depth"""
+        depth = self._logger_wrapper_depth
+        if depth_adj:
+            depth = depth + depth_adj
 
-        except Exception as e:
-            self._log(
-                level=_log_level.LogLevel.model_validate("error"),
-                msg="failed to format the specified log augmentations",
-                extra_data=[str(e)],
-                # manually specify depth here to be 0 bc this is an error within this logger
-                depth=0
+        if depth < 0:
+            raise ValueError(
+                f"depth can't be less than 0, encountered {depth}"
             )
-            return
-
-        try:
-            loguru_level: str = str(level).upper()
-            loguru_logger_inst = self.loguru_logger.opt(depth=depth)
-
-            # use bind based on: https://github.com/Delgan/loguru/issues/318
-            loguru_logger_inst = loguru_logger_inst.bind(service_name=self.service_name)
-            if loguru_func_name == "log":
-                loguru_logger_inst.log(
-                    loguru_level, msg,
-                    service_name=self.service_name,
-                    extra_data=extra_data
-                )
-            elif loguru_func_name == "exception":
-                loguru_logger_inst.exception(
-                    msg, service_name=self.service_name, extra_data=extra_data
-                )
-            else:
-
-                raise ValueError(
-                    f"loguru_func_name must be 'log' or 'exception', "
-                    f"encountered '{loguru_func_name}'"
-                )
-
-        except Exception as e:
-            self._log(
-                level=_log_level.LogLevel.model_validate("error"),
-                msg="error encountered when calling the loguru logger",
-                extra_data=[str(e)],
-
-                # manually specify depth here to be 0 bc this is an error within this logger
-                depth=0
-            )
-            return
+        return depth
 
     def _log(
             self,
@@ -119,16 +72,39 @@ class Logger(_bases.value_model.ValueModelBase):
             extra_data: _ExtraLogDataT,
             depth: t.Optional[int] = None,
     ) -> None:
-        if depth is None:
-            depth = self.logger_wrapper_depth
+        # catch errors and logs them, without blowing
+        try:
+            extra_data = self._format_log_extra_data(extra_data).get_logger_repr()
 
-        return self._call_loguru(
-            level=level,
-            msg=msg,
-            extra_data=extra_data,
-            depth=depth,
-            loguru_func_name="log"
-        )
+        except Exception as e:
+            self._log(
+                level=_log_level.LogLevel.model_validate("error"),
+                msg="failed to format the specified extra data",
+                extra_data=[str(e)],
+                # manually specify depth here to be 0 bc this is an error within this logger
+                depth=-1*self._logger_wrapper_depth
+            )
+            return
+
+        try:
+            loguru_level: str = str(level).upper()
+            loguru_logger_inst = self.loguru_logger.opt(depth=self._get_depth(depth))
+            loguru_logger_inst.log(
+                loguru_level, msg,
+                service_name=self.service_name,
+                extra_data=extra_data
+            )
+
+        except Exception as e:
+            self._log(
+                level=_log_level.LogLevel.model_validate("error"),
+                msg="error encountered when calling the loguru logger",
+                extra_data=[str(e)],
+
+                # manually specify depth here to be 0 bc this is an error within this logger
+                depth=-1*self._logger_wrapper_depth
+            )
+            return
 
     def log(
             self,
@@ -202,10 +178,36 @@ class Logger(_bases.value_model.ValueModelBase):
             extra_data: _ExtraLogDataT = None,
             depth: t.Optional[int] = None
     ):
-        return self._call_loguru(
-            level=_log_level.LogLevel("error"),
-            msg=msg,
-            extra_data=extra_data,
-            depth=depth,
-            loguru_func_name="exception"
-        )
+        # catch errors and logs them, without blowing
+        try:
+            extra_data = self._format_log_extra_data(extra_data).get_logger_repr()
+
+        except Exception as e:
+            self._log(
+                level=_log_level.LogLevel.model_validate("error"),
+                msg="failed to format the specified log augmentations",
+                extra_data=[str(e)],
+                # manually specify depth here to be 0 bc this is an error within this logger
+                depth=-1*self._logger_wrapper_depth
+            )
+            return
+
+        try:
+            loguru_level: str = str(_log_level.LogLevel("error")).upper()
+            loguru_logger_inst = self.loguru_logger.opt(depth=self._get_depth(depth))
+            loguru_logger_inst.log(
+                loguru_level, msg,
+                service_name=self.service_name,
+                extra_data=extra_data
+            )
+
+        except Exception as e:
+            self._log(
+                level=_log_level.LogLevel.model_validate("error"),
+                msg="error encountered when calling the loguru logger",
+                extra_data=[str(e)],
+
+                # manually specify depth here to be 0 bc this is an error within this logger
+                depth=-1*self._logger_wrapper_depth
+            )
+            return
