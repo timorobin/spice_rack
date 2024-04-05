@@ -63,6 +63,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#spice_rack._logging._logger.Logger.log"><code class="docutils literal notranslate"><span class="pre">Logger.log()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#spice_rack._logging._logger.Logger.model_post_init"><code class="docutils literal notranslate"><span class="pre">Logger.model_post_init()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#spice_rack._logging._logger.Logger.setup_logger"><code class="docutils literal notranslate"><span class="pre">Logger.setup_logger()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spice_rack._logging._logger.Logger.setup_logger_uvicorn"><code class="docutils literal notranslate"><span class="pre">Logger.setup_logger_uvicorn()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#spice_rack._logging._logger.Logger.loguru_logger"><code class="docutils literal notranslate"><span class="pre">Logger.loguru_logger</span></code></a></li>
 </ul>
 </li>
@@ -420,6 +421,28 @@ warning about it.</p>
 <dd><p>Sets up the logger with the sinks and the service name.
 Use this classmethod to initially set up a logger and for all subsequent calls,
 use ‘get_logger’ class method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>service_name</strong> – the name of the service we are setting up the logger for</p></li>
+<li><p><strong>sinks</strong> – the sink configs we want to use</p></li>
+<li><p><strong>cache_res</strong> – if True, we cache the Logger inst for later usage. default is True</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a setup logger inst</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spice_rack._logging._logger.Logger" title="spice_rack._logging._logger.Logger">Logger</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spice_rack._logging._logger.Logger.setup_logger_uvicorn">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">setup_logger_uvicorn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">service_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sinks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">SysLogSink</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">FilePathLogSink</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache_res</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#spice_rack._logging._logger.Logger" title="spice_rack._logging._logger.Logger"><span class="pre">Logger</span></a></span></span><a class="headerlink" href="#spice_rack._logging._logger.Logger.setup_logger_uvicorn" title="Link to this definition"></a></dt>
+<dd><p>Sets up the logger with the sinks and the service name, with special logic for when we’re using it within
+an uvicorn server context</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
