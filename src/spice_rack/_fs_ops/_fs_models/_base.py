@@ -30,9 +30,13 @@ class AbstractFileSystemObj(
     Base class for all file system objects in this package
     All file and dir objects inherit this class
     """
-    path: _path_strs.FileOrDirAbsPathT
+    path: _path_strs.FileOrDirAbsPathT = pydantic.Field(
+        description="the path string on the underlying file system. Must be absolute. You can use the "
+                    "file system-specific format, e.g. 'gs://bucket/file.txt' and we will convert it to "
+                    "/bucket/file.txt' and make sure the file_system aligns"
+    )
     file_system: _file_systems.AnyFileSystemT = pydantic.Field(
-        description="the file system object for this file",
+        description="the file system object for this file. if not specified, we'll infer it from the path.",
         default=None
     )
 
