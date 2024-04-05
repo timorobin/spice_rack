@@ -147,4 +147,7 @@ Notes: this is not safe for roundtrip serialization, i.e. the a serialized insta
     of this type will not necessarily deserialize to be equal to the original instance
 """
 
-PolarsLazyDfTypeAdapter = pydantic.TypeAdapter(PolarsLazyDfT)
+PolarsLazyDfTypeAdapter: pydantic.TypeAdapter[PolarsLazyDfT] = pydantic.TypeAdapter(PolarsLazyDfT)
+"""
+type adapter for PolarsLazyDfT
+"""

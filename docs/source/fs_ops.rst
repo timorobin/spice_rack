@@ -4,6 +4,7 @@ fs_ops
 This package contains classes and related functionality for working with file and directories,
 on different underlying file systems. The main idea is to standardize the interface for interacting
 with file systems, regardless of if it is local, s3, gcs, or sftp etc.
+Right now we only support local, gcs, and sftp, but s3 soon.
 
 
 File System Models

@@ -3,7 +3,8 @@ import json
 import typing as t
 import polars as pl
 
-from spice_rack._polars_service import _types
+if t.TYPE_CHECKING:
+    from spice_rack._polars_service import _types
 
 
 __all__ = (
@@ -15,8 +16,16 @@ __all__ = (
 
 
 def get_json_safe_row_dicts(
-        df: t.Union[pl.DataFrame, pl.LazyFrame],
+        df: _types.PolarsMaybeLazyDfT,
 ) -> _types.RowDictsT:
+    """
+    dump the polars LazyFrame or DataFrame into json-encodeable list of dictionaries
+    Args:
+        df: LazyFrame or DataFrame instance
+
+    Returns:
+        a list of dicts
+    """
     collected_df: pl.DataFrame
     if isinstance(df, pl.LazyFrame):
         collected_df = df.collect()  # noqa -- idk what p is
@@ -28,8 +37,18 @@ def get_json_safe_row_dicts(
 
 
 def get_json_safe_column_dict(
-        df: t.Union[pl.DataFrame, pl.LazyFrame]
+        df: _types.PolarsMaybeLazyDfT
 ) -> _types.ColumnarDictT:
+    """
+    dump the polars LazyFrame or DataFrame into json-encodeable dict with keys being column names and values
+    being lists containing the data for the given column.
+
+    Args:
+        df: LazyFrame or DataFrame instance
+
+    Returns:
+        a dict of lists
+    """
     collected_df: pl.DataFrame
     if isinstance(df, pl.LazyFrame):
         collected_df = df.collect()  # noqa -- idk what p is
@@ -41,14 +60,36 @@ def get_json_safe_column_dict(
 
 
 def get_json_safe_row_dicts_lazy_peek(
-        lazy_df: pl.LazyFrame, num_rows: int = 3
+        lazy_df: _types.PolarsLazyDfT, num_rows: int = 3
 ) -> _types.RowDictsT:
+    """
+    dump the first n rows of a polars LazyFrame into a json-encodeable list of dictionaries,
+    without having to collect the entire LazyFrame.
+
+    Args:
+        lazy_df: LazyFrame instance
+        num_rows: the number of rows to collect
+
+    Returns:
+        a list of dicts
+    """
     sample_df = lazy_df.fetch(n_rows=num_rows)
     return get_json_safe_row_dicts(sample_df)
 
 
 def get_json_safe_column_dict_lazy_peek(
-        lazy_df: pl.LazyFrame, num_rows: int = 3
+        lazy_df: _types.PolarsMaybeLazyDfT, num_rows: int = 3
 ) -> _types.ColumnarDictT:
+    """
+    dump the first n rows of a polars LazyFrame into a json-encodeable dict with keys being column names and values
+    being lists containing the data for the given column.
+
+    Args:
+        lazy_df: LazyFrame instance
+        num_rows: the number of rows to collect
+
+    Returns:
+        a dict of lists
+    """
     sample_df = lazy_df.fetch(n_rows=num_rows)
     return get_json_safe_column_dict(sample_df)
