@@ -74,6 +74,36 @@ class Logger(_bases.base_base.PydanticBase):
         return logger_inst
 
     @classmethod
+    def setup_logger_uvicorn(
+            cls,
+            service_name: str,
+            sinks: t.List[_sinks.AnySinkT],
+            cache_res: bool = True,
+    ) -> Logger:
+        """
+        Sets up the logger with the sinks and the service name, with special logic for when we're using it within
+        an uvicorn server context
+
+        Args:
+            service_name: the name of the service we are setting up the logger for
+            sinks: the sink configs we want to use
+            cache_res: if True, we cache the Logger inst for later usage. default is True
+
+        Returns:
+            Logger: a setup logger inst
+        """
+        if sinks:
+            from spice_rack._logging._setup import configure_logging_for_uvicorn_server
+            configure_logging_for_uvicorn_server(sinks=sinks)
+        logger_inst = Logger(
+            service_name=service_name,
+            sinks=sinks,
+        )
+        if cache_res:
+            cls._cached_logger = logger_inst
+        return logger_inst
+
+    @classmethod
     def get_logger(cls, service_name: t.Optional[str] = None) -> Logger:
         """
         get a previously set up logger. If nothing specified, we'll create a logger with no sink configs and raise a
