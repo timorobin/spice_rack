@@ -287,14 +287,6 @@ are no checks to protect against this.</p>
 <dt class="sig sig-object py" id="spice_rack._bases._dispatchable.DispatchedModelMixin.class_id">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">class_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">_ClassIdStr</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spice_rack._bases._dispatchable.DispatchedModelMixin.class_id" title="Link to this definition"></a></dt>
 <dd><p>this is the field we dispatch the different sub-classes on. Concrete classes will constrain this to be only one specific value.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Validated by<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_ensure_class_id</span></code></p></li>
-<li><p><a class="reference internal" href="#spice_rack._bases._base_base.PydanticBase._pydantic_post_init_val_hook" title="spice_rack._bases._base_base.PydanticBase._pydantic_post_init_val_hook"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_pydantic_post_init_val_hook</span></code></a></p></li>
-</ul>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -450,14 +442,6 @@ and the <cite>DispatchedModelMixin</cite> functionality.</p>
 <dt class="sig sig-object py" id="spice_rack._bases._dispatchable.DispatchableValueModelBase.class_id">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">class_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">_ClassIdStr</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spice_rack._bases._dispatchable.DispatchableValueModelBase.class_id" title="Link to this definition"></a></dt>
 <dd><p>this is the field we dispatch the different sub-classes on. Concrete classes will constrain this to be only one specific value.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Validated by<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_ensure_class_id</span></code></p></li>
-<li><p><a class="reference internal" href="#spice_rack._bases._base_base.PydanticBase._pydantic_post_init_val_hook" title="spice_rack._bases._base_base.PydanticBase._pydantic_post_init_val_hook"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_pydantic_post_init_val_hook</span></code></a></p></li>
-</ul>
-</dd>
-</dl>
 </dd></dl>
 
 </dd></dl>
@@ -572,13 +556,6 @@ concrete subclass of ErrorInfoBase</p>
 <dt class="sig sig-object py" id="spice_rack._bases._exception._error_info.ErrorInfoBase.extra">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extra</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><em class="property"> <span class="pre">[Optional]</span></em><a class="headerlink" href="#spice_rack._bases._exception._error_info.ErrorInfoBase.extra" title="Link to this definition"></a></dt>
 <dd><p>dict field where you can add extra info. Can include any data types but everything must be json serializable</p>
-<dl class="field-list simple">
-<dt class="field-odd">Validated by<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="#spice_rack._bases._base_base.PydanticBase._pydantic_post_init_val_hook" title="spice_rack._bases._base_base.PydanticBase._pydantic_post_init_val_hook"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_pydantic_post_init_val_hook</span></code></a></p></li>
-</ul>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -647,39 +624,18 @@ schema information about the concrete class</p>
 <dt class="sig sig-object py" id="spice_rack._bases._exception._error_info.ErrorPayload.detail">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">detail</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#spice_rack._bases._exception._error_info.ErrorPayload.detail" title="Link to this definition"></a></dt>
 <dd><p>the top line error</p>
-<dl class="field-list simple">
-<dt class="field-odd">Validated by<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="#spice_rack._bases._base_base.PydanticBase._pydantic_post_init_val_hook" title="spice_rack._bases._base_base.PydanticBase._pydantic_post_init_val_hook"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_pydantic_post_init_val_hook</span></code></a></p></li>
-</ul>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="spice_rack._bases._exception._error_info.ErrorPayload.error_type">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">error_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#spice_rack._bases._exception._error_info.ErrorPayload.error_type" title="Link to this definition"></a></dt>
 <dd><p>the name of the error class this payload is connected to</p>
-<dl class="field-list simple">
-<dt class="field-odd">Validated by<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="#spice_rack._bases._base_base.PydanticBase._pydantic_post_init_val_hook" title="spice_rack._bases._base_base.PydanticBase._pydantic_post_init_val_hook"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_pydantic_post_init_val_hook</span></code></a></p></li>
-</ul>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="spice_rack._bases._exception._error_info.ErrorPayload.info">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">info</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ErrorInfoTV</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#spice_rack._bases._exception._error_info.ErrorPayload.info" title="Link to this definition"></a></dt>
 <dd><p>object containing more detailed information about the error</p>
-<dl class="field-list simple">
-<dt class="field-odd">Validated by<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="#spice_rack._bases._base_base.PydanticBase._pydantic_post_init_val_hook" title="spice_rack._bases._base_base.PydanticBase._pydantic_post_init_val_hook"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_pydantic_post_init_val_hook</span></code></a></p></li>
-</ul>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -737,28 +693,12 @@ schema information about the concrete class</p>
 <dt class="sig sig-object py" id="spice_rack._bases._exception._external_wrapper.WrappedExternalException.detail">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">detail</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#spice_rack._bases._exception._external_wrapper.WrappedExternalException.detail" title="Link to this definition"></a></dt>
 <dd><p>The string representation of the error</p>
-<dl class="field-list simple">
-<dt class="field-odd">Validated by<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_parse_exception</span></code></p></li>
-<li><p><a class="reference internal" href="#spice_rack._bases._base_base.PydanticBase._pydantic_post_init_val_hook" title="spice_rack._bases._base_base.PydanticBase._pydantic_post_init_val_hook"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_pydantic_post_init_val_hook</span></code></a></p></li>
-</ul>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="spice_rack._bases._exception._external_wrapper.WrappedExternalException.type">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#spice_rack._bases._exception._external_wrapper.WrappedExternalException.type" title="Link to this definition"></a></dt>
 <dd><p>the name of the type of the error</p>
-<dl class="field-list simple">
-<dt class="field-odd">Validated by<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_parse_exception</span></code></p></li>
-<li><p><a class="reference internal" href="#spice_rack._bases._base_base.PydanticBase._pydantic_post_init_val_hook" title="spice_rack._bases._base_base.PydanticBase._pydantic_post_init_val_hook"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_pydantic_post_init_val_hook</span></code></a></p></li>
-</ul>
-</dd>
-</dl>
 </dd></dl>
 
 </dd></dl>
