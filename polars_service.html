@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Polars Service &mdash; Spice Rack 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="TS Service" href="ts_service.html" />
+    <link rel="prev" title="Logging" href="logging.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Spice Rack
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="bases.html">Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fs_ops.html">fs_ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Polars Service</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-spice_rack._polars_service._services._joiner">Services</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#spice_rack._polars_service._services._joiner.join_dfs"><code class="docutils literal notranslate"><span class="pre">join_dfs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#spice_rack._polars_service._services._joiner.stack_dfs"><code class="docutils literal notranslate"><span class="pre">stack_dfs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#spice_rack._polars_service._services._json_dumper.get_json_safe_column_dict"><code class="docutils literal notranslate"><span class="pre">get_json_safe_column_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#spice_rack._polars_service._services._json_dumper.get_json_safe_column_dict_lazy_peek"><code class="docutils literal notranslate"><span class="pre">get_json_safe_column_dict_lazy_peek()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#spice_rack._polars_service._services._json_dumper.get_json_safe_row_dicts"><code class="docutils literal notranslate"><span class="pre">get_json_safe_row_dicts()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#spice_rack._polars_service._services._json_dumper.get_json_safe_row_dicts_lazy_peek"><code class="docutils literal notranslate"><span class="pre">get_json_safe_row_dicts_lazy_peek()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#types">Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#spice_rack._polars_service._types._collected_df.PolarsDfT"><code class="docutils literal notranslate"><span class="pre">PolarsDfT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#spice_rack._polars_service._types._collected_df.PolarsDfTypeAdapter"><code class="docutils literal notranslate"><span class="pre">PolarsDfTypeAdapter</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#spice_rack._polars_service._types._lazy_df.PolarsLazyDfT"><code class="docutils literal notranslate"><span class="pre">PolarsLazyDfT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#spice_rack._polars_service._types._lazy_df.PolarsLazyDfTypeAdapter"><code class="docutils literal notranslate"><span class="pre">PolarsLazyDfTypeAdapter</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#spice_rack._polars_service._types._maybe_lazy.PolarsDfTV"><code class="docutils literal notranslate"><span class="pre">PolarsDfTV</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#spice_rack._polars_service._types._maybe_lazy.PolarsMaybeLazyDfT"><code class="docutils literal notranslate"><span class="pre">PolarsMaybeLazyDfT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#spice_rack._polars_service._types._maybe_lazy.PolarsMaybeLazyDfTypeAdapter"><code class="docutils literal notranslate"><span class="pre">PolarsMaybeLazyDfTypeAdapter</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ts_service.html">TS Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guid_service.html">Guid Service</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Spice Rack</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Polars Service</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/polars_service.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="polars-service">
+<h1>Polars Service<a class="headerlink" href="#polars-service" title="Link to this heading"></a></h1>
+<p>Polars DataFrame and LazyFrame type annotations meant to integrate with pydantic’s validation system, meaning
+I can set them as attributes on pydantic models without pydantic seeing them as ‘arbitrary types’</p>
+<section id="module-spice_rack._polars_service._services._joiner">
+<span id="services"></span><h2>Services<a class="headerlink" href="#module-spice_rack._polars_service._services._joiner" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="spice_rack._polars_service._services._joiner.join_dfs">
+<span class="sig-name descname"><span class="pre">join_dfs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dfs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">t.Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">_types.PolarsMaybeLazyDfT</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">join_on</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">how</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HowJoinT</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'inner'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_types.PolarsLazyDfT</span></span></span><a class="headerlink" href="#spice_rack._polars_service._services._joiner.join_dfs" title="Link to this definition"></a></dt>
+<dd><p>join an iterable of polars DataFrame or LazyFrame objects into a single LazyFrame</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dfs</strong> – iterable of polars objects</p></li>
+<li><p><strong>join_on</strong> – the column we are joining on, all dataframes must have this column</p></li>
+<li><p><strong>how</strong> – the type of join, ‘inner’, ‘outer’, ‘left’,
+if ‘left’ the first dataframe in the iterable is the ‘left’ one</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the joined polars LazyFrame</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pl.LazyFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spice_rack._polars_service._services._joiner.stack_dfs">
+<span class="sig-name descname"><span class="pre">stack_dfs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dfs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">t.List</span><span class="p"><span class="pre">[</span></span><span class="pre">_types.PolarsMaybeLazyDfT</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_types.PolarsLazyDfT</span></span></span><a class="headerlink" href="#spice_rack._polars_service._services._joiner.stack_dfs" title="Link to this definition"></a></dt>
+<dd><p>vertically stack an iterable of polars DataFrame or LazyFrame objects into a single LazyFrame.
+This is a vertical stack.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dfs</strong> – iterable of polars objects</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the stacked polars LazyFrame</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pl.LazyFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function" id="module-spice_rack._polars_service._services._json_dumper">
+<dt class="sig sig-object py" id="spice_rack._polars_service._services._json_dumper.get_json_safe_column_dict">
+<span class="sig-name descname"><span class="pre">get_json_safe_column_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">_types.PolarsMaybeLazyDfT</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_types.ColumnarDictT</span></span></span><a class="headerlink" href="#spice_rack._polars_service._services._json_dumper.get_json_safe_column_dict" title="Link to this definition"></a></dt>
+<dd><p>dump the polars LazyFrame or DataFrame into json-encodeable dict with keys being column names and values
+being lists containing the data for the given column.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>df</strong> – LazyFrame or DataFrame instance</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a dict of lists</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spice_rack._polars_service._services._json_dumper.get_json_safe_column_dict_lazy_peek">
+<span class="sig-name descname"><span class="pre">get_json_safe_column_dict_lazy_peek</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lazy_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">_types.PolarsMaybeLazyDfT</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_types.ColumnarDictT</span></span></span><a class="headerlink" href="#spice_rack._polars_service._services._json_dumper.get_json_safe_column_dict_lazy_peek" title="Link to this definition"></a></dt>
+<dd><p>dump the first n rows of a polars LazyFrame into a json-encodeable dict with keys being column names and values
+being lists containing the data for the given column.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lazy_df</strong> – LazyFrame instance</p></li>
+<li><p><strong>num_rows</strong> – the number of rows to collect</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a dict of lists</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spice_rack._polars_service._services._json_dumper.get_json_safe_row_dicts">
+<span class="sig-name descname"><span class="pre">get_json_safe_row_dicts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">_types.PolarsMaybeLazyDfT</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_types.RowDictsT</span></span></span><a class="headerlink" href="#spice_rack._polars_service._services._json_dumper.get_json_safe_row_dicts" title="Link to this definition"></a></dt>
+<dd><p>dump the polars LazyFrame or DataFrame into json-encodeable list of dictionaries
+:param df: LazyFrame or DataFrame instance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a list of dicts</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spice_rack._polars_service._services._json_dumper.get_json_safe_row_dicts_lazy_peek">
+<span class="sig-name descname"><span class="pre">get_json_safe_row_dicts_lazy_peek</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lazy_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">_types.PolarsLazyDfT</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_types.RowDictsT</span></span></span><a class="headerlink" href="#spice_rack._polars_service._services._json_dumper.get_json_safe_row_dicts_lazy_peek" title="Link to this definition"></a></dt>
+<dd><p>dump the first n rows of a polars LazyFrame into a json-encodeable list of dictionaries,
+without having to collect the entire LazyFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lazy_df</strong> – LazyFrame instance</p></li>
+<li><p><strong>num_rows</strong> – the number of rows to collect</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a list of dicts</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="types">
+<span id="module-spice_rack._polars_service._services._misc"></span><h2>Types<a class="headerlink" href="#types" title="Link to this heading"></a></h2>
+<p>type annotations and type adapters for polars classes</p>
+<dl class="py data" id="module-spice_rack._polars_service._types._collected_df">
+<dt class="sig sig-object py" id="spice_rack._polars_service._types._collected_df.PolarsDfT">
+<span class="sig-name descname"><span class="pre">PolarsDfT</span></span><a class="headerlink" href="#spice_rack._polars_service._types._collected_df.PolarsDfT" title="Link to this definition"></a></dt>
+<dd><p>An annotated type representing a polars DataFrame.</p>
+<p>This extra metadata allows us to include polars collected dataframes in the pydantic ecosystem,
+e.g. as a field on a model. The pydantic behavior is as follows:</p>
+<ul class="simple">
+<li><p>DataFrame instance will be parsed as a DataFrame instance, unchanged</p></li>
+<li><p>LazyFrame instance will be collected to be a DataFrame.</p></li>
+<li><p>list of dicts will be parsed as a DataFrame. (row orientation)</p></li>
+<li><p>dict of lists will be parsed as a DataFrame (columnar orientation)</p></li>
+<li><p>serialization will return a row orientation of json-encodeable dicts</p></li>
+</ul>
+<dl class="simple">
+<dt>Notes: this is not safe for roundtrip serialization, i.e. the a serialized instance of an instance</dt><dd><p>of this type will not necessarily deserialize to be equal to the original instance</p>
+</dd>
+</dl>
+<p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>]</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="spice_rack._polars_service._types._collected_df.PolarsDfTypeAdapter">
+<span class="sig-name descname"><span class="pre">PolarsDfTypeAdapter</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">TypeAdapter</span><span class="p"><span class="pre">[</span></span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pydantic.type_adapter.TypeAdapter</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#spice_rack._polars_service._types._collected_df.PolarsDfTypeAdapter" title="Link to this definition"></a></dt>
+<dd><p>type adapter for PolarsDfT</p>
+</dd></dl>
+
+<dl class="py data" id="module-spice_rack._polars_service._types._lazy_df">
+<dt class="sig sig-object py" id="spice_rack._polars_service._types._lazy_df.PolarsLazyDfT">
+<span class="sig-name descname"><span class="pre">PolarsLazyDfT</span></span><a class="headerlink" href="#spice_rack._polars_service._types._lazy_df.PolarsLazyDfT" title="Link to this definition"></a></dt>
+<dd><p>An annotated type representing a polars LazyFrame.</p>
+<p>This extra metadata allows us to include polars lazy dataframes in the pydantic ecosystem,
+e.g. as a field on a model. The pydantic behavior is as follows:</p>
+<ul class="simple">
+<li><p>LazyFrame instance will be parsed as a LazyFrame instance, unchanged</p></li>
+<li><p>DataFrame instance will be cast to a LazyFrame.</p></li>
+<li><p>list of dicts will be parsed as a LazyFrame. (row orientation)</p></li>
+<li><p>dict of lists will be parsed as a LazyFrame (columnar orientation)</p></li>
+<li><p>serialization will return a row orientation of json-encodeable dicts, only the first 3</p></li>
+</ul>
+<dl class="simple">
+<dt>Notes: this is not safe for roundtrip serialization, i.e. the a serialized instance of an instance</dt><dd><p>of this type will not necessarily deserialize to be equal to the original instance</p>
+</dd>
+</dl>
+<p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">LazyFrame</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">LazyFrame</span></code>]</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="spice_rack._polars_service._types._lazy_df.PolarsLazyDfTypeAdapter">
+<span class="sig-name descname"><span class="pre">PolarsLazyDfTypeAdapter</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">TypeAdapter</span><span class="p"><span class="pre">[</span></span><span class="pre">LazyFrame</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pydantic.type_adapter.TypeAdapter</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#spice_rack._polars_service._types._lazy_df.PolarsLazyDfTypeAdapter" title="Link to this definition"></a></dt>
+<dd><p>type adapter for PolarsLazyDfT</p>
+</dd></dl>
+
+<dl class="py class" id="module-spice_rack._polars_service._types._maybe_lazy">
+<dt class="sig sig-object py" id="spice_rack._polars_service._types._maybe_lazy.PolarsDfTV">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PolarsDfTV</span></span><a class="headerlink" href="#spice_rack._polars_service._types._maybe_lazy.PolarsDfTV" title="Link to this definition"></a></dt>
+<dd><p>common type var that could be either a lazy or collected dataframe</p>
+<p>alias of TypeVar(‘PolarsDfTV’, ~polars.dataframe.frame.DataFrame, ~polars.lazyframe.frame.LazyFrame)</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="spice_rack._polars_service._types._maybe_lazy.PolarsMaybeLazyDfT">
+<span class="sig-name descname"><span class="pre">PolarsMaybeLazyDfT</span></span><a class="headerlink" href="#spice_rack._polars_service._types._maybe_lazy.PolarsMaybeLazyDfT" title="Link to this definition"></a></dt>
+<dd><p>An annotated type representing a union of polars DataFrame or LazyFrame.</p>
+<p>This extra metadata allows us to include polars collected dataframes in the pydantic ecosystem,
+e.g. as a field on a model. The pydantic behavior is as follows:</p>
+<ul class="simple">
+<li><p>A LazyFrame instance will be kept as a LazyFrame instance, unchanged</p></li>
+<li><p>DataFrame instance will be parsed as a DataFrame instance, unchanged</p></li>
+<li><p>list of dicts will be parsed as a DataFrame. (row orientation)</p></li>
+<li><p>dict of lists will be parsed as a DataFrame (columnar orientation)</p></li>
+<li><p>serialization will return a row orientation of json-encodeable dicts, if lazy, only the first 3</p></li>
+</ul>
+<dl class="simple">
+<dt>Notes: this is not safe for roundtrip serialization, i.e. the a serialized instance of an instance</dt><dd><p>of this type will not necessarily deserialize to be equal to the original instance</p>
+</dd>
+</dl>
+<p>alias of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">LazyFrame</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">LazyFrame</span></code>]][<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">LazyFrame</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">LazyFrame</span></code>]]]</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="spice_rack._polars_service._types._maybe_lazy.PolarsMaybeLazyDfTypeAdapter">
+<span class="sig-name descname"><span class="pre">PolarsMaybeLazyDfTypeAdapter</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">TypeAdapter</span><span class="p"><span class="pre">[</span></span><span class="pre">DataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">LazyFrame</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pydantic.type_adapter.TypeAdapter</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#spice_rack._polars_service._types._maybe_lazy.PolarsMaybeLazyDfTypeAdapter" title="Link to this definition"></a></dt>
+<dd><p>type adapter for PolarsMaybeLazyDfT</p>
+</dd></dl>
+
+<span class="target" id="module-spice_rack._polars_service._types._discrim_helper"></span></section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="logging.html" class="btn btn-neutral float-left" title="Logging" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ts_service.html" class="btn btn-neutral float-right" title="TS Service" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Tim Robin.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

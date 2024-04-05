@@ -22,6 +22,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Logging" href="logging.html" />
     <link rel="prev" title="Bases" href="bases.html" /> 
 </head>
 
@@ -83,6 +84,10 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polars_service.html">Polars Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ts_service.html">TS Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guid_service.html">Guid Service</a></li>
 </ul>
 
         </div>
@@ -113,7 +118,8 @@
 <h1>fs_ops<a class="headerlink" href="#fs-ops" title="Link to this heading"></a></h1>
 <p>This package contains classes and related functionality for working with file and directories,
 on different underlying file systems. The main idea is to standardize the interface for interacting
-with file systems, regardless of if it is local, s3, gcs, or sftp etc.</p>
+with file systems, regardless of if it is local, s3, gcs, or sftp etc.
+Right now we only support local, gcs, and sftp, but s3 soon.</p>
 <section id="file-system-models">
 <h2>File System Models<a class="headerlink" href="#file-system-models" title="Link to this heading"></a></h2>
 <p>Top level classes that we interact with.</p>
@@ -1066,6 +1072,7 @@ looked up when we call ‘evaluate’ method to convert this instance to a DirPa
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="bases.html" class="btn btn-neutral float-left" title="Bases" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="logging.html" class="btn btn-neutral float-right" title="Logging" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

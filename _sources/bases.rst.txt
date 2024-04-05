@@ -14,7 +14,7 @@ Common bases used by other base classes
 Dispatchable Bases
 ------------------
 Base classes that help you create a group of polymorphic pydantic classes with hooks
-to create pydantic types that build a dispatched union json schema and parse correctly
+to create pydantic types that build a dispatched union json schema and parse correctly.
 
 .. autopydantic_model:: spice_rack._bases._dispatchable.DispatchedModelMixin
    :special-members: __init_subclass__

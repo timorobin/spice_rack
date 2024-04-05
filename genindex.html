@@ -46,6 +46,10 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="bases.html">Bases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fs_ops.html">fs_ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polars_service.html">Polars Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ts_service.html">TS Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guid_service.html">Guid Service</a></li>
 </ul>
 
         </div>
@@ -141,6 +145,8 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="logging.html#spice_rack._logging._logger.Logger.critical">critical() (Logger method)</a>
+</li>
       <li><a href="bases.html#spice_rack._bases._exception._exception_base.CustomExceptionBase">CustomExceptionBase</a>
 </li>
       <li><a href="bases.html#spice_rack._bases._exception._exception_exception.CustomExceptionInitializationError">CustomExceptionInitializationError</a>
@@ -151,16 +157,18 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="logging.html#spice_rack._logging._logger.Logger.debug">debug() (Logger method)</a>
+</li>
       <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.DirPath.delete">delete() (DirPath method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="bases.html#spice_rack._bases._exception._error_info.ErrorPayload.detail">detail (ErrorPayload attribute)</a>
 
       <ul>
         <li><a href="bases.html#spice_rack._bases._exception._external_wrapper.WrappedExternalException.detail">(WrappedExternalException attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.DirPath.download_locally">download_locally() (DirPath method)</a>
 </li>
   </ul></td>
@@ -169,6 +177,8 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="logging.html#spice_rack._logging._logger.Logger.error">error() (Logger method)</a>
+</li>
       <li><a href="bases.html#spice_rack._bases._exception._error_info.ErrorPayload.error_type">error_type (ErrorPayload attribute)</a>
 </li>
       <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.DeferredDirPath.evaluate">evaluate() (DeferredDirPath method)</a>
@@ -179,6 +189,8 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="logging.html#spice_rack._logging._logger.Logger.exception">exception() (Logger method)</a>
+</li>
       <li><a href="bases.html#spice_rack._bases._exception._error_info.ErrorInfoBase.extra">extra (ErrorInfoBase attribute)</a>
 </li>
   </ul></td>
@@ -203,6 +215,10 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="guid_service.html#spice_rack._guid_service.gen_guid">gen_guid() (in module spice_rack._guid_service)</a>
+</li>
+      <li><a href="guid_service.html#spice_rack._guid_service.gen_str_guid">gen_str_guid() (in module spice_rack._guid_service)</a>
+</li>
       <li><a href="bases.html#spice_rack._bases._dispatchable.DispatchedModelMixin.get_all_concrete_subclass_ids">get_all_concrete_subclass_ids() (DispatchedModelMixin class method)</a>
 </li>
       <li><a href="bases.html#spice_rack._bases._dispatchable.DispatchedModelMixin.get_class_id">get_class_id() (DispatchedModelMixin class method)</a>
@@ -211,15 +227,29 @@
 </li>
       <li><a href="bases.html#spice_rack._bases._dispatchable.DispatchedModelMixin.get_class_type">get_class_type() (DispatchedModelMixin class method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="bases.html#spice_rack._bases._exception._exception_base.CustomExceptionBase.get_error_payload_cls">get_error_payload_cls() (CustomExceptionBase class method)</a>
 </li>
       <li><a href="bases.html#spice_rack._bases._exception._exception_base.CustomExceptionBase.get_http_response_info_inst">get_http_response_info_inst() (CustomExceptionBase class method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="bases.html#spice_rack._bases._exception._error_info.ErrorInfoBase.get_json_data">get_json_data() (ErrorInfoBase method)</a>
 </li>
+      <li><a href="polars_service.html#spice_rack._polars_service._services._json_dumper.get_json_safe_column_dict">get_json_safe_column_dict() (in module spice_rack._polars_service._services._json_dumper)</a>
+</li>
+      <li><a href="polars_service.html#spice_rack._polars_service._services._json_dumper.get_json_safe_column_dict_lazy_peek">get_json_safe_column_dict_lazy_peek() (in module spice_rack._polars_service._services._json_dumper)</a>
+</li>
+      <li><a href="polars_service.html#spice_rack._polars_service._services._json_dumper.get_json_safe_row_dicts">get_json_safe_row_dicts() (in module spice_rack._polars_service._services._json_dumper)</a>
+</li>
+      <li><a href="polars_service.html#spice_rack._polars_service._services._json_dumper.get_json_safe_row_dicts_lazy_peek">get_json_safe_row_dicts_lazy_peek() (in module spice_rack._polars_service._services._json_dumper)</a>
+</li>
+      <li><a href="logging.html#spice_rack._logging._logger.Logger.get_logger">get_logger() (Logger class method)</a>
+</li>
       <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.DirPath.get_name">get_name() (DirPath method)</a>
+</li>
+      <li><a href="guid_service.html#spice_rack._guid_service.GuidT">GuidT (in module spice_rack._guid_service)</a>
+</li>
+      <li><a href="guid_service.html#spice_rack._guid_service.GuidTypeAdapter">GuidTypeAdapter (in module spice_rack._guid_service)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -229,12 +259,14 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="bases.html#spice_rack._bases._exception._error_info.ErrorPayload.info">info (ErrorPayload attribute)</a>
 </li>
-      <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.DirPath.init_from_str">init_from_str() (DirPath class method)</a>
+      <li><a href="logging.html#spice_rack._logging._logger.Logger.info">info() (Logger method)</a>
 </li>
-      <li><a href="bases.html#spice_rack._bases._dispatchable.DispatchedModelMixin.is_concrete">is_concrete() (DispatchedModelMixin class method)</a>
+      <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.DirPath.init_from_str">init_from_str() (DirPath class method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="bases.html#spice_rack._bases._dispatchable.DispatchedModelMixin.is_concrete">is_concrete() (DispatchedModelMixin class method)</a>
+</li>
       <li><a href="bases.html#spice_rack._bases._dispatchable.DispatchedModelMixin.iter_concrete_subclasses">iter_concrete_subclasses() (DispatchedModelMixin class method)</a>
 </li>
       <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.DirPath.iter_dir">iter_dir() (DirPath method)</a>
@@ -247,10 +279,12 @@
 <h2 id="J">J</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.DirPath.joinpath">joinpath() (DirPath method)</a>
+      <li><a href="polars_service.html#spice_rack._polars_service._services._joiner.join_dfs">join_dfs() (in module spice_rack._polars_service._services._joiner)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.DirPath.joinpath">joinpath() (DirPath method)</a>
+</li>
       <li><a href="bases.html#spice_rack._bases._base_base.PydanticBase.json_dict">json_dict() (PydanticBase method)</a>
 </li>
   </ul></td>
@@ -260,6 +294,12 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="bases.html#spice_rack._bases._settings.SettingsBase.load">load() (SettingsBase class method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="logging.html#spice_rack._logging._logger.Logger.log">log() (Logger method)</a>
+</li>
+      <li><a href="logging.html#spice_rack._logging._logger.Logger.loguru_logger">loguru_logger (Logger property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -274,13 +314,13 @@
       <ul>
         <li><a href="bases.html#spice_rack._bases._exception._error_info.ErrorPayload.model_post_init">(ErrorPayload method)</a>
 </li>
+        <li><a href="logging.html#spice_rack._logging._logger.Logger.model_post_init">(Logger method)</a>
+</li>
         <li><a href="bases.html#spice_rack._bases._settings.SettingsBase.model_post_init">(SettingsBase method)</a>
 </li>
       </ul></li>
       <li><a href="bases.html#spice_rack._bases._dispatchable.DispatchedModelMixin.model_validate">model_validate() (DispatchedModelMixin class method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     module
 
@@ -292,6 +332,22 @@
         <li><a href="bases.html#module-spice_rack._bases._exception._exception_exception">spice_rack._bases._exception._exception_exception</a>
 </li>
         <li><a href="bases.html#module-spice_rack._bases._exception._external_wrapper">spice_rack._bases._exception._external_wrapper</a>
+</li>
+        <li><a href="guid_service.html#module-spice_rack._guid_service">spice_rack._guid_service</a>
+</li>
+        <li><a href="polars_service.html#module-spice_rack._polars_service._services._joiner">spice_rack._polars_service._services._joiner</a>
+</li>
+        <li><a href="polars_service.html#module-spice_rack._polars_service._services._json_dumper">spice_rack._polars_service._services._json_dumper</a>
+</li>
+        <li><a href="polars_service.html#module-spice_rack._polars_service._services._misc">spice_rack._polars_service._services._misc</a>
+</li>
+        <li><a href="polars_service.html#module-spice_rack._polars_service._types._collected_df">spice_rack._polars_service._types._collected_df</a>
+</li>
+        <li><a href="polars_service.html#module-spice_rack._polars_service._types._discrim_helper">spice_rack._polars_service._types._discrim_helper</a>
+</li>
+        <li><a href="polars_service.html#module-spice_rack._polars_service._types._lazy_df">spice_rack._polars_service._types._lazy_df</a>
+</li>
+        <li><a href="polars_service.html#module-spice_rack._polars_service._types._maybe_lazy">spice_rack._polars_service._types._maybe_lazy</a>
 </li>
       </ul></li>
   </ul></td>
@@ -306,8 +362,22 @@
         <li><a href="fs_ops.html#spice_rack._fs_ops._fs_models.FilePath.path">(FilePath attribute)</a>
 </li>
       </ul></li>
+      <li><a href="polars_service.html#spice_rack._polars_service._types._collected_df.PolarsDfT">PolarsDfT (in module spice_rack._polars_service._types._collected_df)</a>
+</li>
+      <li><a href="polars_service.html#spice_rack._polars_service._types._maybe_lazy.PolarsDfTV">PolarsDfTV (class in spice_rack._polars_service._types._maybe_lazy)</a>
+</li>
+      <li><a href="polars_service.html#spice_rack._polars_service._types._collected_df.PolarsDfTypeAdapter">PolarsDfTypeAdapter (in module spice_rack._polars_service._types._collected_df)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="polars_service.html#spice_rack._polars_service._types._lazy_df.PolarsLazyDfT">PolarsLazyDfT (in module spice_rack._polars_service._types._lazy_df)</a>
+</li>
+      <li><a href="polars_service.html#spice_rack._polars_service._types._lazy_df.PolarsLazyDfTypeAdapter">PolarsLazyDfTypeAdapter (in module spice_rack._polars_service._types._lazy_df)</a>
+</li>
+      <li><a href="polars_service.html#spice_rack._polars_service._types._maybe_lazy.PolarsMaybeLazyDfT">PolarsMaybeLazyDfT (in module spice_rack._polars_service._types._maybe_lazy)</a>
+</li>
+      <li><a href="polars_service.html#spice_rack._polars_service._types._maybe_lazy.PolarsMaybeLazyDfTypeAdapter">PolarsMaybeLazyDfTypeAdapter (in module spice_rack._polars_service._types._maybe_lazy)</a>
+</li>
       <li><a href="bases.html#spice_rack._bases._base_base.PydanticBase">PydanticBase (class in spice_rack._bases._base_base)</a>
 </li>
   </ul></td>
@@ -332,6 +402,12 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="logging.html#spice_rack._logging._logger.Logger.service_name">service_name (Logger attribute)</a>
+</li>
+      <li><a href="logging.html#spice_rack._logging._logger.Logger.setup_logger">setup_logger() (Logger class method)</a>
+</li>
+      <li><a href="logging.html#spice_rack._logging._logger.Logger.sinks">sinks (Logger attribute)</a>
+</li>
       <li><a href="bases.html#spice_rack._bases._special_str.SpecialStrBase.special_repr">special_repr() (SpecialStrBase method)</a>
 </li>
       <li><a href="bases.html#spice_rack._bases._special_str.SpecialStrBase">SpecialStrBase (class in spice_rack._bases._special_str)</a>
@@ -350,8 +426,6 @@
         <li><a href="bases.html#module-spice_rack._bases._exception._exception_base">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     spice_rack._bases._exception._exception_exception
 
@@ -366,6 +440,66 @@
         <li><a href="bases.html#module-spice_rack._bases._exception._external_wrapper">module</a>
 </li>
       </ul></li>
+      <li>
+    spice_rack._guid_service
+
+      <ul>
+        <li><a href="guid_service.html#module-spice_rack._guid_service">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    spice_rack._polars_service._services._joiner
+
+      <ul>
+        <li><a href="polars_service.html#module-spice_rack._polars_service._services._joiner">module</a>
+</li>
+      </ul></li>
+      <li>
+    spice_rack._polars_service._services._json_dumper
+
+      <ul>
+        <li><a href="polars_service.html#module-spice_rack._polars_service._services._json_dumper">module</a>
+</li>
+      </ul></li>
+      <li>
+    spice_rack._polars_service._services._misc
+
+      <ul>
+        <li><a href="polars_service.html#module-spice_rack._polars_service._services._misc">module</a>
+</li>
+      </ul></li>
+      <li>
+    spice_rack._polars_service._types._collected_df
+
+      <ul>
+        <li><a href="polars_service.html#module-spice_rack._polars_service._types._collected_df">module</a>
+</li>
+      </ul></li>
+      <li>
+    spice_rack._polars_service._types._discrim_helper
+
+      <ul>
+        <li><a href="polars_service.html#module-spice_rack._polars_service._types._discrim_helper">module</a>
+</li>
+      </ul></li>
+      <li>
+    spice_rack._polars_service._types._lazy_df
+
+      <ul>
+        <li><a href="polars_service.html#module-spice_rack._polars_service._types._lazy_df">module</a>
+</li>
+      </ul></li>
+      <li>
+    spice_rack._polars_service._types._maybe_lazy
+
+      <ul>
+        <li><a href="polars_service.html#module-spice_rack._polars_service._types._maybe_lazy">module</a>
+</li>
+      </ul></li>
+      <li><a href="polars_service.html#spice_rack._polars_service._services._joiner.stack_dfs">stack_dfs() (in module spice_rack._polars_service._services._joiner)</a>
+</li>
   </ul></td>
 </tr></table>
 
