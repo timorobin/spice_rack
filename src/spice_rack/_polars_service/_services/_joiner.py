@@ -1,9 +1,9 @@
 from __future__ import annotations
 import typing as t
 import polars as pl
-from pydantic import validate_call, ConfigDict
 
-from spice_rack._polars_service import _types
+if t.TYPE_CHECKING:
+    from spice_rack._polars_service import _types
 
 __all__ = (
     "HowJoinT",
@@ -15,13 +15,23 @@ __all__ = (
 HowJoinT = t.Literal["inner", "outer", "left"]
 
 
-@validate_call(config=ConfigDict(arbitrary_types_allowed=True))
 def join_dfs(
-        dfs: list[pl.LazyFrame],
+        dfs: t.Iterable[_types.PolarsMaybeLazyDfT],
         join_on: str,
         how: HowJoinT = "inner"
+) -> _types.PolarsLazyDfT:
+    """
+    join an iterable of polars DataFrame or LazyFrame objects into a single LazyFrame
 
-) -> pl.LazyFrame:
+    Args:
+        dfs: iterable of polars objects
+        join_on: the column we are joining on, all dataframes must have this column
+        how: the type of join, 'inner', 'outer', 'left',
+            if 'left' the first dataframe in the iterable is the 'left' one
+
+    Returns:
+        pl.LazyFrame: the joined polars LazyFrame
+    """
     merged_df: t.Optional[pl.DataFrame] = None
     for df in dfs:
 
@@ -39,8 +49,19 @@ def join_dfs(
 
 
 def stack_dfs(
-        dfs: list[_types.PolarsMaybeLazyDfT],
+        dfs: t.List[_types.PolarsMaybeLazyDfT],
 ) -> _types.PolarsLazyDfT:
+    """
+    vertically stack an iterable of polars DataFrame or LazyFrame objects into a single LazyFrame.
+    This is a vertical stack.
+
+    Args:
+        dfs: iterable of polars objects
+
+    Returns:
+        pl.LazyFrame: the stacked polars LazyFrame
+    """
+
     if len(dfs) == 0:
         raise ValueError("empty list passed in")
 

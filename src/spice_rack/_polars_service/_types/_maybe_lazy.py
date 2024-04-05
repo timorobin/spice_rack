@@ -27,7 +27,6 @@ PolarsMaybeLazyDfT = t.Annotated[
     ],
     pydantic.Discriminator(discriminator=_callable_discrim)
 ]
-
 """
 An annotated type representing a union of polars DataFrame or LazyFrame.
 
@@ -44,7 +43,11 @@ e.g. as a field on a model. The pydantic behavior is as follows:
 Notes: this is not safe for roundtrip serialization, i.e. the a serialized instance of an instance
     of this type will not necessarily deserialize to be equal to the original instance
 """
-PolarsMaybeLazyDfTypeAdapter = pydantic.TypeAdapter(PolarsMaybeLazyDfT)
 
+PolarsMaybeLazyDfTypeAdapter: pydantic.TypeAdapter[PolarsMaybeLazyDfT] = pydantic.TypeAdapter(PolarsMaybeLazyDfT)
+"""
+type adapter for PolarsMaybeLazyDfT
+"""
 
 PolarsDfTV = t.TypeVar("PolarsDfTV", _collected_df.PolarsDfT, _lazy_df.PolarsLazyDfT)
+"""common type var that could be either a lazy or collected dataframe"""

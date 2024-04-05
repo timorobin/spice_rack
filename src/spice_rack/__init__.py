@@ -12,6 +12,8 @@ from spice_rack import (
     _version_getter
 )
 GuidT = guid_service.GuidT
+Logger = logging.Logger
+
 
 __version__ = _version_getter.get_version(__name__)
 VERSION = __version__

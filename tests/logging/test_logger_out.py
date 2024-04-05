@@ -3,12 +3,14 @@ import pytest
 from spice_rack import logging
 
 
-@pytest.fixture(scope="module")
-def logger_inst() -> logging.Logger:
+@pytest.fixture(scope="module", autouse=True)
+def logger_inst() -> None:
     sinks = [
         logging.sinks.SysLogSink()
     ]
-    return logging.configure_logging_for_python_worker(service_name="test", sinks=sinks)
+    logging.Logger.setup_logger(
+        service_name="test", sinks=sinks
+    )
 
 
 @pytest.fixture(scope="function")
@@ -24,7 +26,8 @@ def record_checker(caplog):
     return func
 
 
-def test_simple(logger_inst, record_checker):
+def test_simple(record_checker):
+    logger_inst = logging.Logger.get_logger()
     logger_inst.info("a info message")
     record_checker(
         msg="a info message",
@@ -32,7 +35,8 @@ def test_simple(logger_inst, record_checker):
     )
 
 
-def test_depth(logger_inst, record_checker):
+def test_depth(record_checker):
+    logger_inst = logging.Logger.get_logger()
     logger_inst.info("a info message", depth=-4)
     record_checker(
         msg="a info message",
@@ -40,7 +44,8 @@ def test_depth(logger_inst, record_checker):
     )
 
 
-def test_extra_data(logger_inst, record_checker):
+def test_extra_data(record_checker):
+    logger_inst = logging.Logger.get_logger()
     logger_inst.info("a info message", extra_data=[{"k": "v"}])
 
     extra_data = logger_inst._format_log_extra_data([{"k": "v"}]).get_logger_repr()

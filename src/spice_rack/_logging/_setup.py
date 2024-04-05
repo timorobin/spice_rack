@@ -5,7 +5,6 @@ from loguru import logger as loguru_logger
 import warnings
 
 from spice_rack._logging import _sinks
-from spice_rack._logging._logger import Logger
 
 
 __all__ = (
@@ -55,8 +54,7 @@ class _UvicornInterceptHandler(logging.Handler):
 
 def configure_logging_for_uvicorn_server(
         sinks: list[_sinks.AbstractLogSink],
-        service_name: str
-) -> Logger:
+) -> None:
     try:
         loguru_logger.remove(0)
 
@@ -85,14 +83,10 @@ def configure_logging_for_uvicorn_server(
     for sink in sinks:
         configure_sink_for_service(sink=sink)
 
-    from spice_rack._logging._logger_getter import get_logger
-    return get_logger(specified_service_name=service_name, persist_service_name=True)
-
 
 def configure_logging_for_python_worker(
         sinks: list[_sinks.AbstractLogSink],
-        service_name: str
-) -> Logger:
+) -> None:
     try:
         loguru_logger.remove(0)
 
@@ -104,6 +98,3 @@ def configure_logging_for_python_worker(
 
     for sink in sinks:
         configure_sink_for_service(sink=sink)
-
-    from spice_rack._logging._logger_getter import get_logger
-    return get_logger(specified_service_name=service_name, persist_service_name=True)

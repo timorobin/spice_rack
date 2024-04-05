@@ -11,9 +11,10 @@ __all__ = (
 
 def get_logger(
         specified_service_name: t.Optional[str] = None,
-        persist_service_name: bool = False
 ) -> Logger:
-    logger_inst = Logger(service_name=specified_service_name)
-    if persist_service_name:
-        logger_inst.cache_service_name()
-    return logger_inst
+    """
+    function that returns a logger.
+    This is here for backward compatibility of the api but you should be using
+    Logger.get_logger instead
+    """
+    return Logger.get_logger(specified_service_name)

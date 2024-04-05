@@ -18,8 +18,10 @@ Installation
 
    bases
    fs_ops
-
-
+   logging
+   polars_service
+   ts_service
+   guid_service
 
 Indices and tables
 ==================

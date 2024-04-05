@@ -71,7 +71,7 @@ all = []
 # linter
 ruff = { version = "*", extras = [] }
 
-# mypy for static type checking
+# mypy for _static type checking
 mypy = { version = "*", extras = [] }
 
 # unit tests
