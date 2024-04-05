@@ -31,7 +31,11 @@ class _FilePathBase(AbstractFileSystemObj, class_type="root"):
     this for special file types.
     """
 
-    path: _path_strs.AbsoluteFilePathStr
+    path: _path_strs.AbsoluteFilePathStr = pydantic.Field(
+        description="the path string on the underlying file system. Must be absolute. You can use the "
+                    "file system-specific format, e.g. 'gs://bucket/file.txt' and we will convert it to "
+                    "/bucket/file.txt' and make sure the file_system aligns"
+    )
 
     def _special_repr_short(self) -> str:
         return f"File[path='{self.path}', file_system_type={self.file_system.special_repr()}]"

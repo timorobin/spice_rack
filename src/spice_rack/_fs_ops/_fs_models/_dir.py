@@ -1,5 +1,6 @@
 from __future__ import annotations
 import typing as t
+import pydantic
 
 from spice_rack._fs_ops import _path_strs, _file_systems
 from spice_rack._fs_ops._fs_models._base import AbstractFileSystemObj
@@ -18,7 +19,11 @@ class DirPath(AbstractFileSystemObj):
     this class represents a directory on a file system,
     with the absolute full path string, and the file system instance
     """
-    path: _path_strs.AbsoluteDirPathStr
+    path: _path_strs.AbsoluteDirPathStr = pydantic.Field(
+        description="the path string on the underlying file system. Must be absolute. You can use the "
+                    "file system-specific format, e.g. 'gs://bucket/dir/' and we will convert it to "
+                    "/bucket/dir/' and make sure the file_system aligns"
+    )
 
     def _special_repr_short(self) -> str:
         return f"Dir[path='{self.path}', file_system_type={self.file_system.special_repr()}]"
