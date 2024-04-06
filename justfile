@@ -16,7 +16,11 @@ unit-tests:
     pytest tests/ --doctest-modules  --pyargs src/
 
 
-all-tests:
+lint:
+    ruff check .
+
+
+run-tests:
     poetry run ruff check .
     # poetry run mypy src/
     poetry run pytest tests/ --doctest-modules  --pyargs src/
