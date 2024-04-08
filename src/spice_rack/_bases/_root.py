@@ -44,7 +44,7 @@ class RootModel(pydantic.RootModel[RootTV], t.Generic[RootTV]):
     def _post_init_validation(self) -> None:
         """
         Overwrite this hook to set perform misc. validation logic on the instance, after
-        all other validators have been executed.
+        all other common_validators have been executed.
         This is also called after the '_post_init_setup' hook is called
         Notes: Make sure to call super()._post_init_validation
         """
