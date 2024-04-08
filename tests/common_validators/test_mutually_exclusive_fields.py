@@ -42,7 +42,7 @@ def test_as_on_model():
             val_inst.validate_inst(self)
             return
 
-    assert X(a="a")
+    assert X(c="a")
 
     with pytest.raises(pydantic.ValidationError):
         X(a="a", b="b")
@@ -65,7 +65,7 @@ def test_as_ann():
             )
         ]
 
-    x_good = X(a="a")
+    x_good = X(b="a")
     x_multiple = X(a="a", b="b")
     x_none = X()
 
@@ -89,3 +89,30 @@ def test_val_model_cls_field_check():
             model_cls=X,
             check_field_names=True
         )
+
+
+def test_all_none_allowed():
+
+    class X(bases.PydanticBase):
+        a: t.Optional[str] = None
+        b: t.Optional[str] = None
+        c: t.Optional[str] = None
+
+    class D(pydantic.BaseModel):
+        x: t.Annotated[
+            X,
+            common_validators.mutually_exclusive_fields.MutuallyExclusiveFieldsValidator(
+                field_names=["a", "b", "c"],
+                at_least_one=False
+            ),
+        ]
+
+    x_good = X(b="a")
+    x_multiple = X(a="a", b="b")
+    x_none = X()
+
+    assert D(x=x_good)
+    assert D(x=x_none)
+
+    with pytest.raises(pydantic.ValidationError):
+        D(x=x_multiple)
