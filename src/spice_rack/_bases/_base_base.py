@@ -35,7 +35,7 @@ class PydanticBase(pydantic.BaseModel):
     def _post_init_validation(self) -> None:
         """
         Overwrite this hook to set perform misc. validation logic on the instance, after
-        all other validators have been executed.
+        all other common_validators have been executed.
         This is also called after the '_post_init_setup' hook is called
         Notes: Make sure to call super()._post_init_validation
         """
@@ -48,8 +48,16 @@ class PydanticBase(pydantic.BaseModel):
         rather than overwrite this, overwrite the '_post_init_setup' and '_post_init_validation'
         hooks
         """
+        from spice_rack._bases import _exception
+
         self._post_init_setup()
-        self._post_init_validation()
+        try:
+            self._post_init_validation()
+        except _exception.CustomExceptionBase as e:
+            raise e.as_pydantic_error() from e
+        except Exception as e:
+            raise e
+
         return self
 
     def json_dict(
