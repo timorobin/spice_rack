@@ -10,6 +10,7 @@ from spice_rack import (
     _frozen_registry as frozen_registry,
     _polars_service as polars_service,
     _common_validators as common_validators,
+    _api_helpers as api_helpers,
     _version_getter
 )
 GuidT = guid_service.GuidT
