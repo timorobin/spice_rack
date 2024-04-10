@@ -35,6 +35,9 @@ inflection = { version = "*", extras = [] }
 # why?
 tabulate = { version = "*", extras = [] }
 
+# misc
+flatten-dict = { version = "*" }
+
 # optional dependencies
 #  Note: not actually optional at the moment
 # gcp
@@ -59,8 +62,9 @@ paramiko = { version = "*" }
 #polars = { version = "*", optional = true }
 polars = { version = "*" }
 
-# misc
-flatten-dict = { version = "*" }
+# api stuff
+uvicorn = { version = "*" }
+
 
 # deep
 [tool.poetry.extras]
