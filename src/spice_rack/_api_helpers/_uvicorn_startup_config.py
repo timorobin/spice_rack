@@ -1,7 +1,7 @@
 from __future__ import annotations
 import typing as t
 from pydantic import Field
-from spice_rack import bases
+from spice_rack import _bases
 
 
 __all__ = (
@@ -9,14 +9,14 @@ __all__ = (
 )
 
 
-class _UvicornSslConfig(bases.ValueModelBase):
+class _UvicornSslConfig(_bases.ValueModelBase):
     """nested config for configuring ssl to uvicorn the server"""
     keyfile_path: str
     keyfile_password: str
     certfile_path: str
 
 
-class UvicornStartupConfig(bases.SettingsBase):
+class UvicornStartupConfig(_bases.SettingsBase):
     """
     config subsection for starting up an uvicorn process, useful for APIs such as litestar or fastapi.
 
