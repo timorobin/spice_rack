@@ -20,7 +20,7 @@ class UvicornStartupConfig(bases.SettingsBase):
     """
     config subsection for starting up an uvicorn process, useful for APIs such as litestar or fastapi.
 
-    default env_prefix is 'uvicorn'
+    default env_prefix is 'uvicorn_startup__'
     """
     host: str = Field(default="localhost", description="host name of the app process")
     port: int = Field(default=8000, description="port the app is listening on")
@@ -46,3 +46,7 @@ class UvicornStartupConfig(bases.SettingsBase):
         description="ssl config stuff for the user, don't use this in production",
         default=None
     )
+
+    @classmethod
+    def _get_env_prefix(cls) -> t.Optional[str]:
+        return f"uvicorn_startup{cls._get_env_nested_delimiter()}"
