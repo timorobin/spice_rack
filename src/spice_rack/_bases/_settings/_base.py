@@ -21,10 +21,10 @@ class SettingsBase(pydantic_settings.BaseSettings):
     This will be adjusted when we fully move to Pydantic v2.
 
     Notes:
-        use double underscores, '__', as the nested delimiter
+        use double underscores, `__`, as the nested delimiter is default behavior
 
     References:
-        - https://docs.pydantic.dev/1.10/usage/settings/
+        - `pydantic-settings docs <https://docs.pydantic.dev/1.10/usage/settings/>`_
     """
     _singleton_source: t.ClassVar[t.Optional[_sources.SingletonSource]] = None
 
@@ -66,7 +66,18 @@ class SettingsBase(pydantic_settings.BaseSettings):
         return tuple(sources)
 
     @classmethod
-    def _get_dot_env_files(cls) -> list[t.Union[str, Path]]:
+    def _get_secrets_dir(cls) -> t.Optional[t.Union[str, Path]]:
+        """
+        overwrite this to specify a directory to use for secrets, docker style.
+        default is None.
+
+        Notes:
+            docker's target mount point is '/run/secrets/' in case you want that.
+        """
+        return None
+
+    @classmethod
+    def _get_dot_env_files(cls) -> t.List[t.Union[str, Path]]:
         """
         return relative or absolute file paths to .env files in descending precedence, so last
         one specified will be the highest precedence.
@@ -81,6 +92,18 @@ class SettingsBase(pydantic_settings.BaseSettings):
         return "__"
 
     @classmethod
+    def _get_env_prefix(cls) -> t.Optional[str]:
+        """
+        overwrite this to specify a prefix for all env variables this settings class will read.
+        default is None.
+
+        Notes:
+            If you specify a value here, this will not include a delimiter like you may be expecting. A common
+                recipe here would be to append the `_get_env_nested_delimiter' to the prefix you are specifying
+        """
+        return None
+
+    @classmethod
     def load(
             cls: t.Type[Self],
             use_cls_env_files: bool = True,
@@ -93,7 +116,7 @@ class SettingsBase(pydantic_settings.BaseSettings):
         if use_cls_env_files:
             kwargs["_env_file"] = tuple(env_files)
             kwargs["_env_nested_delimiter"] = cls._get_env_nested_delimiter()
-
+            kwargs["_env_prefix"] = cls._get_env_prefix()
         return cls(**kwargs)
 
 

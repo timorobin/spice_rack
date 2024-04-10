@@ -16,8 +16,12 @@ class _UvicornSslConfig(bases.ValueModelBase):
     certfile_path: str
 
 
-class UvicornStartupConfig(bases.ValueModelBase):
-    """config subsection for starting up an uvicorn process, useful for APIs such as litestar or fastapi"""
+class UvicornStartupConfig(bases.SettingsBase):
+    """
+    config subsection for starting up an uvicorn process, useful for APIs such as litestar or fastapi.
+
+    default env_prefix is 'uvicorn'
+    """
     host: str = Field(default="localhost", description="host name of the app process")
     port: int = Field(default=8000, description="port the app is listening on")
     root_path: str = Field(description="used in the fastapi app instance", default="")
