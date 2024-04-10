@@ -1,24 +1,25 @@
 import pytest
-from google.auth import credentials
 from gcsfs import GCSFileSystem
+from google.auth import credentials
 
-from spice_rack import _gcp_auth
+from spice_rack import gcp_auth
 
 
 def test_building_creds():
 
     # check that if we fail to build default creds, we default to anonymous ones.
     try:
-        strat = _gcp_auth.auth_strategies.DefaultAuthStrategy(on_no_default="raise")
+        strat = gcp_auth.auth_strategies.DefaultAuthStrategy(on_no_default="raise")
         strat.build_gcp_creds()
         default_failed = False
-    except credentials.exceptions.DefaultCredentialsError:
+    except gcp_auth.exceptions.DefaultAuthNotAvailableException:
         default_failed = True
     except Exception as e:
-        raise pytest.fail(e)
+        raise pytest.fail(str(e))
 
-    strat = _gcp_auth.auth_strategies.DefaultAuthStrategy(on_no_default="use_anon")
+    strat = gcp_auth.auth_strategies.DefaultAuthStrategy(on_no_default="use_anon")
     creds = strat.build_gcp_creds()
+
     if default_failed:
         assert isinstance(creds, credentials.AnonymousCredentials)
     else:
@@ -26,7 +27,7 @@ def test_building_creds():
 
 
 def test_public_bucket(public_bucket):
-    strat = _gcp_auth.auth_strategies.DefaultAuthStrategy(on_no_default="use_anon")
+    strat = gcp_auth.auth_strategies.DefaultAuthStrategy(on_no_default="use_anon")
     creds = strat.build_gcp_creds()
 
     # specifically
@@ -40,7 +41,7 @@ def test_public_bucket(public_bucket):
 
 
 def test_protected_bucket(protected_bucket):
-    strat = _gcp_auth.auth_strategies.DefaultAuthStrategy(on_no_default="use_anon")
+    strat = gcp_auth.auth_strategies.DefaultAuthStrategy(on_no_default="use_anon")
     creds = strat.build_gcp_creds()
 
     # specifically
