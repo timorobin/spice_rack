@@ -54,7 +54,6 @@
 <li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._base_base.PydanticBase._import_forward_refs"><code class="docutils literal notranslate"><span class="pre">PydanticBase._import_forward_refs()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._base_base.PydanticBase._post_init_setup"><code class="docutils literal notranslate"><span class="pre">PydanticBase._post_init_setup()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._base_base.PydanticBase._post_init_validation"><code class="docutils literal notranslate"><span class="pre">PydanticBase._post_init_validation()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._base_base.PydanticBase._pydantic_post_init_val_hook"><code class="docutils literal notranslate"><span class="pre">PydanticBase._pydantic_post_init_val_hook</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._base_base.PydanticBase.json_dict"><code class="docutils literal notranslate"><span class="pre">PydanticBase.json_dict()</span></code></a></li>
 </ul>
 </li>
@@ -219,8 +218,8 @@ Notes: Make sure to call super()._post_init_validation</p>
 </dd></dl>
 
 <dl class="py method pydantic_validator">
-<dt class="sig sig-object py" id="spice_rack._bases._base_base.PydanticBase._pydantic_post_init_val_hook">
-<em class="property"><span class="pre">validator</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_pydantic_post_init_val_hook</span></span><em class="autodoc_pydantic_validator_arrow property">&#160; <span class="pre">»</span>&#160; </em><em class="xref py py-obj"><span class="pre">all</span> <span class="pre">fields</span></em><a class="headerlink" href="#spice_rack._bases._base_base.PydanticBase._pydantic_post_init_val_hook" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">PydanticBase._pydantic_post_init_val_hook</span></span></dt>
 <dd><p>Pydantic’s hook that gets executed after we initialize an instance.
 rather than overwrite this, overwrite the ‘_post_init_setup’ and ‘_post_init_validation’
 hooks</p>
