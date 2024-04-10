@@ -59,6 +59,10 @@ paramiko = { version = "*" }
 #polars = { version = "*", optional = true }
 polars = { version = "*" }
 
+# misc
+flatten-dict = { version = "*" }
+
+# deep
 [tool.poetry.extras]
 all = []
 #gcp = ["gcsfs"]

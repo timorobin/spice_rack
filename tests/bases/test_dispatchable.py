@@ -1,5 +1,3 @@
-from typing import Any
-
 import pydantic
 import pytest
 from pydantic import ValidationError, BaseModel
@@ -192,24 +190,6 @@ def test_schema_gen_concrete():
     schema = GrandchildClass1.build_dispatcher_type_adapter().json_schema()
     assert schema == GrandchildClass1.model_json_schema()
 
-    from devtools import pprint
-    print("original")
-    pprint(
-        # GrandchildClass1.model_json_schema()
-        GrandchildClass1.__pydantic_core_schema__["schema"]["schema"]["schema"]["fields"]
-    )
-
-    print("changed")
-    GrandchildClass1.model_fields["class_id"] = pydantic.fields.FieldInfo.from_annotation(int)
-    GrandchildClass1.model_rebuild(force=True)
-
-    pprint(
-        # GrandchildClass1.model_json_schema()
-        GrandchildClass1.__pydantic_core_schema__["schema"]["schema"]["schema"]["fields"]
-    )
-
-    # raise ValueError()
-
 
 def test_as_field():
     base_t = AbstractClass.build_dispatched_ann()
@@ -222,3 +202,31 @@ def test_as_field():
     )
 
     assert isinstance(x.f, GrandchildClass1)
+
+
+def test_schema_gen_concrete_special():
+    class X(dispatchable.DispatchedModelMixin, class_type="root"):
+        f: str = "f"
+
+    class XX1(X):
+        ...
+
+    class XX2(X):
+        ...
+
+    from devtools import pprint
+    print("original")
+    pprint(
+        XX2.__pydantic_core_schema__["schema"]["schema"]["schema"]["fields"]
+    )
+
+    print("changed")
+    XX2.model_fields["class_id"] = pydantic.fields.FieldInfo.from_annotation(int)
+    XX2.model_rebuild(force=True)
+
+    pprint(
+        # XX2.model_json_schema()
+        XX2.__pydantic_core_schema__["schema"]["schema"]["schema"]["fields"]
+    )
+
+    # raise ValueError()
