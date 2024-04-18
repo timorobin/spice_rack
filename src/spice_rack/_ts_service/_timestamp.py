@@ -4,8 +4,8 @@ import datetime as dt
 import dateparser
 import pydantic
 
-from spice_rack._ts_service._tz_key import TimeZoneKey
 from spice_rack import _logging
+from spice_rack._ts_service._tz_key import TimeZoneKey
 
 
 __all__ = (
@@ -14,13 +14,16 @@ __all__ = (
 
 
 _TzKeyT = t.Union[str, TimeZoneKey, t.Literal["local"]]
-_TimestampInitValueT = t.Union[float, str, dt.datetime, dt.date]
 _PythonTimestampT = float  # seconds from epoch with decimals as sub-second measurements
 
 
 class Timestamp(pydantic.RootModel[int], _logging.log_extra.LoggableObjMixin):
     """
     special subclass of 'int' that contains the utc millisecond from epoch.
+
+    This class will automatically validate date and datetime objects and ints. Use extended type annotations
+    for more flexible parsing.
+
     """
     _default_assumed_tz: t.ClassVar[TimeZoneKey] = TimeZoneKey("UTC")
     """timezone we assume when parsing raw data into this object"""
@@ -152,30 +155,15 @@ class Timestamp(pydantic.RootModel[int], _logging.log_extra.LoggableObjMixin):
         raise ValueError("initializing from a float is not currently supported")
 
     @pydantic.model_validator(mode="before")
-    def _validate(cls, value: _TimestampInitValueT) -> int:
-        int_data: int
+    def _parse_non_int(cls: t.Type[Timestamp], data: t.Any) -> t.Any:
 
-        if isinstance(value, str):
-            int_data = cls._from_str(value, assumed_tz=cls._default_assumed_tz)
+        if isinstance(data, dt.datetime):
+            data = cls._from_datetime_obj(data, assumed_tz=cls._default_assumed_tz)
 
-        elif isinstance(value, dt.datetime):
-            int_data = cls._from_datetime_obj(value, assumed_tz=cls._default_assumed_tz)
+        elif isinstance(data, dt.date):
+            data = cls._from_date_obj(data, assumed_tz=cls._default_assumed_tz)
 
-        elif isinstance(value, dt.date):
-            int_data = cls._from_date_obj(value, assumed_tz=cls._default_assumed_tz)
-
-        # elif isinstance(value, float):
-        #     float_data = cls._from_float(value, assumed_tz=cls._default_assumed_tz)
-
-        elif isinstance(value, (int, cls)):
-            int_data = value
-
-        else:
-            raise ValueError(
-                f"'{cls.__name__}' doesn't support data of type {type(value)}"
-            )
-
-        return int_data
+        return data
 
     @classmethod
     def now(cls) -> Timestamp:
