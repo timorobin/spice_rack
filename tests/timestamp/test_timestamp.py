@@ -1,32 +1,10 @@
 import pytest
 import datetime as dt
-import zoneinfo
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError, TypeAdapter
+import typing as t
 import json
 
 from spice_rack import ts_service
-
-
-def test_from_str():
-
-    raw_str = "jan 5, 2022 1:15 PM EST"
-    obj = ts_service.Timestamp.model_validate(raw_str)
-
-    expected_dt_obj = dt.datetime(
-        year=2022, day=5, month=1, hour=13, minute=15, tzinfo=zoneinfo.ZoneInfo("EST")
-    ).astimezone(zoneinfo.ZoneInfo("UTC"))
-
-    assert obj.to_python_timestamp() == expected_dt_obj.timestamp() * 1000 // 1000
-
-    assert obj.to_dt_obj(with_tz="UTC") == expected_dt_obj
-
-    assert obj.to_iso_str(with_tz="EST") != obj.to_iso_str()
-
-
-def test_invalid_str():
-    bad_str = "???"
-    with pytest.raises(ValueError):
-        ts_service.Timestamp(bad_str)
 
 
 def test_from_date_obj():
@@ -50,11 +28,14 @@ def test_ide():
     Tests visually that the IDE behaves as expected.
     This can't really fail at test time like normal tests, must be evaluated visually.
     """
-    # your IDE should not highlight this one bc string is ok
-    assert ts_service.Timestamp("a")
 
-    # your IDE should highlight this one bc the param doesn't have int in it, but it will
-    #  validate bc we have to parse the json-encoding value
+    # the ide is fucked pycharm get your shit together
+
+    # should highlight
+    with pytest.raises(ValidationError):
+        ts_service.Timestamp("XXX")
+
+    # should not highlight
     int_ts = int(dt.datetime.now().timestamp())
     ts_service.Timestamp(int_ts)
 
@@ -74,3 +55,69 @@ def test_json_roundtrip():
     assert x == x_prime
     from devtools import debug
     debug(x_prime.ts.to_iso_str())
+
+
+@pytest.fixture(scope="module")
+def str_parser_info() -> t.Tuple[str, str, str]:
+    date_format = "%m/%d/%Y"
+    nice_str = "08/13/1995"
+    messy_str = "jan 5, 2022 1:15 PM EST"
+
+    assert dt.datetime.strptime(nice_str, date_format)
+
+    return date_format, nice_str, messy_str
+
+
+def test_timestamp_str_parse_raises(str_parser_info):
+    date_format, nice_str, messy_str = str_parser_info
+
+    # regular Timestamp can't parse either of them
+    with pytest.raises(ValidationError):
+        ts_service.Timestamp.model_validate(nice_str)
+
+    with pytest.raises(ValidationError):
+        ts_service.Timestamp.model_validate(messy_str)
+
+
+def test_from_str_strict(str_parser_info):
+    date_format, nice_str, messy_str = str_parser_info
+
+    ta = TypeAdapter(
+        t.Annotated[
+            ts_service.Timestamp,
+            ts_service.validators.StrParserStrict(
+                date_formats=[date_format]
+            )
+        ]
+    )
+
+    # nice parses but messy doesn't
+    ts_obj = ta.validate_python(nice_str)
+    assert isinstance(ts_obj, ts_service.Timestamp)
+
+    with pytest.raises(ValidationError):
+        ta.validate_python(messy_str)
+
+
+def test_from_str_flexible(str_parser_info):
+    date_format, nice_str, messy_str = str_parser_info
+
+    ta = TypeAdapter(
+        t.Annotated[
+            ts_service.Timestamp,
+            ts_service.validators.StrParser(
+                date_formats=[date_format]
+            )
+        ]
+    )
+
+    # nice and messy parse
+    ts_obj = ta.validate_python(nice_str)
+    assert isinstance(ts_obj, ts_service.Timestamp)
+
+    ts_obj = ta.validate_python(messy_str)
+    assert isinstance(ts_obj, ts_service.Timestamp)
+
+    # crazy one doesn't
+    with pytest.raises(ValidationError):
+        ta.validate_python("???")
