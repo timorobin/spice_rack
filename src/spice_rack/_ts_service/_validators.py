@@ -6,12 +6,14 @@ import datetime as dt
 import pydantic
 import pydantic_core
 from spice_rack import _bases
-
+from spice_rack._ts_service._tz_key import TimeZoneKey
+from spice_rack._ts_service._timestamp import Timestamp
 
 __all__ = (
     "StrParserException",
     "StrParser",
-    "StrParserStrict"
+    "StrParserStrict",
+    "TzValidator"
 )
 
 
@@ -194,6 +196,40 @@ class StrParserStrict:
         # todo: add info to the schema
         schema = __handler(__source)
         schema = pydantic_core.core_schema.no_info_before_validator_function(
+            function=val_func,
+            schema=schema
+        )
+        return schema
+
+
+class TzValidator:
+    """use as an AfterValidator to ensure the timezone is what is expected"""
+    def __init__(self, expected_tz: t.Union[str, TimeZoneKey], coerce: bool = True):
+        self.expected_tz = TimeZoneKey(expected_tz)
+        self.coerce = coerce
+
+    def _get_func(self) -> t.Callable[[t.Any, ], t.Any]:
+        def func(ts_inst: Timestamp) -> Timestamp:
+            if ts_inst.tz != self.expected_tz:
+                if self.coerce:
+                    ts_inst = ts_inst.with_tz(self.expected_tz)
+                else:
+                    raise ValueError(
+                        f"expected '{self.expected_tz}' timezone, encountered '{ts_inst.tz}'"
+                    )
+            return ts_inst
+        return func
+
+    def __get_pydantic_core_schema__(
+            self,
+            __source: t.Any,
+            __handler: pydantic.GetCoreSchemaHandler
+    ) -> pydantic_core.CoreSchema:
+        val_func = self._get_func()
+
+        # todo: add info to the schema
+        schema = __handler(__source)
+        schema = pydantic_core.core_schema.no_info_after_validator_function(
             function=val_func,
             schema=schema
         )

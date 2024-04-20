@@ -51,4 +51,3 @@ def test_int_container():
         assert model_inst.model_dump(mode="json")["ts"] == us_raw
         assert model_inst.ts.to_timestamp_inst() == ts_inst
         assert model_inst.model_validate_json(model_inst.model_dump_json())
-        
