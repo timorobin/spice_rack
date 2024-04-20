@@ -1,10 +1,11 @@
 from __future__ import annotations
 import typing as t
 import datetime as dt
-import dateparser
 import pydantic
+from functools import total_ordering
+import zoneinfo
 
-from spice_rack import _logging
+from spice_rack import _logging, _bases
 from spice_rack._ts_service._tz_key import TimeZoneKey
 
 
@@ -12,46 +13,75 @@ __all__ = (
     "Timestamp",
 )
 
-
 _TzKeyT = t.Union[str, TimeZoneKey, t.Literal["local"]]
 _PythonTimestampT = float  # seconds from epoch with decimals as sub-second measurements
 
 
-class Timestamp(pydantic.RootModel[int], _logging.log_extra.LoggableObjMixin):
-    """
-    special subclass of 'int' that contains the utc millisecond from epoch.
+TimestampSelfTV = t.TypeVar("TimestampSelfTV", bound="Timestamp")
 
-    This class will automatically validate date and datetime objects and ints. Use extended type annotations
-    for more flexible parsing.
 
+@total_ordering
+class Timestamp(_bases.ValueModelBase, _logging.log_extra.LoggableObjMixin):
     """
-    _default_assumed_tz: t.ClassVar[TimeZoneKey] = TimeZoneKey("UTC")
-    """timezone we assume when parsing raw data into this object"""
-    # _default_tz: ClassVar[TimeZoneKey] = TimeZoneKey.local()
+    This class represents timestamp, with microsecond precision, and the timezone info related to this timestamp
+    and encapsulates common timestamp operations
+
+    This class will automatically validate dt.datetime, dt.date and iso formatted strings. See extensions for
+    more flexible parsing logic.
+    """
+    microseconds: int = pydantic.Field(
+        description="microseconds from epoch, standardized so the timezone does not impact this value"
+    )
+    tz: TimeZoneKey = pydantic.Field(
+        description="the timezone info for this timestamp, default is UTC",
+    )
+
+    @property
+    def seconds(self) -> float:
+        return self.microseconds / 1e6
 
     def to_python_timestamp(self) -> _PythonTimestampT:
         # convert to seconds from epoch, posix timestamp
-        return float(self.root) / 1000
+        return float(self.microseconds) / 1e6
+
+    def with_tz(self, __new_tz: t.Union[str, TimeZoneKey]) -> "Timestamp":
+        """convert this Timestamp instance to one with the different timezone"""
+        return Timestamp(
+            microseconds=self.microseconds,
+            tz=TimeZoneKey(str(__new_tz))
+        )
+
+    def as_utc(self) -> Timestamp:
+        """convenience create a Timestamp instance in UTC timezone"""
+        return self.with_tz(TimeZoneKey("UTC"))
 
     def to_dt_obj(
             self,
-            with_tz: t.Optional[_TzKeyT] = None
+            tz_aware: bool = True
     ) -> dt.datetime:
+        """
+        create a python stdlib datetime object from this Timestamp,
+
+        Args:
+            tz_aware: if True, we'll create a tz aware datetime object, which means it has the tz info.
+                default is True.
+
+        Notes:
+            Even if we specify tz_aware=False, the resulting python datetime object will be localized to the tz info
+            on this Timestamp instance.
+            See the warning here for why you probably want it this way:
+                https://docs.python.org/3.9/library/datetime.html#datetime.datetime.utctimetuple
+        """
         res: dt.datetime
-
-        if with_tz:
+        if tz_aware:
             utc_dt_obj = dt.datetime.fromtimestamp(
-                self.to_python_timestamp(), tz=TimeZoneKey("UTC").as_zone_info()
+                self.to_python_timestamp(), tz=TimeZoneKey("UTC").as_py_zone_info()
             )
-            tz_key: TimeZoneKey
-            if with_tz == "local":
-                tz_key = TimeZoneKey.local()
-            else:
-                tz_key = TimeZoneKey(str(with_tz))
 
-            new_tz_info = tz_key.as_zone_info()
-            obj_new_tz = utc_dt_obj.astimezone(tz=new_tz_info)
-            res = obj_new_tz
+            if self.tz != TimeZoneKey("UTC"):
+                res = utc_dt_obj.astimezone(self.tz.as_py_zone_info())
+            else:
+                res = utc_dt_obj
         else:
             res = dt.datetime.fromtimestamp(
                 self.to_python_timestamp(), tz=None
@@ -60,125 +90,183 @@ class Timestamp(pydantic.RootModel[int], _logging.log_extra.LoggableObjMixin):
 
     def to_iso_str(
             self,
-            with_tz: t.Optional[_TzKeyT] = None
+            tz_aware: bool = True
     ) -> str:
         """
-        returns the datetime object as a formatted str
+        returns the iso formatted str, via the datetime method.
+        see: https://docs.python.org/3.9/library/datetime.html#datetime.datetime.isoformat
 
         Args:
-            with_tz: a timezone key we can specify. use 'local' to use whatever timezone is local
-                to the process calling this function
+            tz_aware: if True, the string will contain the utc offset.
+
         Returns:
             str: formatted string
         """
-        dt_obj = self.to_dt_obj(with_tz=with_tz)
+        dt_obj = self.to_dt_obj(tz_aware=tz_aware)
         return dt_obj.isoformat()
 
-    def to_pretty_str(
+    def to_str(
             self,
             fmat: str = "%x %X %Z",
-            with_tz: t.Optional[_TzKeyT] = "local"
     ) -> str:
         """
-        returns the datetime object as a formatted str, in a pretty, super readable format.
-        The default is "%c %Z"
+        create a string using the specified python format. see python docs for help with the codes:
+        https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
 
         Args:
-            fmat: Optional custom formatting. See python datetime docs for formatting help.
-                If not specified, we use 'auto' selected appropriate format.
+            fmat: the python format, default is a human-readable format: "%x %X %Z"
 
-            with_tz: a timezone key we can specify. use 'local' to use whatever timezone is local
-                to the process calling this function
-        Returns:
-            str: formatted string
-
-        Notes:
-            - see the docs on format codes:
-              https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
+        Returns: a formatted str
         """
-        dt_obj = self.to_dt_obj(with_tz=with_tz)
-        return dt_obj.strftime(fmat)
-
-    def special_repr(self, with_tz: t.Optional[_TzKeyT] = None) -> str:
-        return f"{self.__class__.__name__}['{self.to_iso_str(with_tz=with_tz)}']"
+        return self.to_dt_obj().strftime(fmat)
 
     def to_file_path_fmat(self) -> str:
-        return self.to_dt_obj().strftime("%Y_%m_%dT%H_%M_%S_%f")
+        """
+        convenience method to format the timestamp as a filepath friendly string, "%Y_%m_%dY%H_%M_%S_%f"
+        """
+        return self.to_str("%Y_%m_%dY%H_%M_%S_%f")
+
+    def special_repr(self) -> str:
+        return f"{self.__class__.__name__}['{self.to_str()}']"
 
     @classmethod
-    def _from_datetime_obj(
+    def _from_datetime_datetime(
             cls,
-            value: dt.datetime,
-            assumed_tz: TimeZoneKey
-    ) -> int:
-        tz_info: TimeZoneKey
-        if value.tzinfo:
-            tz_info = TimeZoneKey(value.tzname())
+            __obj: dt.datetime,
+    ) -> Timestamp:
+        """
+        build the Timestamp instance from the python datetime object. If timezone specified, we'll use it otherwise
+        we'll assume local as is the standard behavior
+        """
+        tz_key: TimeZoneKey
+        if __obj.tzinfo:
+            obj_tz_info: dt.tzinfo = __obj.tzinfo
+
+            # zone info implementation vs other, pops up with
+            #   the EST vs EDT (Eastern Standard Time, Eastern Daylight Savings Time).
+            #  TODO: revisit this
+            if isinstance(obj_tz_info, zoneinfo.ZoneInfo):
+                tz_key = TimeZoneKey(obj_tz_info.key)
+            else:
+                tz_key = TimeZoneKey(obj_tz_info.tzname(__obj))
         else:
-            tz_info = assumed_tz
-
-        dt_obj_utc = value.astimezone(tz_info.as_zone_info())
-        return int(dt_obj_utc.timestamp() * 1000)
-
-    @classmethod
-    def _from_date_obj(
-            cls,
-            value: dt.date,
-            assumed_tz: TimeZoneKey
-    ) -> int:
-        datetime_obj = dt.datetime.fromisoformat(value.isoformat())
-        return cls._from_datetime_obj(datetime_obj, assumed_tz=assumed_tz)
+            tz_key = TimeZoneKey.local()
+        return Timestamp(
+            microseconds=int(__obj.timestamp() * 1e6),
+            tz=tz_key
+        )
 
     @classmethod
-    def _from_str(
+    def _from_datetime_date(
             cls,
-            value: str,
-            assumed_tz: TimeZoneKey
-    ) -> int:
-        """parse a str to datetime object then to timestamp"""
-        dt_obj_maybe = dateparser.parse(value)
-        if dt_obj_maybe is None:
+            __obj: dt.date,
+    ) -> Timestamp:
+        datetime_obj = dt.datetime(year=__obj.year, month=__obj.month, day=__obj.day)
+        return cls._from_datetime_datetime(datetime_obj)
+
+    @classmethod
+    def from_datetime(cls, __obj: t.Union[dt.datetime, dt.date]) -> Timestamp:
+        """parse a stdlib representation of the date"""
+        if isinstance(__obj, dt.datetime):
+            return cls._from_datetime_datetime(__obj)
+        elif isinstance(__obj, dt.date):
+            return cls._from_datetime_date(__obj)
+        else:
             raise ValueError(
-                f"cannot parse the string, '{value}', to a datetime object "
+                f"'{type(__obj)}' not one of the standard lib datetime types we support parsing"
             )
 
-        else:
-            dt_obj: dt.datetime = dt_obj_maybe
-        return cls._from_datetime_obj(value=dt_obj, assumed_tz=assumed_tz)
-
-    @classmethod
-    def _from_float(
-            cls,
-            value: float,
-            assumed_tz: TimeZoneKey
-    ) -> int:
-        raise ValueError("initializing from a float is not currently supported")
-
     @pydantic.model_validator(mode="before")
-    def _parse_non_int(cls: t.Type[Timestamp], data: t.Any) -> t.Any:
+    @classmethod
+    def _parse_common(cls, data: t.Any) -> t.Any:
+        if isinstance(data, (dt.datetime, dt.date)):
+            data = cls.from_datetime(data).model_dump()
 
-        if isinstance(data, dt.datetime):
-            data = cls._from_datetime_obj(data, assumed_tz=cls._default_assumed_tz)
+        if isinstance(data, str):
+            try:
+                dt_obj = dt.datetime.fromisoformat(data)
 
-        elif isinstance(data, dt.date):
-            data = cls._from_date_obj(data, assumed_tz=cls._default_assumed_tz)
+            except Exception as e:
+                raise ValueError(
+                    f"failed to parse the string, '{data}', as iso formatted date str."
+                ) from e
 
+            data = cls.from_datetime(dt_obj).model_dump()
         return data
 
     @classmethod
-    def now(cls) -> Timestamp:
-        """get now down to the millisecond, not microsecond"""
-        return Timestamp(dt.datetime.utcnow())
+    def now(
+            cls,
+            unit: t.Literal["us", "ms", "s"] = "ms",
+            tz_key: t.Optional[t.Union[str, TimeZoneKey]] = None
+    ) -> Timestamp:
+        """
+        get current date and time with local timezone, down to the specified unit
+
+        Args:
+            unit: the smallest unit to go down to.
+                us: microsecond, 1 second = 1_000_000 microseconds
+                ms: millisecond, 1 second = 1_000 milliseconds
+                s: second, 1 second = 1 second
+            tz_key: which timezone to use, if not specified, we'll use local
+
+        Returns:
+            a Timestamp instance
+        """
+        microseconds = int(1e6 * dt.datetime.utcnow().timestamp())
+
+        data: int
+        if unit == "us":
+            data = microseconds
+        elif unit == "ms":
+            data = int((microseconds // 1e3) * 1e3)
+        elif unit == "s":
+            data = int((microseconds // 1e6) * 1e6)
+        else:
+            raise ValueError(f"'{unit}' is not a supported value")
+
+        tz: TimeZoneKey
+        if tz_key is not None:
+            tz = TimeZoneKey(tz_key)
+        else:
+            tz = TimeZoneKey.local()
+
+        return Timestamp(
+            microseconds=data, tz=tz
+        )
+
+    @classmethod
+    def utcnow(cls, unit: t.Literal["us", "ms", "s"] = "ms") -> Timestamp:
+        """
+        get current date and time with utc timezone, down to the specified unit
+
+        Args:
+            unit: the smallest unit to go down to.
+                us: microsecond, 1 second = 1_000_000 microseconds
+                ms: millisecond, 1 second = 1_000 milliseconds
+                s: second, 1 second = 1 second
+
+        Returns:
+            a Timestamp instance
+        """
+        return cls.now(unit=unit, tz_key="UTC")
 
     @classmethod
     def today(cls) -> Timestamp:
         """get the current date, as a Timestamp object."""
-        dt_obj = dt.datetime.today()
-        return Timestamp(dt_obj)
+        return Timestamp.model_validate(dt.datetime.today())
 
     def __get_logger_data__(self) -> _logging.log_extra.ExtraLogData:
         return _logging.log_extra.ExtraLogData(
             key="timestamp",
             desc="a timestamp object",
-            data=self.to_iso_str()
+            data=self.special_repr()
         )
+
+    def __eq__(self, other: t.Union[dt.datetime, dt.date, Timestamp]) -> bool:
+        other_ts = Timestamp.model_validate(other)
+        return self.microseconds == other_ts.microseconds
+
+    def __gt__(self, other: t.Union[dt.datetime, dt.date, Timestamp]) -> bool:
+        other_ts = Timestamp.model_validate(other)
+        return self.microseconds > other_ts.microseconds

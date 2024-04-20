@@ -44,14 +44,47 @@ class StrParserException(_bases.exceptions.CustomExceptionBase[_StrParserErrorIn
 class StrParser:
     """
     flexible string parser using dateparser library under the hood. If you provide date_formats it will be as
-    fast as a strict parser, but fallback to the slower approach if needed.
+    fast as a strict parser, but fallback to the slower approach if needed. Differs from StrParserStrict which will
+    raise an error not fallback.
+
+    Use this create an annotated Timestamp type within the pydantic validation framework.
+
+    Examples:
+        1. Annotate the type to parse the format::
+
+            class Model(pydantic.BaseModel):
+                ts: Timestamp
+                ts_flexible: t.Annotated[Timestamp, StrParser(date_formats="%m/%d/%Y")]
+
+            date_str = "08/13/1995"
+            Model(
+                ts=date_str,  # will fail validation
+                annotated_ts=date_str  # will be parsed
+            )
+
+        2. StrParserStrict will not use dateparser library as a fallback::
+
+            class Model(pydantic.BaseModel):
+                ts_strict: t.Annotated[Timestamp, StrictStrParser(date_formats="%m/%d/%Y")]
+                ts_flexible: t.Annotated[Timestamp, StrParser(date_formats="%m/%d/%Y")]
+
+            date_str = "08/13/1995"
+            Model(
+                ts_strict=date_str_good,  # will be parsed
+                ts_flexible=date_str  # will be parsed
+            )
+
+            date_str = "Aug 13th 1995"
+            Model(
+                ts_strict=date_str_good,  # will fail validation
+                ts_flexible=date_str  # will be parsed
+            )
     """
     date_formats: t.List[str]
     """specify these to indicate that the str parser should try these date formats first"""
 
-    def __init__(self, date_formats: t.Optional[t.List[str]] = None, strict: bool = False):
+    def __init__(self, date_formats: t.Optional[t.List[str]] = None):
         self.date_formats = date_formats if date_formats else []
-        self.strict = strict
 
     def _get_func(self) -> t.Callable[[t.Any, ], t.Any]:
         def func(data: t.Any) -> t.Any:
@@ -87,6 +120,37 @@ class StrParser:
 class StrParserStrict:
     """
     This will try the different string formats in order, and choose the first one that works.
+
+    Examples:
+        1. Annotate the type to parse the format::
+
+            class Model(pydantic.BaseModel):
+                ts: Timestamp
+                ts_flexible: t.Annotated[Timestamp, StrParser(date_formats="%m/%d/%Y")]
+
+            date_str = "08/13/1995"
+            Model(
+                ts=date_str,  # will fail validation
+                annotated_ts=date_str  # will be parsed
+            )
+
+        2. StrParserStrict will not use dateparser library as a fallback::
+
+            class Model(pydantic.BaseModel):
+                ts_strict: t.Annotated[Timestamp, StrictStrParser(date_formats="%m/%d/%Y")]
+                ts_flexible: t.Annotated[Timestamp, StrParser(date_formats="%m/%d/%Y")]
+
+            date_str = "08/13/1995"
+            Model(
+                ts_strict=date_str_good,  # will be parsed
+                ts_flexible=date_str  # will be parsed
+            )
+
+            date_str = "Aug 13th 1995"
+            Model(
+                ts_strict=date_str_good,  # will fail validation
+                ts_flexible=date_str  # will be parsed
+            )
     """
     date_formats: t.List[str]
     """specify these to indicate that the str parser should try these date formats first"""
