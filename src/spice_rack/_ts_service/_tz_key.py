@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Optional
+import typing as t
 import zoneinfo
 import tzlocal
 
@@ -12,7 +12,10 @@ __all__ = (
 )
 
 
-# todo: specify these or find another way
+_TZ_CHOICES_SET: t.Set[str] = zoneinfo.available_timezones()
+_TZ_CHOICES_LIST: t.List[str] = list(_TZ_CHOICES_SET)
+
+
 class TimeZoneKey(_bases.special_str.SpecialStrBase):
     """
     a special string representing a timezone.
@@ -22,76 +25,57 @@ class TimeZoneKey(_bases.special_str.SpecialStrBase):
     """
 
     @classmethod
-    def timezone_choices(cls) -> list[str]:
-        return list(zoneinfo.available_timezones())
+    def timezone_choices(cls) -> t.Set[str]:
+        return _TZ_CHOICES_SET
 
     @classmethod
     def _format_str_val(cls, root_data: str) -> str:
         # ensure it is a valid zone info
-        choices = zoneinfo.available_timezones()
-        if root_data not in choices:
+        if root_data not in cls.timezone_choices():
             raise InvalidTimeZoneKeyException(
                 invalid_value=root_data,
-                options=list(choices)
+                options=_TZ_CHOICES_LIST
             )
 
         else:
             return root_data
 
-    def as_zone_info(self) -> zoneinfo.ZoneInfo:
+    def as_py_zone_info(self) -> zoneinfo.ZoneInfo:
+        """get the timezone info in the format python datetime library uses"""
         return zoneinfo.ZoneInfo(str(self))
 
     @classmethod
     def local(cls) -> TimeZoneKey:
         """gets timezone info for where this process is running"""
-        return TimeZoneKey(tzlocal.get_localzone().key)
+        return _LOCAL_TZ_KEY
 
 
-# class _InvalidTimeZoneKeyErrorInfo(exception_base.ErrorInfoBase):
-#     invalid_value: str
-#     options: list[str]
-#
-#
-# class InvalidTimeZoneKeyException(exception_base.ExceptionBase[_InvalidTimeZoneKeyErrorInfo]):
-#     def __init__(
-#             self,
-#             invalid_value: str,
-#             options: list[str],
-#             extra_info: Optional[dict] = None,
-#             verbose: bool = False
-#     ):
-#         error_info = {
-#             "invalid_value": invalid_value,
-#             "options": options
-#         }
-#
-#         detail = f"'{invalid_value}' is not a valid timezone key."
-#         super().__init__(
-#             detail=detail,
-#             error_info=error_info,
-#             extra_info=extra_info,
-#             verbose=verbose
-#         )
+# set this once on import bc it is pretty slow
+_LOCAL_TZ_KEY = TimeZoneKey(tzlocal.get_localzone().key)
 
 
-# for now
-class InvalidTimeZoneKeyException(Exception):
+class _InvalidTimeZoneKeyErrorInfo(_bases.exceptions.ErrorInfoBase):
+    invalid_value: str
+    options: list[str]
+
+
+class InvalidTimeZoneKeyException(_bases.exceptions.CustomExceptionBase[_InvalidTimeZoneKeyErrorInfo]):
     def __init__(
             self,
             invalid_value: str,
             options: list[str],
-            extra_info: Optional[dict] = None,
+            extra_info: t.Optional[dict] = None,
             verbose: bool = False
     ):
-        # error_info = {
-        #     "invalid_value": invalid_value,
-        #     "options": options
-        # }
+        error_info = {
+            "invalid_value": invalid_value,
+            "options": options
+        }
+
         detail = f"'{invalid_value}' is not a valid timezone key."
-        # super().__init__(
-        #     detail=detail,
-        #     error_info=error_info,
-        #     extra_info=extra_info,
-        #     verbose=verbose
-        # )
-        super().__init__(detail)
+        super().__init__(
+            detail=detail,
+            error_info=error_info,
+            extra_info=extra_info,
+            verbose=verbose
+        )
