@@ -109,12 +109,17 @@ class RootModel(pydantic.RootModel[RootTV], t.Generic[RootTV]):
             raise_errors: bool = True,
             _parent_namespace_depth: int = 2,
             _types_namespace: dict[str, t.Any] | None = None,
-    ) -> None:
+    ) -> t.Optional[bool]:
         """
         This extends pydantic's builtin hook for updating forward refs.
         We call our special '_import_forward_refs' hook to automatically bring in the things
         imported there, but also if you want to use it like pydantic, i.e. call it directly and
         provide your refs to update via kwargs, that is still supported.
+
+        Returns:
+            None: the schema is already "complete" and rebuilding was not required.
+            True: rebuilding was required and was successful
+            False: rebuilding was required and not successful
         """
         _types_namespace_dict: dict[str, t.Any] = _types_namespace if _types_namespace else {}
         imported_refs = cls._import_forward_refs()
