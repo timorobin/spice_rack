@@ -3,8 +3,8 @@ import typing as t
 import typing_extensions
 import uvicorn
 from uvicorn.supervisors import Multiprocess, ChangeReload
-
-from pydantic import Field
+from uvicorn.supervisors.basereload import BaseReload
+from pydantic import Field, conint
 from spice_rack import _bases
 
 if t.TYPE_CHECKING:
@@ -39,9 +39,11 @@ class UvicornStartupConfig(_bases.SettingsBase):
                                    " This should be false in prod"
     )
     num_workers: int = Field(
-        description="num server workers, just do 1 for now as anything else is untested",
-        default=1
+        description="num server workers, we only support 1 at the moment.",
+        default=1,
+        gt=0,
     )
+
     proxy_headers: bool = Field(
         description="passed to uvicorn config",
         default=False
@@ -97,7 +99,7 @@ def start_uvicorn(
     )
 
     server = uvicorn.Server(config=uvicorn_config)
-    supervisor_type = None
+    supervisor_type: t.Optional[t.Union[t.Type[BaseReload], t.Type[Multiprocess]]] = None
     if uvicorn_config.should_reload:
         supervisor_type = ChangeReload
     if uvicorn_config.workers > 1:
@@ -108,3 +110,5 @@ def start_uvicorn(
         supervisor.run()
     else:
         server.run()
+
+    raise Exception("Should have started a server before reaching this point")
