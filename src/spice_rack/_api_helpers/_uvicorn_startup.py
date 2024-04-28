@@ -4,11 +4,8 @@ import typing_extensions
 import uvicorn
 from uvicorn.supervisors import Multiprocess, ChangeReload
 from uvicorn.supervisors.basereload import BaseReload
-from pydantic import Field, conint
+from pydantic import Field
 from spice_rack import _bases
-
-if t.TYPE_CHECKING:
-    from uvicorn._types import ASGIApplication  # todo: how to get this type a different way?
 
 
 __all__ = (
@@ -63,14 +60,14 @@ class UvicornStartupConfig(_bases.SettingsBase):
 
 
 def start_uvicorn(
-        app: ASGIApplication,
+        app: t.Any,
         config: UvicornStartupConfig,
 ) -> typing_extensions.Never:
     """
     serve an app using the uvicorn server configured with a specified config instance
 
     Args:
-        app: the app we are serving. Should be something like FastApi or litestar
+        app: the app we are serving. Should be something like FastApi or litestar instance
         config: the uvicorn config
 
     Returns:
