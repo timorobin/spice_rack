@@ -35,7 +35,7 @@ jobs:
       run: poetry run ruff check .
 
 #    - name: Run mypy
-#      run: poetry run mypy src/
+#      run: poetry run mypy src/spice_rack/
 
     - name: Run Tests and Coverage
       run: poetry run coverage run -m --source=src pytest tests/ --doctest-modules  --pyargs src/

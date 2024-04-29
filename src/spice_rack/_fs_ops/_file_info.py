@@ -27,13 +27,13 @@ class FileExt(_bases.special_str.SpecialStrBase):
         return str(self) == str(FileExt(other))
 
     def get_mime_type(self) -> t.Optional[MimeType]:
-        path_like = f"x.{self[1:]}"
-        mime_type, content_encoding = mimetypes.guess_type(url=path_like, strict=True)
-        if mime_type is None:
+        try:
+            return MimeType.from_file_ext(self)
+        except ValueError:
             return None
 
-        else:
-            return MimeType(mime_type)
+        except Exception as e:
+            raise e
 
 
 _FILE_EXTENSIONS_SET = set(mimetypes.types_map.keys())

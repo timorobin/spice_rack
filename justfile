@@ -17,8 +17,10 @@ unit-tests:
 
 
 lint:
-    ruff check .
+    poetry ruff check .
 
+type-check:
+    poetry run mypy src/spice_rack/
 
 run-tests:
     poetry run ruff check .
