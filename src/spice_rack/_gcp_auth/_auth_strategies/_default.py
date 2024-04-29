@@ -34,7 +34,7 @@ class DefaultAuthStrategy(_base.AbstractGcpAuthStrategy):
     def default_creds_found(self) -> bool:
         try:
             credentials_inst = _get_gcp_default_creds()
-            if credentials_inst.token_state != credentials.TokenState.FRESH:
+            if credentials_inst.token_state == credentials.TokenState.STALE:
                 return False
 
         except gcp_exceptions.DefaultCredentialsError:
@@ -60,7 +60,7 @@ class DefaultAuthStrategy(_base.AbstractGcpAuthStrategy):
 
         try:
             credentials_inst = _get_gcp_default_creds()
-            if credentials_inst.token_state != credentials.TokenState.FRESH:
+            if credentials_inst.token_state == credentials.TokenState.STALE:
                 raise gcp_exceptions.RefreshError()
 
         except gcp_exceptions.GoogleAuthError as e:
