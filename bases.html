@@ -17,7 +17,7 @@
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="_static/documentation_options.js?v=d45e8c67"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -76,10 +76,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._dispatchable.DispatchedModelMixin.model_validate"><code class="docutils literal notranslate"><span class="pre">DispatchedModelMixin.model_validate()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#spice_rack._bases._dispatchable.DispatchableValueModelBase"><code class="docutils literal notranslate"><span class="pre">DispatchableValueModelBase</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._dispatchable.DispatchableValueModelBase.class_id"><code class="docutils literal notranslate"><span class="pre">DispatchableValueModelBase.class_id</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#spice_rack._bases._dispatchable.DispatchableValueModelBase"><code class="docutils literal notranslate"><span class="pre">DispatchableValueModelBase</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#spice_rack._bases._dispatchable.DispatchedClassContainer"><code class="docutils literal notranslate"><span class="pre">DispatchedClassContainer</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#spice_rack._bases._dispatchable.DispatchedClassContainer.root"><code class="docutils literal notranslate"><span class="pre">DispatchedClassContainer.root</span></code></a></li>
 </ul>
@@ -175,7 +172,7 @@
 <dd><p>a base model we use for all pydantic models, even the other bases</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="spice_rack._bases._base_base.PydanticBase.__iter__">
-<span class="sig-name descname"><span class="pre">__iter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TupleGenerator</span></span></span><a class="headerlink" href="#spice_rack._bases._base_base.PydanticBase.__iter__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__iter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#spice_rack._bases._base_base.PydanticBase.__iter__" title="Link to this definition"></a></dt>
 <dd><p>So <cite>dict(model)</cite> works.</p>
 </dd></dl>
 
@@ -438,12 +435,6 @@ pydantic class context. see pydantic type adapter docs</p>
 <dd><p>convenience class that combines dispatchable model mixin and value model,
 which is a common use-case for dispatchable models. This has the value model config
 and the <cite>DispatchedModelMixin</cite> functionality.</p>
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="spice_rack._bases._dispatchable.DispatchableValueModelBase.class_id">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">class_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">_ClassIdStr</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spice_rack._bases._dispatchable.DispatchableValueModelBase.class_id" title="Link to this definition"></a></dt>
-<dd><p>this is the field we dispatch the different sub-classes on. Concrete classes will constrain this to be only one specific value.</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="py class pydantic_model">
