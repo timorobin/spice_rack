@@ -5,7 +5,7 @@ from fsspec.spec import AbstractFileSystem as AbstractFsSpecFileSystem
 import pydantic
 
 from spice_rack import _bases, _logging
-from spice_rack._fs_ops import _path_strs, _file_info, _open_modes, _exceptions
+from spice_rack._fs_ops import _path_strs, _open_modes, _exceptions
 
 
 __all__ = (
@@ -141,62 +141,6 @@ class AbstractFileSystem(
             )
         else:
             return
-
-    @pydantic.validate_call
-    def ensure_correct_file_ext(
-            self,
-            __path: _path_strs.RelOrAbsFilePathT,
-            *,
-            choices: list[_file_info.FileExt]
-    ) -> None:
-        """
-        ensure the file path has one of the specified extensions
-        Args:
-            __path: the path we are checking
-            choices: the valid extensions
-
-        Returns: Nothing
-
-        Raises:
-            FilePathInvalidException: if the file path has no extension of it isn't
-                one of the choices
-        """
-        file_ext = __path.get_file_ext()
-        if file_ext is None or file_ext not in choices:
-            raise _exceptions.InvalidFileExtensionException(
-                path=__path,
-                file_ext_found=file_ext,
-                file_ext_choices=choices,
-            )
-        return
-
-    @pydantic.validate_call
-    def ensure_correct_mime_type(
-            self,
-            __path: _path_strs.AbsoluteFilePathStr,
-            *,
-            choices: list[_file_info.MimeType]
-    ) -> None:
-        """
-        ensure the file path is one of the specified mime types
-        Args:
-            __path: the path we are checking
-            choices: the valid mime types
-
-        Returns: Nothing
-
-        Raises:
-            InvalidFileMimeTypeException: if we cannot determine the mime type, or it is not one
-                of the specified choices
-        """
-        mime_type_found = __path.get_mime_type()
-        if not mime_type_found or mime_type_found not in choices:
-            raise _exceptions.InvalidFileMimeTypeException(
-                path=__path,
-                mime_type_found=mime_type_found,
-                mime_type_choices=choices,
-                verbose=True
-            )
 
     @pydantic.validate_call
     def open_file(

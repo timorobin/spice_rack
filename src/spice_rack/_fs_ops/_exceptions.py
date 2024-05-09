@@ -116,7 +116,7 @@ class _InvalidFileExtensionErrorInfo(ErrorInfoBase):
 class InvalidFileExtensionException(CustomExceptionBase[_InvalidFileExtensionErrorInfo]):
     def __init__(
             self,
-            path: _path_strs.FileOrDirAbsPathT,
+            path: t.Union[_path_strs.RelFilePathStr, _path_strs.AbsoluteFilePathStr],
             file_ext_found: t.Optional[_file_info.FileExt],
             file_ext_choices: t.List[_file_info.FileExt],
             verbose: bool = True,

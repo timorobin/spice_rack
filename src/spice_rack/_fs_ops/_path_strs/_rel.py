@@ -5,7 +5,7 @@ from pathlib import Path
 import pydantic
 
 from spice_rack._fs_ops._path_strs import _base, _path_checkers
-from spice_rack._fs_ops import _file_info
+from spice_rack._fs_ops import _file_info, _exceptions
 
 
 __all__ = (
@@ -75,6 +75,56 @@ class RelFilePathStr(_AbstractRelPathStr):
             return mime_type_maybe
         else:
             return None
+
+    def ensure_correct_file_ext(
+            self,
+            choices: list[_file_info.FileExt]
+    ) -> None:
+        """
+        ensure the file path has one of the specified extensions
+
+        Args:
+            choices: the valid extensions
+
+        Returns: Nothing
+
+        Raises:
+            FilePathInvalidException: if the file path has no extension of it isn't
+                one of the choices
+        """
+        file_ext = self.get_file_ext()
+        if file_ext is None or file_ext not in choices:
+            raise _exceptions.InvalidFileExtensionException(
+                path=self,
+                file_ext_found=file_ext,
+                file_ext_choices=choices,
+            )
+        return
+
+    def ensure_correct_mime_type(
+            self,
+            choices: list[_file_info.MimeType]
+    ) -> None:
+        """
+        ensure the file path is one of the specified mime types
+        Args:
+            choices: the valid mime types
+
+        Returns: Nothing
+
+        Raises:
+            InvalidFileMimeTypeException: if we cannot determine the mime type, or it is not one
+                of the specified choices
+        """
+
+        mime_type_found = self.get_mime_type()
+        if not mime_type_found or mime_type_found not in choices:
+            raise _exceptions.InvalidFileMimeTypeException(
+                path=self,
+                mime_type_found=mime_type_found,
+                mime_type_choices=choices,
+                verbose=True
+            )
 
 
 @t.final
