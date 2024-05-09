@@ -112,10 +112,7 @@ class _FilePathBase(AbstractFileSystemObj, class_type="root"):
             FilePathInvalidException: if the file path has no extension of it isn't
                 one of the choices
         """
-        choices = [
-            _file_info.FileExt(choice) for choice in choices
-        ]
-        self.file_system.ensure_correct_file_ext(self.path, choices=choices)
+        return self.path.ensure_correct_file_ext([_file_info.FileExt(c) for c in choices])
 
     def ensure_correct_mime_type(self, choices: t.List[_file_info.MimeType]) -> None:
         """
@@ -129,10 +126,7 @@ class _FilePathBase(AbstractFileSystemObj, class_type="root"):
             InvalidFileMimeTypeException: if we cannot determine the mime type, or it is not one
                 of the specified choices
         """
-        return self.file_system.ensure_correct_mime_type(
-            self.path,
-            choices
-        )
+        return self.path.ensure_correct_mime_type([_file_info.MimeType(c) for c in choices])
 
     def get_file_ext(self) -> t.Optional[_file_info.FileExt]:
         """get the file extension from the file path if there is one"""
