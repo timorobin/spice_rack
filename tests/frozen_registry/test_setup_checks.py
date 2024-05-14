@@ -13,19 +13,17 @@ def test_item_no_key():
         class ItemNoKeyRegistry(frozen_registry.FrozenRegistryBase[Item, str]):
             ...
 
-
-def test_different_key_types():
-    class Item(bases.ValueModelBase):
-        key: str
+def test_good_passes():
 
     class DifferentStr(bases.SpecialStrBase):
         @classmethod
         def _format_str(cls, root_data: str) -> str:
             return root_data
 
-    # subclass init will raise a value error
-    with pytest.raises(ValueError):
-        class DiffKeyTypeRegistry(frozen_registry.FrozenRegistryBase[Item, DifferentStr]):
-            @classmethod
-            def get_key_cls(cls) -> Type[DifferentStr]:
-                return DifferentStr
+    class Item(bases.ValueModelBase):
+        key: DifferentStr
+
+    class DiffKeyTypeRegistry(frozen_registry.FrozenRegistryBase[Item, DifferentStr]):
+        @classmethod
+        def get_key_cls(cls) -> Type[DifferentStr]:
+            return DifferentStr

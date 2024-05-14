@@ -5,7 +5,7 @@ import pydantic
 from pydantic import Field
 import functools
 
-from spice_rack import _bases, _utils, _logging
+from spice_rack import _bases, _utils
 from spice_rack._frozen_registry import _exceptions
 
 __all__ = (
@@ -44,49 +44,48 @@ class FrozenRegistryBase(
     _distinct_keys: set[_RegistryItemKeyTV] = pydantic.PrivateAttr(default=None)
 
     @classmethod
-    def _get_item_type_var_args(cls) -> t.Tuple[
-        t.Union[t.Type[_RegistryItemTV], t.TypeVar], t.Union[t.Type[_RegistryItemKeyTV], t.TypeVar]
-    ]:
-        root_type_ann = cls.model_fields["root"].annotation
-        item_t: t.Type[FrozenRegistryMember] = t.get_args(root_type_ann)[0]
+    def _get_member_cls(cls) -> t.Type[FrozenRegistryMember[_RegistryItemKeyTV, _RegistryItemTV]]:
+        root_ann = cls.model_fields["root"].annotation
+        member_cls: t.Type[FrozenRegistryMember[_RegistryItemKeyTV, _RegistryItemTV]] = t.get_args(root_ann)[0]
+        return member_cls
 
-        generic_info = item_t.__pydantic_generic_metadata__
-        item_t_args = generic_info["args"]
-        if len(item_t_args) != 2:
-            logger = _logging.Logger.get_logger()
-            msg = f"expected item to have 2 generic args, encountered {len(item_t_args)}."
-            logger.error(
-                msg, [
-                    {
-                        "item_t": item_t,
-                        "item_t generic info": generic_info
-                    }
-                ]
-            )
-            raise ValueError(msg)
-        return t.cast(
-            t.Tuple[t.Union[t.Type[_RegistryItemTV], t.TypeVar], t.Union[t.Type[_RegistryItemKeyTV], t.TypeVar]],
-            item_t_args
-        )
+    @classmethod
+    def is_item_cls_set(cls) -> bool:
+        member_cls = cls._get_member_cls()
+        item_ann = member_cls.model_fields["item"].annotation
+
+        return not typing_inspect.is_typevar(item_ann)
+
+    @classmethod
+    def is_key_cls_set(cls) -> bool:
+        member_cls = cls._get_member_cls()
+        key_ann = member_cls.model_fields["key"].annotation
+        return not typing_inspect.is_typevar(key_ann)
 
     @classmethod
     def get_item_cls(cls) -> t.Type[_RegistryItemTV]:
         """Returns the type specified, if it is a type var, this raises a ValueError"""
-        item_cls = cls._get_item_type_var_args()[1]
-        if typing_inspect.is_typevar(item_cls):
+        member_cls = cls._get_member_cls()
+        item_ann = member_cls.model_fields["item"].annotation
+
+        if typing_inspect.is_typevar(item_ann):
             raise ValueError(
-                f"'{item_cls}' is still a type var and not parameterized yet"
+                f"'{item_ann}' is still a type var and not parameterized yet"
             )
-        return item_cls
+        else:
+            return item_ann
 
     @classmethod
     def get_key_cls(cls) -> t.Type[_RegistryItemKeyTV]:
-        key_cls = cls._get_item_type_var_args()[0]
-        if typing_inspect.is_typevar(key_cls):
+        member_cls = cls._get_member_cls()
+        key_ann = member_cls.model_fields["key"].annotation
+
+        if typing_inspect.is_typevar(key_ann):
             raise ValueError(
-                f"'{key_cls}' is still a type var and not parameterized yet"
+                f"'{key_ann}' is still a type var and not parameterized yet"
             )
-        return key_cls
+        else:
+            return key_ann
 
     @classmethod
     def _key_getter_fn_spec(cls) -> t.Union[t.Callable[[_RegistryItemTV], _RegistryItemKeyTV], str]:
@@ -132,12 +131,12 @@ class FrozenRegistryBase(
         # make sure we can build this key getter function
         cls._key_getter_fn_builder()
 
-    def __init_subclass__(cls, is_base: bool = False, **kwargs):
-        super().__init_subclass__(**kwargs)
-
+    def __init_subclass__(cls, **kwargs):
         # if base we don't validate
-        if not is_base:
+        if cls.is_key_cls_set() and cls.is_item_cls_set():
             cls.validate_class_setup()
+
+        super().__init_subclass__(**kwargs)
 
     @classmethod
     def _item_to_member(cls, __item: t.Any) -> FrozenRegistryMember[_RegistryItemKeyTV, _RegistryItemTV]:
@@ -170,7 +169,6 @@ class FrozenRegistryBase(
     @classmethod
     def init_empty(cls: t.Type[Self]) -> Self:
         return cls(root=())
-
 
     def _post_init_setup(self) -> None:
         self._distinct_keys = set([member.key for member in self.iter_members()])
