@@ -16,6 +16,7 @@ python = ">=3.9,<=3.12"
 
 # serialization and primary class base
 pydantic = { version = "~2", extras = [] }
+typing-inspect = { version = "*", extras = [] }
 pydantic_settings = { version = "*", extras = [] }
 
 # for file path works

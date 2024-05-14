@@ -24,9 +24,8 @@ class Registry(
         return KeyStr
 
     @classmethod
-    def get_key_attr_name(cls) -> str:
+    def _key_getter_fn_spec(cls) -> str:
         return "custom_key_field_name"
-
 
 
 @pytest.fixture(scope="module")
@@ -54,10 +53,6 @@ def test_init_empty() -> None:
     assert reg.size() == 0
 
 
-def test_key_attr_name() -> None:
-    assert Registry.get_key_attr_name() == "custom_key_field_name"
-
-
 def test_add_item(item1) -> None:
     reg = Registry.init_empty()
     assert reg.size() == 0
@@ -81,11 +76,11 @@ def test_add_dupe_raise(item1, item1_v2) -> None:
 
 
 def test_add_item_replace(item1, item2, item1_v2) -> None:
-    reg = Registry.init_empty()
+    reg = Registry()
     assert reg.size() == 0
 
     new_reg = reg.with_new_items(new_items=[item1, item2], if_exists="raise")
-    assert new_reg == Registry.validate([item1, item2])
+    assert new_reg == Registry.model_validate([item1, item2])
 
     # keys the same but item is different
     new_new_reg = new_reg.with_new_item(new_item=item1_v2, if_exists="replace")
