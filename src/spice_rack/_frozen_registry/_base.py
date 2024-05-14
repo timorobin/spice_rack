@@ -9,7 +9,6 @@ from spice_rack import _bases, _utils
 from spice_rack._frozen_registry import _exceptions
 
 __all__ = (
-    "FrozenRegistryBase",
     "FrozenRegistryOutBase",
 )
 
@@ -44,12 +43,14 @@ class FrozenRegistryBase(
     _key_lookup: t.Dict[_RegistryItemKeyTV, int] = pydantic.PrivateAttr(default=None)
 
     @classmethod
+    @t.final
     def _get_member_cls(cls) -> t.Type[FrozenRegistryMember[_RegistryItemKeyTV, _RegistryItemTV]]:
         root_ann = cls.model_fields["root"].annotation
         member_cls: t.Type[FrozenRegistryMember[_RegistryItemKeyTV, _RegistryItemTV]] = t.get_args(root_ann)[0]
         return member_cls
 
     @classmethod
+    @t.final
     def is_item_cls_set(cls) -> bool:
         member_cls = cls._get_member_cls()
         item_ann = member_cls.model_fields["item"].annotation
@@ -57,12 +58,14 @@ class FrozenRegistryBase(
         return not typing_inspect.is_typevar(item_ann)
 
     @classmethod
+    @t.final
     def is_key_cls_set(cls) -> bool:
         member_cls = cls._get_member_cls()
         key_ann = member_cls.model_fields["key"].annotation
         return not typing_inspect.is_typevar(key_ann)
 
     @classmethod
+    @t.final
     def get_item_cls(cls) -> t.Type[_RegistryItemTV]:
         """Returns the type specified, if it is a type var, this raises a ValueError"""
         member_cls = cls._get_member_cls()
@@ -76,6 +79,7 @@ class FrozenRegistryBase(
             return item_ann
 
     @classmethod
+    @t.final
     def get_key_cls(cls) -> t.Type[_RegistryItemKeyTV]:
         member_cls = cls._get_member_cls()
         key_ann = member_cls.model_fields["key"].annotation
@@ -457,11 +461,3 @@ class FrozenRegistryBase(
     def special_repr(self: Self) -> str:
         return (f"{self.__class__.__name__}"
                 f"[key_field='{self.get_key_attr_name()}', size={self.size()}]")
-
-    def to_out_obj(self) -> FrozenRegistryOutBase[_RegistryItemTV]:
-        return FrozenRegistryOutBase[self.get_item_cls()].model_validate(list(self.iter_items()))
-
-
-class FrozenRegistryOutBase(_bases.RootModel[t.List[_RegistryItemTV]], t.Generic[_RegistryItemTV]):
-    """base class for an api response model for a frozen registry"""
-    ...
