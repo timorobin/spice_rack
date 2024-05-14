@@ -9,7 +9,8 @@ from spice_rack import _bases, _utils
 from spice_rack._frozen_registry import _exceptions
 
 __all__ = (
-    "FrozenRegistryOutBase",
+    "FrozenRegistryMember",
+    "FrozenRegistryBase",
 )
 
 
