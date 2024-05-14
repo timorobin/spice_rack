@@ -137,6 +137,7 @@ def test_roundtrip_json(item1, item2) -> None:
     assert reg_dumped[0] == reg[0].model_dump(mode="json")
 
     parsed = Registry.model_validate(reg_dumped)
+
     assert parsed == reg
 
 
@@ -147,3 +148,12 @@ def test_roundtrip_python(item1, item2) -> None:
 
     parsed = Registry.model_validate(reg_dumped)
     assert parsed == reg
+
+
+def test_schema_gen():
+    assert Registry.model_json_schema()
+
+    class X(bases.ValueModelBase):
+        x: Registry
+
+    assert X.model_json_schema()

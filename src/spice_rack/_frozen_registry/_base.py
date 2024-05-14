@@ -193,8 +193,8 @@ class FrozenRegistryBase(
         return data
 
     @pydantic.model_serializer(mode="plain", when_used="json")
-    def _json_serialize(self) -> t.List[_RegistryItemTV]:
-        return list(self.iter_items())
+    def _json_serialize(self) -> t.List[t.Dict[str, pydantic.JsonValue]]:
+        return [item.model_dump(mode="json") for item in self.iter_items()]
 
     @classmethod
     def _get_default_value(cls) -> tuple[FrozenRegistryMember, ...]:
