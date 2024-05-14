@@ -129,3 +129,21 @@ def test_bracket_style_get(item1, item2) -> None:
     new_new_reg = new_reg.with_new_item(item2)
 
     assert new_new_reg[1] == new_new_reg[-1]
+
+
+def test_roundtrip_json(item1, item2) -> None:
+    reg = Registry.model_validate([item1, item2])
+    reg_dumped = reg.model_dump(mode="json")
+    assert reg_dumped[0] == reg[0].model_dump(mode="json")
+
+    parsed = Registry.model_validate(reg_dumped)
+    assert parsed == reg
+
+
+def test_roundtrip_python(item1, item2) -> None:
+    reg = Registry.model_validate([item1, item2])
+    reg_dumped = reg.model_dump(mode="python")
+    assert reg_dumped[0] == reg.root[0].model_dump(mode="python")
+
+    parsed = Registry.model_validate(reg_dumped)
+    assert parsed == reg

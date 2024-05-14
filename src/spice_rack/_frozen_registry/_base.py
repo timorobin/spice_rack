@@ -156,16 +156,45 @@ class FrozenRegistryBase(
     @pydantic.field_validator("root", mode="before")
     @classmethod
     def _auto_parse_items(cls, data: t.Any) -> t.Any:
+        # parse a raw list or tuple
         if isinstance(data, (list, tuple)):
-            members: t.List[t.Dict] = []
+            members: t.List[FrozenRegistryMember] = []
             for obj in data:
+
+                # if already a registry member class, we don't parse just use it
                 if isinstance(obj, FrozenRegistryMember):
-                    members.append({"key": obj.key, "item": obj.item})
+                    members.append(obj)
+
+                # if a dict, we check if it has the same 2 fields as FrozenRegistryMember
+                # and if so we try to parse it that way first. If it fails we see if it is an
+                # item with those 2 fields too.
+                # If it has other fields, we parse it as an item
+                elif isinstance(obj, dict):
+                    if set(obj.keys()) == {"key", "item"}:
+                        # try to parse as member first
+                        try:
+                            member = cls._get_member_cls().model_validate(obj)
+                        except pydantic.ValidationError:
+                            member = cls._item_to_member(obj)
+                        except Exception as e:
+                            raise e
+
+                    else:
+                        member = cls._item_to_member(obj)
+
+                    members.append(member)
+
+                # we parse it as an item directly
                 else:
                     member = cls._item_to_member(obj)
                     members.append(member)
+
             data = members
         return data
+
+    @pydantic.model_serializer(mode="plain", when_used="json")
+    def _json_serialize(self) -> t.List[_RegistryItemTV]:
+        return list(self.iter_items())
 
     @classmethod
     def _get_default_value(cls) -> tuple[FrozenRegistryMember, ...]:
