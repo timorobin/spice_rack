@@ -41,7 +41,7 @@ class FrozenRegistryBase(
     We use this pattern in various places, so consolidating behavior to a base class here
     minimizes the small code drift between the different implementations.
     """
-    _distinct_keys: set[_RegistryItemKeyTV] = pydantic.PrivateAttr(default=None)
+    _key_lookup: t.Dict[_RegistryItemKeyTV, int] = pydantic.PrivateAttr(default=None)
 
     @classmethod
     def _get_member_cls(cls) -> t.Type[FrozenRegistryMember[_RegistryItemKeyTV, _RegistryItemTV]]:
@@ -171,7 +171,9 @@ class FrozenRegistryBase(
         return cls(root=())
 
     def _post_init_setup(self) -> None:
-        self._distinct_keys = set([member.key for member in self.iter_members()])
+        self._key_lookup = {
+            member.key: member_ix for member_ix, member in enumerate(self.iter_members())
+        }
 
     def size(self) -> int:
         return len(self.root)
@@ -209,7 +211,7 @@ class FrozenRegistryBase(
         """
         Returns: list all keys in the registry
         """
-        return list(self._distinct_keys)
+        return list(self._key_lookup.keys())
 
     def get_item_maybe(self, __key: _RegistryItemKeyTV) -> t.Optional[_RegistryItemTV]:
         """
@@ -220,10 +222,12 @@ class FrozenRegistryBase(
 
         Returns: an instance of _RegistryItemTV or None
         """
-        for member in self.iter_members():
-            if member.key == __key:
-                return member.item
-        return
+        __key = self.get_key_cls()(__key)
+        if __key in self._key_lookup:
+            member_ix = self._key_lookup[__key]
+            return self.root[member_ix].item
+        else:
+            return
 
     def get_item(self, __key: _RegistryItemKeyTV) -> _RegistryItemTV:
         """
@@ -249,7 +253,7 @@ class FrozenRegistryBase(
             return item_maybe
 
     def key_exists(self, __key: _RegistryItemKeyTV) -> bool:
-        return __key in self._distinct_keys
+        return __key in self._key_lookup
 
     def raise_if_found(self, __key: _RegistryItemKeyTV) -> None:
         """
@@ -258,7 +262,7 @@ class FrozenRegistryBase(
         Raises:
             KeyAlreadyExistsException: if key is found
         """
-        if __key in self._distinct_keys:
+        if __key in self._key_lookup:
             raise _exceptions.KeyAlreadyExistsException(
                 duplicate_key=__key,
                 registry_type=type(self),
@@ -272,7 +276,7 @@ class FrozenRegistryBase(
         Raises:
             KeyNotFoundException: if key is found
         """
-        if __key not in self._distinct_keys:
+        if __key not in self._key_lookup:
             raise _exceptions.KeyNotFoundException(
                 missing_key=__key,
                 registry_type=type(self),
@@ -356,7 +360,7 @@ class FrozenRegistryBase(
         # make a set of keys to check against
         keys_to_delete: set[_RegistryItemKeyTV] = set()
         for key_i in keys:
-            if key_i not in self._distinct_keys:
+            if key_i not in self._key_lookup:
                 if if_not_found == "raise":
                     # will raise for us
                     self.raise_if_not_found(key_i)
