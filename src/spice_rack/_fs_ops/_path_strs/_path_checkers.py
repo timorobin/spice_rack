@@ -39,9 +39,9 @@ def dir_validator(raw_str: str, strict: bool = False) -> t.List[str]:
 
 
 def rel_validator(raw_str: str) -> t.List[str]:
-    if raw_str.startswith("/"):
+    if not raw_str.startswith("./"):
         return [
-            "a relative path cannot start with '/'"
+            "a relative path must start with './'"
         ]
     else:
         return []

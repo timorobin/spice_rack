@@ -168,7 +168,10 @@ class AbsoluteDirPathStr(_AbstractAbsolutePathStr):
         rel_path_parsed = _rel.FileOrDirRelPathTypeAdapter.validate_python(
             rel_path
         )
-        extended_path_raw: str = str(self) + str(rel_path_parsed)
+
+        # strip the "./" from the file, i.e. "./file_path_stuff" -> "file_path_stuff"
+        path_extension = str(rel_path_parsed)[2:]
+        extended_path_raw: str = str(self) + path_extension
 
         if isinstance(rel_path_parsed, _rel.RelFilePathStr):
             extended_path = AbsoluteFilePathStr(extended_path_raw)

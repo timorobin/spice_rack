@@ -28,7 +28,23 @@ class _AbstractRelPathStr(_base.AbstractPathStr):
         issues.extend(_path_checkers.rel_validator(__raw_str))
         return issues
 
+    @classmethod
+    def _format_str_val(cls, root_data: str) -> str:
+        if not root_data.startswith("/"):
+            if root_data.startswith("."):
+                if root_data[1] != "/":
+                    root_data = f"./{root_data[2:]}"
+            else:
+                root_data = f"./{root_data}"
+        return super()._format_str_val(root_data)
+
     def get_parent(self) -> RelDirPathStr:
+        """
+        will return the parent directory of this relative file path. If
+        it is top-level, like "file.txt" we will return "./"
+
+        Returns: RelDirPathStr
+        """
         parent_path_raw = str(Path(str(self)).parent)
         if not parent_path_raw.endswith("/"):
             parent_path_raw = parent_path_raw + "/"
@@ -164,10 +180,23 @@ class RelDirPathStr(_AbstractRelPathStr):
             self,
             rel_path: t.Union[str, FileOrDirRelPathT]
     ) -> FileOrDirRelPathT:
+        """
+        Will create a new path relative to self and the specified path.
+
+        Args:
+            rel_path: path we are appending
+
+        Returns:
+            RelFilePathStr: if 'rel_path' is a RelFilePathStr
+            RelDirPathStr: if 'rel_path' is a RelDirPathStr
+        """
         rel_path_parsed = FileOrDirRelPathTypeAdapter.validate_python(
             rel_path
         )
-        extended_path_raw: str = str(self) + str(rel_path_parsed)
+
+        # strip the "./" from the file, i.e. "./file_path_stuff" -> "file_path_stuff"
+        path_extension = str(rel_path_parsed)[2:]
+        extended_path_raw: str = str(self) + path_extension
 
         if isinstance(rel_path_parsed, RelFilePathStr):
             extended_path = RelFilePathStr(extended_path_raw)
