@@ -1,7 +1,3 @@
-import pytest
-import pydantic
-import typing as t
-
 from spice_rack import fs_ops
 
 
@@ -31,4 +27,3 @@ def test_get_parent_abs_file_no_parent():
     parent = fp.get_parent()
     assert parent == fs_ops.path_strs.AbsoluteDirPathStr("/")
     assert parent.joinpath("top_level_file.txt") == fp
-
