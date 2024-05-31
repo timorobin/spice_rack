@@ -1,4 +1,5 @@
 from spice_rack import (
+    _version_getter,
     _bases as bases,
     _logging as logging,
     _fs_ops as fs_ops,
@@ -11,7 +12,7 @@ from spice_rack import (
     _polars_service as polars_service,
     _common_validators as common_validators,
     _api_helpers as api_helpers,
-    _version_getter
+    _heap as heap
 )
 GuidT = guid_service.GuidT
 Logger = logging.Logger
